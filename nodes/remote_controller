@@ -2,7 +2,7 @@
 
 import rospy
 import sys
-from std_msgs.msg import Float64
+from std_msgs.msg import Float64, String
 from mr_messages.msg import Speed
 from PyQt4 import QtGui, QtCore
 
@@ -25,7 +25,14 @@ class Window(QtGui.QMainWindow):
         self.home()
 
     def home(self):
+        btn = QtGui.QPushButton("Enable manual control", self)
+        btn.clicked.connect(self.enable_manual)
+        btn.resize(btn.minimumSizeHint())
+        btn.move(0,0)
         self.show()
+
+    def enable_manual(self):
+        self.rc.pub_manual_cmd("start_manual")
 
     def keyPressEvent(self, event):
 
@@ -86,6 +93,9 @@ class RosCommands(object):
         self.sail_effort_pub = rospy.Publisher('manual/cmd_sail_effort',
                                                Float64,
                                                queue_size=10)
+        self.mission_cmd_pub = rospy.Publisher('cmd_mission',
+                                               String,
+                                               queue_size=10)
 
     def pub_rudder_effort(self, effort):
         self.rudder_effort_pub.publish(effort)
@@ -97,6 +107,9 @@ class RosCommands(object):
 
     def pub_sail_effort(self, effort):
         self.sail_effort_pub.publish(effort)
+
+    def pub_manual_cmd(self, cmd):
+        self.mission_cmd_pub.publish(cmd)
 
 
 if __name__ == '__main__':
