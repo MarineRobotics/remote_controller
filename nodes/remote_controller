@@ -1,0 +1,49 @@
+#!/usr/bin/env python
+
+import rospy
+import sys
+from std_msgs.msg import String
+from PyQt4 import QtGui, QtCore
+
+PKG = 'pyqt_testing'
+
+NODE = 'send_key_cmd'
+
+
+class Window(QtGui.QMainWindow):
+
+    def __init__(self):
+        self.rc = RosCommands()
+        super(Window, self).__init__()
+        self.setGeometry(50, 50, 500, 300)
+        self.setWindowTitle("manual boat control test")
+        self.home()
+
+    def home(self):
+        self.show()
+
+    def keyPressEvent(self, event):
+        if event.key() == QtCore.Qt.Key_W and not event.isAutoRepeat():
+            self.rc.pub_keypress("prop on!")
+        event.accept()
+
+    def keyReleaseEvent(self, event):
+        if event.key() == QtCore.Qt.Key_W and not event.isAutoRepeat():
+            self.rc.pub_keypress("prop off!")
+        event.accept()
+
+
+class RosCommands(object):
+
+    def __init__(self):
+        rospy.init_node(NODE, anonymous=True)
+        self.key_pub = rospy.Publisher('key_pressed', String, queue_size=10)
+
+    def pub_keypress(self, key_event):
+        self.key_pub.publish(key_event)
+
+
+if __name__ == '__main__':
+    app = QtGui.QApplication(sys.argv)
+    GUI = Window()
+    sys.exit(app.exec_())
