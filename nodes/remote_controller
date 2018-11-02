@@ -2,12 +2,17 @@
 
 import rospy
 import sys
-from std_msgs.msg import String
+from std_msgs.msg import Float64
+from mr_messages.msg import Speed
 from PyQt4 import QtGui, QtCore
 
 PKG = 'pyqt_testing'
 
 NODE = 'send_key_cmd'
+
+PROP_SPEED = 127
+RUDDER_SPEED = 40
+SAIL_SPEED = 40
 
 
 class Window(QtGui.QMainWindow):
@@ -23,13 +28,47 @@ class Window(QtGui.QMainWindow):
         self.show()
 
     def keyPressEvent(self, event):
+
+        # SPEED EVENTS
         if event.key() == QtCore.Qt.Key_W and not event.isAutoRepeat():
-            self.rc.pub_keypress("prop on!")
+            self.rc.pub_speed(PROP_SPEED)
+        elif event.key() == QtCore.Qt.Key_S and not event.isAutoRepeat():
+            self.rc.pub_speed(-PROP_SPEED)
+
+        # RUDDER EVENTS
+        elif event.key() == QtCore.Qt.Key_D and not event.isAutoRepeat():
+            self.rc.pub_rudder_effort(RUDDER_SPEED)
+        elif event.key() == QtCore.Qt.Key_A and not event.isAutoRepeat():
+            self.rc.pub_rudder_effort(-RUDDER_SPEED)
+
+        # SAIL EVENTS
+        elif event.key() == QtCore.Qt.Key_E and not event.isAutoRepeat():
+            self.rc.pub_sail_effort(SAIL_SPEED)
+        elif event.key() == QtCore.Qt.Key_Q and not event.isAutoRepeat():
+            self.rc.pub_sail_effort(-SAIL_SPEED)
+
         event.accept()
 
     def keyReleaseEvent(self, event):
+
+        # SPEED EVENTS
         if event.key() == QtCore.Qt.Key_W and not event.isAutoRepeat():
-            self.rc.pub_keypress("prop off!")
+            self.rc.pub_speed(0)
+        elif event.key() == QtCore.Qt.Key_S and not event.isAutoRepeat():
+            self.rc.pub_speed(0)
+
+        # RUDDER EVENTS
+        elif event.key() == QtCore.Qt.Key_A and not event.isAutoRepeat():
+            self.rc.pub_rudder_effort(0)
+        elif event.key() == QtCore.Qt.Key_D and not event.isAutoRepeat():
+            self.rc.pub_rudder_effort(0)
+
+        # SAIL EVENTS
+        elif event.key() == QtCore.Qt.Key_E and not event.isAutoRepeat():
+            self.rc.pub_sail_effort(0)
+        elif event.key() == QtCore.Qt.Key_Q and not event.isAutoRepeat():
+            self.rc.pub_sail_effort(0)
+
         event.accept()
 
 
@@ -37,10 +76,27 @@ class RosCommands(object):
 
     def __init__(self):
         rospy.init_node(NODE, anonymous=True)
-        self.key_pub = rospy.Publisher('key_pressed', String, queue_size=10)
+        self.speed = Speed()
+        self.rudder_effort_pub = rospy.Publisher('manual/cmd_rudder_effort',
+                                                 Float64,
+                                                 queue_size=10)
+        self.speed_pub = rospy.Publisher('manual/cmd_speed',
+                                         Speed,
+                                         queue_size=10)
+        self.sail_effort_pub = rospy.Publisher('manual/cmd_sail_effort',
+                                               Float64,
+                                               queue_size=10)
 
-    def pub_keypress(self, key_event):
-        self.key_pub.publish(key_event)
+    def pub_rudder_effort(self, effort):
+        self.rudder_effort_pub.publish(effort)
+
+    def pub_speed(self, speed):
+        self.speed.time = rospy.Time.now()
+        self.speed.speed = speed
+        self.speed_pub.publish(self.speed)
+
+    def pub_sail_effort(self, effort):
+        self.sail_effort_pub.publish(effort)
 
 
 if __name__ == '__main__':
