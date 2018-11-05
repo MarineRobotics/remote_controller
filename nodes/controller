@@ -78,6 +78,12 @@ class Window(QtGui.QMainWindow):
 
         event.accept()
 
+    def closeEvent(self, event):
+        """Stop all motors on close"""
+        self.rc.pub_prop_effort(0)
+        self.rc.pub_rudder_effort(0)
+        self.rc.pub_sail_effort(0)
+
 
 class RosCommands(object):
 
