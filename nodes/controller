@@ -38,9 +38,9 @@ class Window(QtGui.QMainWindow):
 
         # SPEED EVENTS
         if event.key() == QtCore.Qt.Key_W and not event.isAutoRepeat():
-            self.rc.pub_speed(PROP_SPEED)
+            self.rc.pub_prop_effort(PROP_SPEED)
         elif event.key() == QtCore.Qt.Key_S and not event.isAutoRepeat():
-            self.rc.pub_speed(-PROP_SPEED)
+            self.rc.pub_prop_effort(-PROP_SPEED)
 
         # RUDDER EVENTS
         elif event.key() == QtCore.Qt.Key_D and not event.isAutoRepeat():
@@ -60,9 +60,9 @@ class Window(QtGui.QMainWindow):
 
         # SPEED EVENTS
         if event.key() == QtCore.Qt.Key_W and not event.isAutoRepeat():
-            self.rc.pub_speed(0)
+            self.rc.pub_prop_effort(0)
         elif event.key() == QtCore.Qt.Key_S and not event.isAutoRepeat():
-            self.rc.pub_speed(0)
+            self.rc.pub_prop_effort(0)
 
         # RUDDER EVENTS
         elif event.key() == QtCore.Qt.Key_A and not event.isAutoRepeat():
@@ -87,9 +87,9 @@ class RosCommands(object):
         self.rudder_effort_pub = rospy.Publisher('manual/cmd_rudder_effort',
                                                  Float64,
                                                  queue_size=10)
-        self.speed_pub = rospy.Publisher('manual/cmd_speed',
-                                         Speed,
-                                         queue_size=10)
+        self.prop_effort_pub = rospy.Publisher('manual/cmd_prop_effort',
+                                               Speed,
+                                               queue_size=10)
         self.sail_effort_pub = rospy.Publisher('manual/cmd_sail_effort',
                                                Float64,
                                                queue_size=10)
@@ -100,10 +100,10 @@ class RosCommands(object):
     def pub_rudder_effort(self, effort):
         self.rudder_effort_pub.publish(effort)
 
-    def pub_speed(self, speed):
+    def pub_prop_effort(self, speed):
         self.speed.time = rospy.Time.now()
         self.speed.speed = speed
-        self.speed_pub.publish(self.speed)
+        self.prop_effort_pub.publish(self.speed)
 
     def pub_sail_effort(self, effort):
         self.sail_effort_pub.publish(effort)
