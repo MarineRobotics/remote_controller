@@ -102,16 +102,16 @@ class RosCommands(object):
         rospy.init_node(NODE, anonymous=True)
         self.rudder_effort_pub = rospy.Publisher('manual/cmd_rudder_effort',
                                                  Float64,
-                                                 queue_size=10)
+                                                 queue_size=1)
         self.prop_effort_pub = rospy.Publisher('manual/cmd_prop_effort',
                                                Float64,
-                                               queue_size=10)
+                                               queue_size=1)
         self.sail_effort_pub = rospy.Publisher('manual/cmd_sail_effort',
                                                Float64,
-                                               queue_size=10)
+                                               queue_size=1)
         self.mission_cmd_pub = rospy.Publisher('cmd_mission',
                                                String,
-                                               queue_size=10)
+                                               queue_size=1)
 
     def pub_rudder_effort(self, effort):
         self.rudder_effort_pub.publish(effort)
