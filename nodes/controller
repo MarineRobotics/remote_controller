@@ -39,20 +39,26 @@ class Window(QtGui.QMainWindow):
         # SPEED EVENTS
         if event.key() == QtCore.Qt.Key_W and not event.isAutoRepeat():
             self.rc.pub_prop_effort(PROP_SPEED)
+            rospy.loginfo("prop forward!")
         elif event.key() == QtCore.Qt.Key_S and not event.isAutoRepeat():
             self.rc.pub_prop_effort(-PROP_SPEED)
+            rospy.loginfo("prop backwards!")
 
         # RUDDER EVENTS
         elif event.key() == QtCore.Qt.Key_D and not event.isAutoRepeat():
             self.rc.pub_rudder_effort(RUDDER_SPEED)
+            rospy.loginfo("rudder right!")
         elif event.key() == QtCore.Qt.Key_A and not event.isAutoRepeat():
             self.rc.pub_rudder_effort(-RUDDER_SPEED)
+            rospy.loginfo("rudder left!")
 
         # SAIL EVENTS
         elif event.key() == QtCore.Qt.Key_E and not event.isAutoRepeat():
             self.rc.pub_sail_effort(SAIL_SPEED)
+            rospy.loginfo("sail right!")
         elif event.key() == QtCore.Qt.Key_Q and not event.isAutoRepeat():
             self.rc.pub_sail_effort(-SAIL_SPEED)
+            rospy.loginfo("sail left!")
 
         event.accept()
 
@@ -61,21 +67,26 @@ class Window(QtGui.QMainWindow):
         # SPEED EVENTS
         if event.key() == QtCore.Qt.Key_W and not event.isAutoRepeat():
             self.rc.pub_prop_effort(0)
+            rospy.loginfo("prop off!")
         elif event.key() == QtCore.Qt.Key_S and not event.isAutoRepeat():
             self.rc.pub_prop_effort(0)
+            rospy.loginfo("prop off!")
 
         # RUDDER EVENTS
         elif event.key() == QtCore.Qt.Key_A and not event.isAutoRepeat():
             self.rc.pub_rudder_effort(0)
+            rospy.loginfo("rudder off!")
         elif event.key() == QtCore.Qt.Key_D and not event.isAutoRepeat():
             self.rc.pub_rudder_effort(0)
+            rospy.loginfo("rudder off!")
 
         # SAIL EVENTS
         elif event.key() == QtCore.Qt.Key_E and not event.isAutoRepeat():
             self.rc.pub_sail_effort(0)
+            rospy.loginfo("sail off!")
         elif event.key() == QtCore.Qt.Key_Q and not event.isAutoRepeat():
             self.rc.pub_sail_effort(0)
-
+            rospy.loginfo("sail off!")
         event.accept()
 
     def closeEvent(self, event):
@@ -89,7 +100,6 @@ class RosCommands(object):
 
     def __init__(self):
         rospy.init_node(NODE, anonymous=True)
-        self.speed = Speed()
         self.rudder_effort_pub = rospy.Publisher('manual/cmd_rudder_effort',
                                                  Float64,
                                                  queue_size=10)
@@ -107,9 +117,7 @@ class RosCommands(object):
         self.rudder_effort_pub.publish(effort)
 
     def pub_prop_effort(self, speed):
-        self.speed.time = rospy.Time.now()
-        self.speed.speed = speed
-        self.prop_effort_pub.publish(self.speed)
+        self.prop_effort_pub.publish(speed)
 
     def pub_sail_effort(self, effort):
         self.sail_effort_pub.publish(effort)
