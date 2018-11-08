@@ -152,7 +152,8 @@ class RosCommands(object):
         s = rospy.Service('share_bond_id',
                           BondIDRequest,
                           self.create_bond)
-
+        rospy.spin()
+        
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
     GUI = Window()
