@@ -131,8 +131,10 @@ class RosCommands(object):
     def create_bond(self, req):
         id = req.id
         topic = req.topic
+        rospy.loginfo("Received bond request with id {} and topic {}".format(id, topic))
         self.bond = bondpy.Bond(topic, id)
         self.bond.start()
+        rospy.loginfo("Started bond")
         success = True
         return BondIDRequestResponse(success)
 
