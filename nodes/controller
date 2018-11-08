@@ -28,10 +28,6 @@ class Window(QtGui.QMainWindow):
         self.setWindowTitle("manual boat control test")
         self.home()
 
-    def start_ros_thread(self):
-        self._t = Thread(target=self.rc.start_node())
-        self._t.daemon = True
-        self._t.start()
 
     def home(self):
         btn = QtGui.QPushButton("Enable manual control", self)
@@ -122,6 +118,9 @@ class RosCommands(object):
         self.mission_cmd_pub = rospy.Publisher('cmd_mission',
                                                String,
                                                queue_size=1)
+        self._t = Thread(target=self.start_service())
+        self._t.daemon = True
+        self._t.start()
 
     def pub_rudder_effort(self, effort):
         self.rudder_effort_pub.publish(effort)
@@ -148,7 +147,7 @@ class RosCommands(object):
     def break_bond(self):
         self.bond.break_bond()
 
-    def start_node(self):
+    def start_service(self):
         s = rospy.Service('share_bond_id',
                           BondIDRequest,
                           self.create_bond)
