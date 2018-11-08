@@ -4,7 +4,9 @@ import rospy
 import sys
 from std_msgs.msg import Float64, String
 from mr_messages.msg import Speed
+from mr_messages.srv import BondIDRequest, BondIDRequestResponse
 from PyQt4 import QtGui, QtCore
+from bondpy import bondpy
 
 PKG = 'pyqt_testing'
 
@@ -94,6 +96,7 @@ class Window(QtGui.QMainWindow):
         self.rc.pub_prop_effort(0)
         self.rc.pub_rudder_effort(0)
         self.rc.pub_sail_effort(0)
+        self.rc.break_bond()
 
 
 class RosCommands(object):
@@ -125,6 +128,21 @@ class RosCommands(object):
     def pub_manual_cmd(self, cmd):
         self.mission_cmd_pub.publish(cmd)
 
+    def create_bond(self, req):
+        id = req.id
+        topic = req.topic
+        self.bond = bondpy.Bond(topic, id)
+        self.bond.start()
+        success = True
+        return BondIDRequestResponse(success)
+
+    def break_bond(self):
+        self.bond.break_bond()
+
+    def start_node(self):
+        s = rospy.Service('share_bond_id',
+                          BondIDRequest,
+                          self.create_bond)
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
