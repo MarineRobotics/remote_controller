@@ -7,7 +7,7 @@ from mr_messages.msg import Speed
 from mr_messages.srv import BondIDRequest, BondIDRequestResponse
 from PyQt4 import QtGui, QtCore
 from bondpy import bondpy
-
+from threading import Thread
 PKG = 'pyqt_testing'
 
 NODE = 'send_key_cmd'
@@ -21,11 +21,17 @@ class Window(QtGui.QMainWindow):
 
     def __init__(self):
         self.rc = RosCommands()
-        self.rc.start_node()
+        self.start_ros_thread()
+#        self.rc.start_node()
         super(Window, self).__init__()
         self.setGeometry(50, 50, 500, 300)
         self.setWindowTitle("manual boat control test")
         self.home()
+
+    def start_ros_thread(self):
+        self._t = Thread(target=self.rc.start_node())
+        self._t.daemon = True
+        self._t.start()
 
     def home(self):
         btn = QtGui.QPushButton("Enable manual control", self)
