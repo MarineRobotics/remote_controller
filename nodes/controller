@@ -3,11 +3,10 @@
 import rospy
 import sys
 from std_msgs.msg import Float64, String
-from mr_messages.msg import Speed
 from mr_messages.srv import BondIDRequest, BondIDRequestResponse
 from PyQt4 import QtGui, QtCore
+from PyQt4.QtCore import QThread
 from bondpy import bondpy
-from threading import Thread
 PKG = 'pyqt_testing'
 
 NODE = 'send_key_cmd'
@@ -20,27 +19,25 @@ SAIL_SPEED = 40
 class Window(QtGui.QMainWindow):
 
     def __init__(self):
-        self.rc = RosCommands()
-        self.start_ros_thread()
-#        self.rc.start_node()
+        self.rc = RosThread()
+#       self.rc.start_node()
         super(Window, self).__init__()
         self.setGeometry(50, 50, 500, 300)
         self.setWindowTitle("manual boat control test")
         self.home()
-
 
     def home(self):
         btn = QtGui.QPushButton("Enable manual control", self)
         btn.clicked.connect(self.enable_manual)
         btn.resize(btn.minimumSizeHint())
         btn.move(0,0)
+        self.rc.start()
         self.show()
 
     def enable_manual(self):
         self.rc.pub_manual_cmd("start_manual")
 
     def keyPressEvent(self, event):
-
         # SPEED EVENTS
         if event.key() == QtCore.Qt.Key_W and not event.isAutoRepeat():
             self.rc.pub_prop_effort(PROP_SPEED)
@@ -68,7 +65,6 @@ class Window(QtGui.QMainWindow):
         event.accept()
 
     def keyReleaseEvent(self, event):
-
         # SPEED EVENTS
         if event.key() == QtCore.Qt.Key_W and not event.isAutoRepeat():
             self.rc.pub_prop_effort(0)
@@ -102,9 +98,10 @@ class Window(QtGui.QMainWindow):
         self.rc.break_bond()
 
 
-class RosCommands(object):
+class RosThread(QThread):
 
     def __init__(self):
+        QThread.__init__(self)
         rospy.init_node(NODE, anonymous=True)
         self.rudder_effort_pub = rospy.Publisher('manual/cmd_rudder_effort',
                                                  Float64,
@@ -118,9 +115,6 @@ class RosCommands(object):
         self.mission_cmd_pub = rospy.Publisher('cmd_mission',
                                                String,
                                                queue_size=1)
-        self._t = Thread(target=self.start_service())
-        self._t.daemon = True
-        self._t.start()
 
     def pub_rudder_effort(self, effort):
         self.rudder_effort_pub.publish(effort)
@@ -134,7 +128,7 @@ class RosCommands(object):
     def pub_manual_cmd(self, cmd):
         self.mission_cmd_pub.publish(cmd)
 
-    def create_bond(self, req):
+    def _create_bond(self, req):
         id = req.id
         topic = req.topic
         rospy.loginfo("Received bond request with id {} and topic {}".format(id, topic))
@@ -147,12 +141,13 @@ class RosCommands(object):
     def break_bond(self):
         self.bond.break_bond()
 
-    def start_service(self):
+    def run(self):
         s = rospy.Service('share_bond_id',
                           BondIDRequest,
-                          self.create_bond)
+                          self._create_bond)
         rospy.spin()
-        
+
+
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
     GUI = Window()
