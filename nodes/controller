@@ -139,7 +139,12 @@ class RosThread(QThread):
         return BondIDRequestResponse(success)
 
     def break_bond(self):
-        self.bond.break_bond()
+        try:
+            self.bond.break_bond()
+            rospy.loginfo("bond broken successfully")
+        except AttributeError:
+            rospy.logerr("couldn't break bond, never created")
+            pass
 
     def run(self):
         s = rospy.Service('share_bond_id',
