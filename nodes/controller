@@ -132,11 +132,15 @@ class RosThread(QThread):
         id = req.id
         topic = req.topic
         rospy.loginfo("Received bond request with id {} and topic {}".format(id, topic))
-        self.bond = bondpy.Bond(topic, id)
+        self.bond = bondpy.Bond(topic, id, on_broken=self.shutdown_bond`)
         self.bond.start()
         rospy.loginfo("Started bond")
         success = True
         return BondIDRequestResponse(success)
+
+    def shutdown_bond(self):
+        self.bond.shutdown()
+        rospy.loginfo("bond bas shutdown")
 
     def break_bond(self):
         try:
