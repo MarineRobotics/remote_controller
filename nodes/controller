@@ -7,7 +7,11 @@ from mr_messages.srv import BondIDRequest, BondIDRequestResponse
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import QThread
 from bondpy import bondpy
+from remote_controller import design
+
 PKG = 'pyqt_testing'
+
+
 
 NODE = 'send_key_cmd'
 
@@ -16,21 +20,17 @@ RUDDER_SPEED = 40
 SAIL_SPEED = 40
 
 
-class Window(QtGui.QMainWindow):
+class Window(QtGui.QMainWindow, design.Ui_MainWindow):
 
     def __init__(self):
         self.rc = RosThread()
 #       self.rc.start_node()
         super(Window, self).__init__()
-        self.setGeometry(50, 50, 500, 300)
-        self.setWindowTitle("manual boat control test")
+        self.setupUi(self)
         self.home()
 
     def home(self):
-        btn = QtGui.QPushButton("Enable manual control", self)
-        btn.clicked.connect(self.enable_manual)
-        btn.resize(btn.minimumSizeHint())
-        btn.move(0,0)
+        self.btnStartManual.clicked.connect(self.enable_manual)
         self.rc.start()
         self.show()
 
