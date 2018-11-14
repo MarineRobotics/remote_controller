@@ -4,8 +4,9 @@ import rospy
 import sys
 from std_msgs.msg import Float64, String
 from mr_messages.srv import BondIDRequest, BondIDRequestResponse
+from mr_messages.msg import WIND
 from PyQt4 import QtGui, QtCore
-from PyQt4.QtCore import QThread
+from PyQt4.QtCore import QThread, pyqtSignal
 from bondpy import bondpy
 from remote_controller import design
 
@@ -24,18 +25,43 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
 
     def __init__(self):
         self.rc = RosThread()
-#       self.rc.start_node()
+        # self.rc.start_node()
         super(Window, self).__init__()
         self.setupUi(self)
         self.home()
 
     def home(self):
         self.btnStartManual.clicked.connect(self.enable_manual)
+        self.btnDisableManual.clicked.connect(self.disable_manual)
+        self.btnDisableManual.hide()
+        self.connect_signals()
         self.rc.start()
         self.show()
 
+    def connect_signals(self):
+        """Connect all signals needed to update the GUI from our ROS thread"""
+        # self.connect(self.rc, SIGNAL("sail_data(float, float, str)"), self.update_sail_data)
+        self.rc.sail_data_updated.connect(self.update_sail_data)
+
+    def update_sail_data(self, speed, direction, reference):
+        """Update GUI fields with provided data"""
+        self.txtWindDir.setText(str(direction))
+        self.txtWindSpeed.setText(str(speed))
+
     def enable_manual(self):
         self.rc.pub_manual_cmd("start_manual")
+        self.txtMode.setStyleSheet("background-color: rgb(0, 150, 0);color: rgb(0, 0, 0)")
+        self.txtMode.setText("MANUAL ENABLED")
+        self.btnStartManual.hide()
+        self.btnDisableManual.show()
+
+    def disable_manual(self):
+        self.rc.pub_manual_cmd("stop_manual")
+        self.txtMode.setStyleSheet("background-color: rgb(150, 0, 0);color: rgb(255, 255, 255)")
+        self.txtMode.setText("MANUAL DISABLED")
+        self.rc.break_bond()
+        self.btnStartManual.show()
+        self.btnDisableManual.hide()
 
     def keyPressEvent(self, event):
         # SPEED EVENTS
@@ -100,6 +126,8 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
 
 class RosThread(QThread):
 
+    sail_data_updated = pyqtSignal(float, float, str)
+
     def __init__(self):
         QThread.__init__(self)
         rospy.init_node(NODE, anonymous=True)
@@ -128,6 +156,13 @@ class RosThread(QThread):
 
     def pub_manual_cmd(self, cmd):
         self.mission_cmd_pub.publish(cmd)
+
+    def handle_wind_info(self, wind_info):
+        #self.emit(SIGNAL('sail_data(float, float, str)'),
+        #          wind_info.speed
+        self.sail_data_updated.emit(wind_info.speed,
+                                    wind_info.direction,
+                                    wind_info.reference)
 
     def _create_bond(self, req):
         self.flush_broken()
@@ -162,6 +197,7 @@ class RosThread(QThread):
         s = rospy.Service('share_bond_id',
                           BondIDRequest,
                           self._create_bond)
+        rospy.Subscriber("wind_info", WIND, self.handle_wind_info)
         rospy.spin()
 
 
