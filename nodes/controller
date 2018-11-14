@@ -45,8 +45,8 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
 
     def update_sail_data(self, speed, direction, reference):
         """Update GUI fields with provided data"""
-        self.txtWindDir.setText(str(direction))
-        self.txtWindSpeed.setText(str(speed))
+        self.txtWindDir.setText("{0:.0f}".format(round(direction)))
+        self.txtWindSpeed.setText("{0:.2f}".format(round(speed,2)))
 
     def enable_manual(self):
         self.rc.pub_manual_cmd("start_manual")
