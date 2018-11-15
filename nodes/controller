@@ -4,7 +4,7 @@ import rospy
 import sys
 from std_msgs.msg import Float64, String
 from mr_messages.srv import BondIDRequest, BondIDRequestResponse
-from mr_messages.msg import WIND, Heading, Depth, Speed
+from mr_messages.msg import WIND, Heading, Depth, Speed, GNSSData
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import QThread, pyqtSignal
 from bondpy import bondpy
@@ -45,6 +45,7 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
         self.rc.vessel_heading_updated.connect(self.update_vessel_heading)
         self.rc.water_depth_updated.connect(self.update_water_depth)
         self.rc.water_speed_updated.connect(self.update_water_speed)
+        self.rc.gnss_data_updated.connect(self.update_gnss_data)
 
     def update_sail_data(self, speed, direction, reference):
         """Update GUI fields with provided data"""
@@ -63,6 +64,16 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
         """Update GUI field with water speed and format float"""
         self.txtWaterSpeed.setText("{0:.2f}".format(round(speed, 2)))
 
+    def update_gnss_data(self, num_sats):
+        """Update gui field with number of connected satellites"""
+        self.txtNumSats.setText(str(num_sats))
+        # make background green if 4 or more satellites are connected
+        if num_sats >= 4:
+            self.txtNumSats.setStyleSheet("background-color: rgb(0, 150, 0);color: rgb(255, 255, 255")
+        # make background red if less than 4 satellites are connected
+        else:
+            self.txtNumSats.setStyleSheet("background-color: rgb(150, 0, 0);color: rgb(0, 0, 0")
+            
     def enable_manual(self):
         self.rc.pub_manual_cmd("start_manual")
         self.txtMode.setStyleSheet("background-color: rgb(0, 150, 0);color: rgb(0, 0, 0)")
@@ -145,6 +156,7 @@ class RosThread(QThread):
     vessel_heading_updated = pyqtSignal(int)
     water_depth_updated = pyqtSignal(float)
     water_speed_updated = pyqtSignal(float)
+    gnss_data_updated = pyqtSignal(int)
 
     def __init__(self):
         QThread.__init__(self)
@@ -189,6 +201,9 @@ class RosThread(QThread):
     def handle_water_speed(self, speed):
         self.water_speed_updated.emit(speed.speed)
 
+    def handle_gnss(self, gnss):
+        self.gnss_data_updated.emit(gnss.num_sats)
+
     def _create_bond(self, req):
         self.flush_broken()
         id = req.id
@@ -226,6 +241,7 @@ class RosThread(QThread):
         rospy.Subscriber("vessel_heading", Heading, self.handle_vessel_heading)
         rospy.Subscriber("water_depth", Depth, self.handle_water_depth)
         rospy.Subscriber("water_speed", Speed, self.handle_water_speed)
+        rospy.Subscriber("gnss_position", GNSSData, self.handle_gnss)
         rospy.spin()
 
 
