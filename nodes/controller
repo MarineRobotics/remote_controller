@@ -4,7 +4,7 @@ import rospy
 import sys
 from std_msgs.msg import Float64, String
 from mr_messages.srv import BondIDRequest, BondIDRequestResponse
-from mr_messages.msg import WIND, Heading, Depth
+from mr_messages.msg import WIND, Heading, Depth, Speed
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import QThread, pyqtSignal
 from bondpy import bondpy
@@ -44,6 +44,7 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
         self.rc.sail_data_updated.connect(self.update_sail_data)
         self.rc.vessel_heading_updated.connect(self.update_vessel_heading)
         self.rc.water_depth_updated.connect(self.update_water_depth)
+        self.rc.water_speed_updated.connect(self.update_water_speed)
 
     def update_sail_data(self, speed, direction, reference):
         """Update GUI fields with provided data"""
@@ -57,6 +58,10 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
     def update_water_depth(self, depth):
         """Update GUI field with water depth and format float"""
         self.txtDepth.setText("{0:.2f}".format(round(depth, 2)))
+
+    def update_water_speed(self, speed):
+        """Update GUI field with water speed and format float"""
+        self.txtWaterSpeed.setText("{0:.2f}".format(round(speed, 2)))
 
     def enable_manual(self):
         self.rc.pub_manual_cmd("start_manual")
@@ -139,6 +144,7 @@ class RosThread(QThread):
     sail_data_updated = pyqtSignal(float, float, str)
     vessel_heading_updated = pyqtSignal(int)
     water_depth_updated = pyqtSignal(float)
+    water_speed_updated = pyqtSignal(float)
 
     def __init__(self):
         QThread.__init__(self)
@@ -180,6 +186,9 @@ class RosThread(QThread):
     def handle_water_depth(self, depth):
         self.water_depth_updated.emit(depth.depth)
 
+    def handle_water_speed(self, speed):
+        self.water_speed_updated.emit(speed.speed)
+
     def _create_bond(self, req):
         self.flush_broken()
         id = req.id
@@ -216,6 +225,7 @@ class RosThread(QThread):
         rospy.Subscriber("wind_info", WIND, self.handle_wind_info)
         rospy.Subscriber("vessel_heading", Heading, self.handle_vessel_heading)
         rospy.Subscriber("water_depth", Depth, self.handle_water_depth)
+        rospy.Subscriber("water_speed", Speed, self.handle_water_speed)
         rospy.spin()
 
 
