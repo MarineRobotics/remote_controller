@@ -4,7 +4,7 @@ import rospy
 import sys
 from std_msgs.msg import Float64, String
 from mr_messages.srv import BondIDRequest, BondIDRequestResponse
-from mr_messages.msg import WIND
+from mr_messages.msg import WIND, Heading
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import QThread, pyqtSignal
 from bondpy import bondpy
@@ -42,11 +42,16 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
         """Connect all signals needed to update the GUI from our ROS thread"""
         # self.connect(self.rc, SIGNAL("sail_data(float, float, str)"), self.update_sail_data)
         self.rc.sail_data_updated.connect(self.update_sail_data)
+        self.rc.vessel_heading_updated.connect(self.update_vessel_heading)
 
     def update_sail_data(self, speed, direction, reference):
         """Update GUI fields with provided data"""
         self.txtWindDir.setText("{0:.0f}".format(round(direction)))
-        self.txtWindSpeed.setText("{0:.2f}".format(round(speed,2)))
+        self.txtWindSpeed.setText("{0:.2f}".format(round(speed, 2)))
+
+    def update_vessel_heading(self, heading):
+        """Update GUI field with heading data"""
+        self.txtHeading.setText(str(heading))
 
     def enable_manual(self):
         self.rc.pub_manual_cmd("start_manual")
@@ -127,6 +132,7 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
 class RosThread(QThread):
 
     sail_data_updated = pyqtSignal(float, float, str)
+    vessel_heading_updated = pyqtSignal(int)
 
     def __init__(self):
         QThread.__init__(self)
@@ -158,11 +164,12 @@ class RosThread(QThread):
         self.mission_cmd_pub.publish(cmd)
 
     def handle_wind_info(self, wind_info):
-        #self.emit(SIGNAL('sail_data(float, float, str)'),
-        #          wind_info.speed
         self.sail_data_updated.emit(wind_info.speed,
                                     wind_info.direction,
                                     wind_info.reference)
+
+    def handle_vessel_heading(self, heading):
+        self.vessel_heading_updated.emit(heading.heading)
 
     def _create_bond(self, req):
         self.flush_broken()
@@ -198,6 +205,7 @@ class RosThread(QThread):
                           BondIDRequest,
                           self._create_bond)
         rospy.Subscriber("wind_info", WIND, self.handle_wind_info)
+        rospy.Subscriber("vessel_heading", Heading, self.handle_vessel_heading)
         rospy.spin()
 
 
