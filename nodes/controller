@@ -4,7 +4,7 @@ import rospy
 import sys
 from std_msgs.msg import Float64, String
 from mr_messages.srv import BondIDRequest, BondIDRequestResponse
-from mr_messages.msg import WIND, Heading, Depth, Speed, GNSSData
+from mr_messages.msg import WIND, Heading, Depth, Speed, GNSSData, ADCReading
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import QThread, pyqtSignal
 from bondpy import bondpy
@@ -46,6 +46,8 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
         self.rc.water_depth_updated.connect(self.update_water_depth)
         self.rc.water_speed_updated.connect(self.update_water_speed)
         self.rc.gnss_data_updated.connect(self.update_gnss_data)
+        self.rc.current_data_updated.connect(self.update_current_data)
+        self.rc.volt_data_updated.connect(self.update_battery_voltage)
 
     def update_sail_data(self, speed, direction, reference):
         """Update GUI fields with provided data"""
@@ -73,7 +75,13 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
         # make background red if less than 4 satellites are connected
         else:
             self.txtNumSats.setStyleSheet("background-color: rgb(150, 0, 0);color: rgb(0, 0, 0")
-            
+
+    def update_current_data(self, current):
+        self.txtCurrentDraw.setText("{0:.2f}".format(round(current, 2)))
+
+    def update_battery_voltage(self, voltage):
+        self.txtBatVoltage.setText("{0:.2f}".format(round(voltage, 2)))
+
     def enable_manual(self):
         self.rc.pub_manual_cmd("start_manual")
         self.txtMode.setStyleSheet("background-color: rgb(0, 150, 0);color: rgb(0, 0, 0)")
@@ -157,10 +165,16 @@ class RosThread(QThread):
     water_depth_updated = pyqtSignal(float)
     water_speed_updated = pyqtSignal(float)
     gnss_data_updated = pyqtSignal(int)
+    current_data_updated = pyqtSignal(float)
+    volt_data_updated = pyqtSignal(float)
 
     def __init__(self):
         QThread.__init__(self)
         rospy.init_node(NODE, anonymous=True)
+        self.last_current_update = rospy.get_time()
+        self.last_volt_update = rospy.get_time()
+        self.current_readings = []
+        self.volt_readings = []
         self.bond = None
         self.rudder_effort_pub = rospy.Publisher('manual/cmd_rudder_effort',
                                                  Float64,
@@ -204,6 +218,24 @@ class RosThread(QThread):
     def handle_gnss(self, gnss):
         self.gnss_data_updated.emit(gnss.num_sats)
 
+    def handle_current_draw(self, msg):
+        self.current_readings.append(msg.value)
+        # only update gui once a second
+        if (rospy.get_time() - self.current_data_updated) > 1:
+            curr_average = sum(self.current_readings)/len(self.current_readings)
+            self.current_data_updated.emit(curr_average)
+            # clear list
+            del self.current_readings[:]
+
+    def handle_battery_voltage(self, msg):
+        self.volt_readings.append(msg.value)
+        # only update gui once a second
+        if (rospy.get_time() - self.volt_data_updated) > 1:
+            volt_average = sum(self.volt_readings)/len(self.volt_readings)
+            self.volt_data_updated.emit(volt_average)
+            # clear list
+            del self.volt_readings[:]
+
     def _create_bond(self, req):
         self.flush_broken()
         id = req.id
@@ -242,6 +274,8 @@ class RosThread(QThread):
         rospy.Subscriber("water_depth", Depth, self.handle_water_depth)
         rospy.Subscriber("water_speed", Speed, self.handle_water_speed)
         rospy.Subscriber("gnss_position", GNSSData, self.handle_gnss)
+        rospy.Subscriber("current_draw", ADCReading, self.handle_current_draw)
+        rospy.Subscriber("battery_voltage", ADCReading, self.handle_battery_voltage)
         rospy.spin()
 
 
