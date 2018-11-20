@@ -17,8 +17,8 @@ PKG = 'pyqt_testing'
 NODE = 'send_key_cmd'
 
 PROP_SPEED = 127
-RUDDER_SPEED = 40
-SAIL_SPEED = 40
+RUDDER_SPEED = 100
+SAIL_SPEED = 100
 
 
 class Window(QtGui.QMainWindow, design.Ui_MainWindow):
