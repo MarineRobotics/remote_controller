@@ -221,7 +221,7 @@ class RosThread(QThread):
     def handle_current_draw(self, msg):
         self.current_readings.append(msg.value)
         # only update gui once a second
-        if (rospy.get_time() - self.current_data_updated) > 1:
+        if (rospy.get_time() - self.last_current_update) > 1:
             curr_average = sum(self.current_readings)/len(self.current_readings)
             self.current_data_updated.emit(curr_average)
             # clear list
@@ -230,7 +230,7 @@ class RosThread(QThread):
     def handle_battery_voltage(self, msg):
         self.volt_readings.append(msg.value)
         # only update gui once a second
-        if (rospy.get_time() - self.volt_data_updated) > 1:
+        if (rospy.get_time() - self.last_volt_update) > 1:
             volt_average = sum(self.volt_readings)/len(self.volt_readings)
             self.volt_data_updated.emit(volt_average)
             # clear list
