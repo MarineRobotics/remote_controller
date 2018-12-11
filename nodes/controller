@@ -34,7 +34,7 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
         self.btnStartManual.clicked.connect(self.enable_manual)
         self.btnDisableManual.clicked.connect(self.disable_manual)
         self.btnDisableManual.hide()
-        self.cmdDesHeading.clicked.connect(self.set_heading)
+        self.btnDesHeading.clicked.connect(self.set_heading)
         self.connect_signals()
         self.rc.start()
         self.show()
