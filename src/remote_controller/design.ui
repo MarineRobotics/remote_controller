@@ -947,7 +947,7 @@ color: rgb(255, 255, 255);</string>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="cmdDesSail">
+        <widget class="QPushButton" name="btnDesSail">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -1010,7 +1010,7 @@ color: rgb(255, 255, 255);</string>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="cmdDesROT">
+        <widget class="QPushButton" name="btnDesROT">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -1073,7 +1073,7 @@ color: rgb(255, 255, 255);</string>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="cmdDesHeading">
+        <widget class="QPushButton" name="btnDesHeading">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -1279,7 +1279,7 @@ background: transparent;</string>
        <string>Enable</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="cmdDesHeading_4">
+     <widget class="QPushButton" name="btnSetDerivative">
       <property name="geometry">
        <rect>
         <x>150</x>
@@ -1333,7 +1333,7 @@ background: transparent;</string>
        </sizepolicy>
       </property>
      </widget>
-     <widget class="QPushButton" name="cmdDesHeading_3">
+     <widget class="QPushButton" name="btnSetIntegral">
       <property name="geometry">
        <rect>
         <x>150</x>
@@ -1355,7 +1355,7 @@ background: transparent;</string>
        <string>Set</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="cmdDesHeading_2">
+     <widget class="QPushButton" name="btnSetProportional">
       <property name="geometry">
        <rect>
         <x>150</x>
