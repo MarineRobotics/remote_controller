@@ -36,6 +36,7 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
         self.btnDisableManual.hide()
         self.btnDesHeading.clicked.connect(self.set_heading)
         self.btnDesSail.clicked.connect(self.set_sail_heading)
+        self.btnDesROT.clicked.connect(self.set_rot)
         self.connect_signals()
         self.rc.start()
         self.show()
@@ -91,6 +92,10 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
     def set_sail_heading(self):
         des_heading = int(self.txtDesSail.text())
         self.rc.pub_sail_heading(des_heading)
+
+    def set_rot(self):
+        des_rot = float(self.txtDesROT.text())
+        self.rc.pub_rot(des_rot)
 
     def enable_manual(self):
         self.rc.pub_manual_cmd("start_manual")
