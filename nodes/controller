@@ -34,6 +34,7 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
         self.btnStartManual.clicked.connect(self.enable_manual)
         self.btnDisableManual.clicked.connect(self.disable_manual)
         self.btnDisableManual.hide()
+        self.cmdDesHeading.clicked.connect(self.set_heading)
         self.connect_signals()
         self.rc.start()
         self.show()
@@ -81,6 +82,10 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
 
     def update_battery_voltage(self, voltage):
         self.txtBatVoltage.setText("{0:.2f}".format(round(voltage, 2)))
+
+    def set_heading(self):
+        des_heading = int(self.txtDesHeading.text())
+        self.rc.pub_boat_heading(des_heading)
 
     def enable_manual(self):
         self.rc.pub_manual_cmd("start_manual")
@@ -185,6 +190,15 @@ class RosThread(QThread):
         self.sail_effort_pub = rospy.Publisher('manual/cmd_sail_effort',
                                                Float64,
                                                queue_size=1)
+        self.boat_heading_pub = rospy.Publisher('manual/cmd_heading',
+                                                Heading,
+                                                queue_size=1)
+        self.sail_heading_pub = rospy.Publisher('manual/cmd_sail_heading',
+                                                Heading,
+                                                queue_size=1)
+        self.boat_rot_pub = rospy.Publisher('manual/cmd_rot',
+                                            Float64,
+                                            queue_size=1)
         self.mission_cmd_pub = rospy.Publisher('cmd_mission',
                                                String,
                                                queue_size=1)
@@ -197,6 +211,19 @@ class RosThread(QThread):
 
     def pub_sail_effort(self, effort):
         self.sail_effort_pub.publish(effort)
+
+    def pub_boat_heading(self, heading):
+        msg = Heading()
+        msg.heading = heading
+        self.boat_heading_pub.publish(msg)
+
+    def pub_sail_heading(self, heading):
+        msg = Heading()
+        msg.heading = heading
+        self.sail_heading_pub.publish(msg)
+
+    def pub_rot(self, rot):
+        self.boat_rot_pub.publish(rot)
 
     def pub_manual_cmd(self, cmd):
         self.mission_cmd_pub.publish(cmd)
