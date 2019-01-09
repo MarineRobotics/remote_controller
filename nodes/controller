@@ -294,7 +294,7 @@ class RosThread(QThread):
     def flush_broken(self):
         """Shutdown bond if a broken bond exists"""
         if self.bond is not None and self.bond.is_broken():
-            self.shutdown_bond
+            self.shutdown_bond()
 
     def shutdown_bond(self):
         self.bond.shutdown()
