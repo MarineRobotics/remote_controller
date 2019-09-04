@@ -4,7 +4,7 @@ import rospy
 import sys
 from std_msgs.msg import Float64, String
 from mr_messages.srv import BondIDRequest, BondIDRequestResponse
-from mr_messages.msg import WIND, Heading, Depth, Speed, GNSSData, ADCReading
+from mr_messages.msg import WIND, Heading, Depth, Speed, GNSSData, ADCReading, RoboclawStatus
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import QThread, pyqtSignal
 from bondpy import bondpy
@@ -19,7 +19,9 @@ NODE = 'send_key_cmd'
 PROP_SPEED = 127
 RUDDER_SPEED = 100
 SAIL_SPEED = 100
-
+COLOR_WARN = "rgb(252, 186, 3)"
+COLOR_ERR = "rgb(186, 7, 7)"
+COLOR_OK = "rgb(0, 150, 0)"
 
 class Window(QtGui.QMainWindow, design.Ui_MainWindow):
 
@@ -30,10 +32,36 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
         self.setupUi(self)
         self.home()
 
+        self.ERRORS = {
+            0x0000: ("ok", "Normal", COLOR_OK),
+            0x0001: ("warn", "M1 over current", COLOR_WARN), 
+            0x0002: ("warn", "M2 over current", COLOR_WARN),
+            0x0004: ("error", "Emergency Stop", COLOR_ERR),
+            0x0008: ("error", "Temperature1", COLOR_ERR),
+            0x0010: ("error", "Temperature2", COLOR_ERR),
+            0x0020: ("error", "Main batt voltage high", COLOR_ERR),
+            0x0040: ("error", "Logic batt voltage high", COLOR_ERR),
+            0x0080: ("error", "Logic batt voltage low", COLOR_ERR),
+            0x0100: ("warn", "M1 driver fault", COLOR_WARN),
+            0x0200: ("warn", "M2 driver fault", COLOR_WARN),
+            0x0400: ("warn", "Main batt voltage high", COLOR_WARN),
+            0x0800: ("warn", "Main batt voltage low", COLOR_WARN),
+            0x1000: ("warn", "Temperature1", COLOR_WARN),
+            0x2000: ("warn", "Temperature2", COLOR_WARN),
+            0x4000: ("ok", "M1 home", COLOR_OK),
+            0x8000: ("ok", "M2 home", COLOR_OK)
+            }
+    
     def home(self):
+        # Setup enable/disable buttons
         self.btnStartManual.clicked.connect(self.enable_manual)
         self.btnDisableManual.clicked.connect(self.disable_manual)
         self.btnDisableManual.hide()
+        # Setup prop on/off buttons
+        self.btnPropOn.hide()
+        self.btnPropOff.hide()
+        self.btnPropOn.clicked.connect(self.start_prop)
+        self.btnPropOff.clicked.connect(self.stop_prop)
         self.btnDesHeading.clicked.connect(self.set_heading)
         self.btnDesSail.clicked.connect(self.set_sail_heading)
         self.btnDesROT.clicked.connect(self.set_rot)
@@ -52,6 +80,7 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
         self.rc.gnss_data_updated.connect(self.update_gnss_data)
         self.rc.current_data_updated.connect(self.update_current_data)
         self.rc.volt_data_updated.connect(self.update_battery_voltage)
+        self.rc.robo_status_updated.connect(self.update_roboclaw_status)
 
     def update_sail_data(self, speed, direction, reference):
         """Update GUI fields with provided data"""
@@ -71,6 +100,7 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
         self.txtWaterSpeed.setText("{0:.2f}".format(round(speed, 2)))
 
     def update_gnss_data(self, num_sats):
+        pass
         """Update gui field with number of connected satellites"""
         self.txtNumSats.setText(str(num_sats))
         # make background green if 4 or more satellites are connected
@@ -78,13 +108,22 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
             self.txtNumSats.setStyleSheet("background-color: rgb(0, 150, 0);color: rgb(255, 255, 255")
         # make background red if less than 4 satellites are connected
         else:
-            self.txtNumSats.setStyleSheet("background-color: rgb(150, 0, 0);color: rgb(0, 0, 0")
+            self.txtNumSats.setStyleSheet("background-color: rgb(150, 0, 0);color: rgb(0, 0, 0")        
 
     def update_current_data(self, current):
         self.txtCurrentDraw.setText("{0:.2f}".format(round(current, 2)))
 
     def update_battery_voltage(self, voltage):
         self.txtBatVoltage.setText("{0:.2f}".format(round(voltage, 2)))
+
+    def update_roboclaw_status(self, address, status_id, status_msg):
+        if address == 0x80:
+            text_field = self.txt0x80Status
+        elif address == 0x81:
+            text_field = self.txt0x81Status
+        text_field.setText("{}: {}".format(hex(address), status_msg))
+        text_field.setStyleSheet("background-color: {}"
+                                    .format(self.ERRORS[status_id][2]))
 
     def set_heading(self):
         des_heading = int(self.txtDesHeading.text())
@@ -109,6 +148,7 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
         self.txtMode.setText("MANUAL ENABLED")
         self.btnStartManual.hide()
         self.btnDisableManual.show()
+        self.btnPropOn.show()
 
     def disable_manual(self):
         self.rc.pub_manual_cmd("stop_manual")
@@ -117,6 +157,20 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
         self.rc.break_bond()
         self.btnStartManual.show()
         self.btnDisableManual.hide()
+        self.btnPropOn.hide()
+        self.btnPropOff.hide()
+
+    def start_prop(self):
+        self.rc.pub_prop_effort(PROP_SPEED)
+        rospy.loginfo("prop on")
+        self.btnPropOff.show()
+        self.btnPropOn.hide()
+
+    def stop_prop(self):
+        self.rc.pub_prop_effort(0)
+        rospy.loginfo("prop off")
+        self.btnPropOn.show()
+        self.btnPropOff.hide()
 
     def keyPressEvent(self, event):
         # SPEED EVENTS
@@ -148,11 +202,9 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
     def keyReleaseEvent(self, event):
         # SPEED EVENTS
         if event.key() == QtCore.Qt.Key_W and not event.isAutoRepeat():
-            self.rc.pub_prop_effort(0)
-            rospy.loginfo("prop off!")
+            self.stop_prop()
         elif event.key() == QtCore.Qt.Key_S and not event.isAutoRepeat():
-            self.rc.pub_prop_effort(0)
-            rospy.loginfo("prop off!")
+            self.stop_prop()
 
         # RUDDER EVENTS
         elif event.key() == QtCore.Qt.Key_A and not event.isAutoRepeat():
@@ -188,6 +240,7 @@ class RosThread(QThread):
     gnss_data_updated = pyqtSignal(int)
     current_data_updated = pyqtSignal(float)
     volt_data_updated = pyqtSignal(float)
+    robo_status_updated = pyqtSignal(int, int, str)
 
     def __init__(self):
         QThread.__init__(self)
@@ -279,6 +332,15 @@ class RosThread(QThread):
             # clear list
             del self.volt_readings[:]
 
+    #TODO: create fields per unique address, so to automatically show robo claw
+    # status no matter what its address is or how many there are. 
+    def handle_roboclaw_status(self, msg):
+        # time = msg.time
+        address = msg.address
+        status_id = msg.status_id
+        status = msg.status_message
+        self.robo_status_updated.emit(address, status_id, status)
+
     def _create_bond(self, req):
         self.flush_broken()
         id = req.id
@@ -319,6 +381,7 @@ class RosThread(QThread):
         rospy.Subscriber("gnss_position", GNSSData, self.handle_gnss)
         rospy.Subscriber("current_draw", ADCReading, self.handle_current_draw)
         rospy.Subscriber("battery_voltage", ADCReading, self.handle_battery_voltage)
+        rospy.Subscriber("roboclaw_status", RoboclawStatus, self.handle_roboclaw_status)
         rospy.spin()
 
 
