@@ -196,7 +196,7 @@
      <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
-        <x>750</x>
+        <x>420</x>
         <y>380</y>
         <width>258</width>
         <height>242</height>
@@ -543,7 +543,6 @@ border-radius: 4px;
       </property>
       <property name="styleSheet">
        <string notr="true">background-color: rgb(150, 0, 0);
-align: center;
 color: rgb(255, 255, 255);</string>
       </property>
       <property name="text">
@@ -560,7 +559,7 @@ color: rgb(255, 255, 255);</string>
       <property name="geometry">
        <rect>
         <x>750</x>
-        <y>310</y>
+        <y>300</y>
         <width>201</width>
         <height>20</height>
        </rect>
@@ -576,7 +575,6 @@ color: rgb(255, 255, 255);</string>
       </property>
       <property name="styleSheet">
        <string notr="true">background-color: rgb(150, 0, 0);
-align: center;
 color: rgb(255, 255, 255);</string>
       </property>
       <property name="text">
@@ -660,10 +658,10 @@ color: rgb(255, 255, 255);</string>
       <widget class="QLabel" name="label_13">
        <property name="geometry">
         <rect>
-         <x>42</x>
+         <x>22</x>
          <y>12</y>
-         <width>71</width>
-         <height>16</height>
+         <width>91</width>
+         <height>20</height>
         </rect>
        </property>
        <property name="font">
@@ -707,12 +705,53 @@ color: rgb(255, 255, 255);</string>
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
+      <widget class="QLineEdit" name="txtNumSats">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>120</x>
+         <y>70</y>
+         <width>61</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_35">
+       <property name="geometry">
+        <rect>
+         <x>-10</x>
+         <y>70</y>
+         <width>121</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Monospace</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <italic>false</italic>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Sats in view</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
      </widget>
      <widget class="QPushButton" name="btnDisableManual">
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>100</y>
+        <y>70</y>
         <width>171</width>
         <height>31</height>
        </rect>
@@ -1393,6 +1432,193 @@ background: transparent;</string>
        </sizepolicy>
       </property>
      </widget>
+     <widget class="QLineEdit" name="txtEffort">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>310</x>
+        <y>540</y>
+        <width>31</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border: 1px solid transparent;
+background: transparent;</string>
+      </property>
+      <property name="text">
+       <string>-99</string>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="txtError">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>310</x>
+        <y>510</y>
+        <width>31</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border: 1px solid transparent;
+background: transparent;</string>
+      </property>
+      <property name="text">
+       <string>-99</string>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="txt0x80Status">
+      <property name="geometry">
+       <rect>
+        <x>750</x>
+        <y>350</y>
+        <width>201</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(150, 0, 0);
+color: rgb(255, 255, 255);</string>
+      </property>
+      <property name="text">
+       <string>0x80 No status received</string>
+      </property>
+      <property name="frame">
+       <bool>false</bool>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="txt0x81Status">
+      <property name="geometry">
+       <rect>
+        <x>750</x>
+        <y>380</y>
+        <width>201</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(150, 0, 0);
+color: rgb(255, 255, 255);</string>
+      </property>
+      <property name="text">
+       <string>0x81 No status received</string>
+      </property>
+      <property name="frame">
+       <bool>false</bool>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btnPropOn">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>110</y>
+        <width>171</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Liberation Mono</family>
+        <pointsize>12</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Prop ON</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btnPropOff">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>110</y>
+        <width>171</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Liberation Mono</family>
+        <pointsize>12</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Prop OFF</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_36">
+      <property name="geometry">
+       <rect>
+        <x>750</x>
+        <y>330</y>
+        <width>121</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Monospace</family>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <italic>false</italic>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Roboclaws</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_2">
      <property name="enabled">
@@ -1591,41 +1817,13 @@ background: transparent;</string>
      <string>STOP</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="txtError">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>350</x>
-      <y>550</y>
-      <width>31</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>12</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">border: 1px solid transparent;
-background: transparent;</string>
-    </property>
-    <property name="text">
-     <string>-99</string>
-    </property>
-    <property name="readOnly">
-     <bool>true</bool>
-    </property>
-   </widget>
    <widget class="QLabel" name="lblError">
     <property name="geometry">
      <rect>
-      <x>270</x>
-      <y>550</y>
-      <width>61</width>
-      <height>21</height>
+      <x>210</x>
+      <y>560</y>
+      <width>91</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="font">
@@ -1646,8 +1844,8 @@ background: transparent;</string>
     </property>
     <property name="geometry">
      <rect>
-      <x>350</x>
-      <y>530</y>
+      <x>310</x>
+      <y>540</y>
       <width>31</width>
       <height>20</height>
      </rect>
@@ -1671,8 +1869,8 @@ background: transparent;</string>
    <widget class="QLabel" name="lblROT">
     <property name="geometry">
      <rect>
-      <x>270</x>
-      <y>530</y>
+      <x>210</x>
+      <y>540</y>
       <width>51</width>
       <height>21</height>
      </rect>
@@ -1689,41 +1887,13 @@ background: transparent;</string>
      <string>ROT</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="txtEffort">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>350</x>
-      <y>570</y>
-      <width>31</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>12</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">border: 1px solid transparent;
-background: transparent;</string>
-    </property>
-    <property name="text">
-     <string>-99</string>
-    </property>
-    <property name="readOnly">
-     <bool>true</bool>
-    </property>
-   </widget>
    <widget class="QLabel" name="lblEffort">
     <property name="geometry">
      <rect>
-      <x>270</x>
-      <y>570</y>
-      <width>71</width>
-      <height>21</height>
+      <x>210</x>
+      <y>590</y>
+      <width>111</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="font">
@@ -1736,6 +1906,19 @@ background: transparent;</string>
     </property>
     <property name="text">
      <string>Effort</string>
+    </property>
+   </widget>
+   <widget class="QSplitter" name="splitter">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>0</width>
+      <height>0</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
     </property>
    </widget>
   </widget>
