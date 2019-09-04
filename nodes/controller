@@ -276,7 +276,9 @@ class RosThread(QThread):
         self.rudder_effort_pub.publish(effort)
 
     def pub_prop_effort(self, speed):
+        rospy.loginfo("[REMOTE CTRL] entered pup prop effort handler")
         self.prop_effort_pub.publish(speed)
+        rospy.loginfo("[REMOTE CTRL] finished calling prop effort publisher")
 
     def pub_sail_effort(self, effort):
         self.sail_effort_pub.publish(effort)
