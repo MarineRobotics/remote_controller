@@ -64,6 +64,7 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
         self.btnPropOff.clicked.connect(self.stop_prop)
         self.btnDesHeading.clicked.connect(self.set_heading)
         self.btnDesSail.clicked.connect(self.set_sail_heading)
+        self.btnDesSailAngle.clicked.connect(self.set_sail_angle)
         self.btnDesROT.clicked.connect(self.set_rot)
         self.btnStop.clicked.connect(self.stop_all)
         self.connect_signals()
@@ -132,6 +133,10 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
     def set_sail_heading(self):
         des_heading = int(self.txtDesSail.text())
         self.rc.pub_sail_heading(des_heading)
+
+    def set_sail_angle(self):
+        des_angle = int(self.txtDesSailAngle.text())
+        self.rc.pub_sail_angle(des_angle)
 
     def set_rot(self):
         des_rot = float(self.txtDesROT.text())
@@ -265,6 +270,9 @@ class RosThread(QThread):
         self.sail_heading_pub = rospy.Publisher('manual/cmd_sail_heading',
                                                 Heading,
                                                 queue_size=1)
+        self.sail_angle_pub = rospy.Publisher('manual/cmd_sail_angle',
+                                                Heading,
+                                                queue_size=1)                                                
         self.boat_rot_pub = rospy.Publisher('manual/cmd_rot',
                                             Float64,
                                             queue_size=1)
@@ -292,6 +300,11 @@ class RosThread(QThread):
         msg = Heading()
         msg.heading = heading
         self.sail_heading_pub.publish(msg)
+
+    def pub_sail_angle(self, angle):
+        msg = Heading()
+        msg.heading = angle
+        self.sail_angle_pub.publish(msg)
 
     def pub_rot(self, rot):
         self.boat_rot_pub.publish(rot)
