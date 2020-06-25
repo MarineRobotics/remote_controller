@@ -34,7 +34,7 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
 
         self.ERRORS = {
             0x0000: ("ok", "Normal", COLOR_OK),
-            0x0001: ("warn", "M1 over current", COLOR_WARN), 
+            0x0001: ("warn", "M1 over current", COLOR_WARN),
             0x0002: ("warn", "M2 over current", COLOR_WARN),
             0x0004: ("error", "Emergency Stop", COLOR_ERR),
             0x0008: ("error", "Temperature1", COLOR_ERR),
@@ -51,7 +51,7 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
             0x4000: ("ok", "M1 home", COLOR_OK),
             0x8000: ("ok", "M2 home", COLOR_OK)
             }
-    
+
     def home(self):
         # Setup enable/disable buttons
         self.btnStartManual.clicked.connect(self.enable_manual)
@@ -82,6 +82,8 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
         self.rc.current_data_updated.connect(self.update_current_data)
         self.rc.volt_data_updated.connect(self.update_battery_voltage)
         self.rc.robo_status_updated.connect(self.update_roboclaw_status)
+        self.rc.state_change_updated.connect(self.update_state_change)
+        self.rc.substate_change_updated.connect(self.update_substate_change)
 
     def update_sail_data(self, speed, direction, reference):
         """Update GUI fields with provided data"""
@@ -100,6 +102,14 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
         """Update GUI field with water speed and format float"""
         self.txtWaterSpeed.setText("{0:.2f}".format(round(speed, 2)))
 
+    def update_state_change(self, state):
+        """Update GUI field with boat state change"""
+        self.txtState.setText(str(state))
+
+    def update_substate_change(self, substate):
+        """Update GUI field with boat substate change"""
+        self.txtSubstate.setText(str(substate))
+
     def update_gnss_data(self, num_sats):
         pass
         """Update gui field with number of connected satellites"""
@@ -109,7 +119,7 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
             self.txtNumSats.setStyleSheet("background-color: rgb(0, 150, 0);color: rgb(255, 255, 255")
         # make background red if less than 4 satellites are connected
         else:
-            self.txtNumSats.setStyleSheet("background-color: rgb(150, 0, 0);color: rgb(0, 0, 0")        
+            self.txtNumSats.setStyleSheet("background-color: rgb(150, 0, 0);color: rgb(0, 0, 0")
 
     def update_current_data(self, current):
         self.txtCurrentDraw.setText("{0:.2f}".format(round(current, 2)))
@@ -246,6 +256,8 @@ class RosThread(QThread):
     current_data_updated = pyqtSignal(float)
     volt_data_updated = pyqtSignal(float)
     robo_status_updated = pyqtSignal(int, int, str)
+    state_change_updated = pyqtSignal(str)
+    substate_change_updated = pyqtSignal(str)
 
     def __init__(self):
         QThread.__init__(self)
@@ -272,7 +284,7 @@ class RosThread(QThread):
                                                 queue_size=1)
         self.sail_angle_pub = rospy.Publisher('manual/cmd_sail_angle',
                                                 Heading,
-                                                queue_size=1)                                                
+                                                queue_size=1)
         self.boat_rot_pub = rospy.Publisher('manual/cmd_rot',
                                             Float64,
                                             queue_size=1)
@@ -326,6 +338,12 @@ class RosThread(QThread):
     def handle_water_speed(self, speed):
         self.water_speed_updated.emit(speed.speed)
 
+    def handle_state_change(self, state):
+        self.state_change_updated.emit(state.data)
+
+    def handle_substate_change(self, substate):
+        self.substate_change_updated.emit(substate.data)
+
     def handle_gnss(self, gnss):
         self.gnss_data_updated.emit(gnss.num_sats)
 
@@ -348,7 +366,7 @@ class RosThread(QThread):
             del self.volt_readings[:]
 
     #TODO: create fields per unique address, so to automatically show robo claw
-    # status no matter what its address is or how many there are. 
+    # status no matter what its address is or how many there are.
     def handle_roboclaw_status(self, msg):
         # time = msg.time
         address = msg.address
@@ -398,6 +416,8 @@ class RosThread(QThread):
         rospy.Subscriber("current_draw", ADCReading, self.handle_current_draw)
         rospy.Subscriber("battery_voltage", ADCReading, self.handle_battery_voltage)
         rospy.Subscriber("roboclaw_status", RoboclawStatus, self.handle_roboclaw_status)
+        rospy.Subscriber("state_change", String, self.handle_state_change)
+        rospy.Subscriber("substate_change", String, self.handle_substate_change)
         rospy.spin()
 
 

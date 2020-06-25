@@ -1447,32 +1447,48 @@ color: rgb(255, 255, 255);</string>
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <widget class="QLineEdit" name="txtState">
+      <widget class="QLineEdit" name="txtHeading_2">
        <property name="enabled">
         <bool>true</bool>
        </property>
        <property name="geometry">
         <rect>
-         <x>40</x>
-         <y>20</y>
-         <width>181</width>
-         <height>21</height>
+         <x>138</x>
+         <y>12</y>
+         <width>61</width>
+         <height>20</height>
         </rect>
        </property>
        <property name="readOnly">
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QLineEdit" name="txtSubstate">
+      <widget class="QLineEdit" name="txtWaterSpeed_2">
        <property name="enabled">
         <bool>true</bool>
        </property>
        <property name="geometry">
         <rect>
-         <x>40</x>
-         <y>60</y>
-         <width>181</width>
-         <height>21</height>
+         <x>138</x>
+         <y>40</y>
+         <width>61</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="txtSOG_2">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>138</x>
+         <y>68</y>
+         <width>61</width>
+         <height>20</height>
         </rect>
        </property>
        <property name="readOnly">
@@ -1482,8 +1498,8 @@ color: rgb(255, 255, 255);</string>
       <widget class="QLabel" name="label_22">
        <property name="geometry">
         <rect>
-         <x>0</x>
-         <y>0</y>
+         <x>30</x>
+         <y>12</y>
          <width>101</width>
          <height>16</height>
         </rect>
@@ -1498,7 +1514,7 @@ color: rgb(255, 255, 255);</string>
         </font>
        </property>
        <property name="text">
-        <string>state change</string>
+        <string>Heading:</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1507,7 +1523,7 @@ color: rgb(255, 255, 255);</string>
       <widget class="QLabel" name="label_23">
        <property name="geometry">
         <rect>
-         <x>-10</x>
+         <x>-2</x>
          <y>40</y>
          <width>131</width>
          <height>16</height>
@@ -1523,7 +1539,32 @@ color: rgb(255, 255, 255);</string>
         </font>
        </property>
        <property name="text">
-        <string>substate change</string>
+        <string>Water speed:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_24">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>68</y>
+         <width>101</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Monospace</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <italic>false</italic>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>SOG:</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
