@@ -68,8 +68,17 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
         self.btnDesROT.clicked.connect(self.set_rot)
         self.btnStop.clicked.connect(self.stop_all)
         self.connect_signals()
+
+        self.timer = QtCore.QTimer(self)
+        self.timer.setInterval(1000)
+        self.timer.timeout.connect(self.displayTime)
+        self.timer.start()
+
         self.rc.start()
         self.show()
+
+    def displayTime(self):
+        self.txtUTC.setText(QtCore.QDateTime.currentDateTime().toUTC().toString())
 
     def connect_signals(self):
         """Connect all signals needed to update the GUI from our ROS thread"""
@@ -143,6 +152,7 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
         self.rc.pub_rot(des_rot)
 
     def stop_all(self):
+        rospy.loginfo("pressed stop all button")
         self.rc.pub_rudder_effort(0)
         self.rc.pub_sail_effort(0)
         self.rc.pub_prop_effort(0)
@@ -387,9 +397,11 @@ class RosThread(QThread):
             return
 
     def run(self):
+        rospy.loginfo("entered run thread")        
         s = rospy.Service('share_bond_id',
                           BondIDRequest,
                           self._create_bond)
+        rospy.loginfo("sent bond service")
         rospy.Subscriber("wind_info", WIND, self.handle_wind_info)
         rospy.Subscriber("vessel_heading", Heading, self.handle_vessel_heading)
         rospy.Subscriber("water_depth", Depth, self.handle_water_depth)
@@ -398,6 +410,7 @@ class RosThread(QThread):
         rospy.Subscriber("current_draw", ADCReading, self.handle_current_draw)
         rospy.Subscriber("battery_voltage", ADCReading, self.handle_battery_voltage)
         rospy.Subscriber("roboclaw_status", RoboclawStatus, self.handle_roboclaw_status)
+        rospy.loginfo("started subscribers")
         rospy.spin()
 
 
