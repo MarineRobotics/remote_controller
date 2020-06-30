@@ -975,7 +975,7 @@ class Ui_MainWindow(object):
         self.btnSetIntegral.setObjectName(_fromUtf8("btnSetIntegral"))
         self.tabWidget.addTab(self.tab_2, _fromUtf8(""))
         self.btnStop = QtGui.QPushButton(self.centralwidget)
-        self.btnStop.setEnabled(False)
+        self.btnStop.setEnabled(True)
         self.btnStop.setGeometry(QtCore.QRect(10, 770, 101, 31))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Liberation Mono"))
@@ -1061,14 +1061,4 @@ class Ui_MainWindow(object):
         self.btnSetIntegral.setText(_translate("MainWindow", "Set", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Settings", None))
         self.btnStop.setText(_translate("MainWindow", "STOP", None))
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtGui.QApplication(sys.argv)
-    MainWindow = QtGui.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec_())
 
