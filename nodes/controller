@@ -5,10 +5,11 @@ import sys
 from std_msgs.msg import Float64, String
 from mr_messages.srv import BondIDRequest, BondIDRequestResponse
 from mr_messages.msg import WIND, Heading, Depth, Speed, GNSSData, ADCReading, RoboclawStatus
-from PyQt4 import QtGui, QtCore
-from PyQt4.QtCore import QThread, pyqtSignal
+from PyQt5 import QtGui, QtCore, uic, QtWidgets
+from PyQt5.QtWidgets import QMainWindow, QApplication
+from PyQt5.QtCore import QThread, pyqtSignal
 from bondpy import bondpy
-from remote_controller import design
+from remote_controller import design5 as design
 
 PKG = 'remote_controller'
 
@@ -23,7 +24,7 @@ COLOR_WARN = "rgb(252, 186, 3)"
 COLOR_ERR = "rgb(186, 7, 7)"
 COLOR_OK = "rgb(0, 150, 0)"
 
-class Window(QtGui.QMainWindow, design.Ui_MainWindow):
+class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
     def __init__(self):
         self.rc = RosThread()
@@ -434,6 +435,6 @@ class RosThread(QThread):
 
 
 if __name__ == '__main__':
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     GUI = Window()
     sys.exit(app.exec_())
