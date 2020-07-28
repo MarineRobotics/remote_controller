@@ -36,10 +36,10 @@
      <widget class="QFrame" name="frame">
       <property name="geometry">
        <rect>
-        <x>420</x>
+        <x>390</x>
         <y>80</y>
-        <width>221</width>
-        <height>100</height>
+        <width>251</width>
+        <height>131</height>
        </rect>
       </property>
       <property name="frameShape">
@@ -54,8 +54,8 @@
        </property>
        <property name="geometry">
         <rect>
-         <x>138</x>
-         <y>12</y>
+         <x>170</x>
+         <y>10</y>
          <width>61</width>
          <height>20</height>
         </rect>
@@ -70,8 +70,8 @@
        </property>
        <property name="geometry">
         <rect>
-         <x>138</x>
-         <y>40</y>
+         <x>170</x>
+         <y>70</y>
          <width>61</width>
          <height>20</height>
         </rect>
@@ -86,8 +86,8 @@
        </property>
        <property name="geometry">
         <rect>
-         <x>138</x>
-         <y>68</y>
+         <x>170</x>
+         <y>100</y>
          <width>61</width>
          <height>20</height>
         </rect>
@@ -99,10 +99,10 @@
       <widget class="QLabel" name="label">
        <property name="geometry">
         <rect>
-         <x>30</x>
-         <y>12</y>
-         <width>101</width>
-         <height>16</height>
+         <x>10</x>
+         <y>10</y>
+         <width>151</width>
+         <height>20</height>
         </rect>
        </property>
        <property name="font">
@@ -115,7 +115,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Heading:</string>
+        <string>Boat Heading (deg):</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -124,10 +124,10 @@
       <widget class="QLabel" name="label_2">
        <property name="geometry">
         <rect>
-         <x>-2</x>
-         <y>40</y>
-         <width>131</width>
-         <height>16</height>
+         <x>10</x>
+         <y>70</y>
+         <width>151</width>
+         <height>20</height>
         </rect>
        </property>
        <property name="font">
@@ -140,7 +140,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Water speed:</string>
+        <string>Water speed (m/s):</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -149,8 +149,8 @@
       <widget class="QLabel" name="label_6">
        <property name="geometry">
         <rect>
-         <x>30</x>
-         <y>68</y>
+         <x>60</x>
+         <y>100</y>
          <width>101</width>
          <height>16</height>
         </rect>
@@ -165,10 +165,51 @@
         </font>
        </property>
        <property name="text">
-        <string>SOG:</string>
+        <string>SOG (m/s):</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_24">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>40</y>
+         <width>151</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Monospace</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <italic>false</italic>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Sail Heading (deg):</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="txtHeading_2">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>170</x>
+         <y>40</y>
+         <width>61</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
        </property>
       </widget>
      </widget>
@@ -771,9 +812,9 @@ color: rgb(255, 255, 255);</string>
      <widget class="QFrame" name="frame_2">
       <property name="geometry">
        <rect>
-        <x>420</x>
+        <x>390</x>
         <y>270</y>
-        <width>221</width>
+        <width>251</width>
         <height>100</height>
        </rect>
       </property>
@@ -789,8 +830,8 @@ color: rgb(255, 255, 255);</string>
        </property>
        <property name="geometry">
         <rect>
-         <x>138</x>
-         <y>12</y>
+         <x>170</x>
+         <y>10</y>
          <width>61</width>
          <height>20</height>
         </rect>
@@ -802,7 +843,7 @@ color: rgb(255, 255, 255);</string>
        </property>
        <property name="geometry">
         <rect>
-         <x>138</x>
+         <x>170</x>
          <y>40</y>
          <width>61</width>
          <height>20</height>
@@ -815,8 +856,8 @@ color: rgb(255, 255, 255);</string>
        </property>
        <property name="geometry">
         <rect>
-         <x>138</x>
-         <y>68</y>
+         <x>170</x>
+         <y>70</y>
          <width>61</width>
          <height>20</height>
         </rect>
@@ -825,9 +866,9 @@ color: rgb(255, 255, 255);</string>
       <widget class="QLabel" name="label_10">
        <property name="geometry">
         <rect>
-         <x>50</x>
-         <y>12</y>
-         <width>81</width>
+         <x>30</x>
+         <y>10</y>
+         <width>131</width>
          <height>20</height>
         </rect>
        </property>
@@ -841,7 +882,7 @@ color: rgb(255, 255, 255);</string>
         </font>
        </property>
        <property name="text">
-        <string>Wind dir:</string>
+        <string>Wind dir (deg):</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -852,7 +893,7 @@ color: rgb(255, 255, 255);</string>
         <rect>
          <x>20</x>
          <y>40</y>
-         <width>111</width>
+         <width>141</width>
          <height>20</height>
         </rect>
        </property>
@@ -866,7 +907,7 @@ color: rgb(255, 255, 255);</string>
         </font>
        </property>
        <property name="text">
-        <string>Wind speed:</string>
+        <string>Wind speed(m/s):</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -875,10 +916,10 @@ color: rgb(255, 255, 255);</string>
       <widget class="QLabel" name="label_12">
        <property name="geometry">
         <rect>
-         <x>60</x>
-         <y>68</y>
-         <width>71</width>
-         <height>16</height>
+         <x>70</x>
+         <y>70</y>
+         <width>91</width>
+         <height>20</height>
         </rect>
        </property>
        <property name="font">
@@ -891,7 +932,7 @@ color: rgb(255, 255, 255);</string>
         </font>
        </property>
        <property name="text">
-        <string>Depth:</string>
+        <string>Depth (m):</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1435,9 +1476,9 @@ color: rgb(255, 255, 255);</string>
      <widget class="QFrame" name="frame_5">
       <property name="geometry">
        <rect>
-        <x>420</x>
+        <x>390</x>
         <y>450</y>
-        <width>221</width>
+        <width>251</width>
         <height>100</height>
        </rect>
       </property>
@@ -1453,9 +1494,9 @@ color: rgb(255, 255, 255);</string>
        </property>
        <property name="geometry">
         <rect>
-         <x>40</x>
+         <x>90</x>
          <y>20</y>
-         <width>181</width>
+         <width>141</width>
          <height>21</height>
         </rect>
        </property>
@@ -1469,9 +1510,9 @@ color: rgb(255, 255, 255);</string>
        </property>
        <property name="geometry">
         <rect>
-         <x>40</x>
+         <x>90</x>
          <y>60</y>
-         <width>181</width>
+         <width>141</width>
          <height>21</height>
         </rect>
        </property>
@@ -1482,8 +1523,8 @@ color: rgb(255, 255, 255);</string>
       <widget class="QLabel" name="label_22">
        <property name="geometry">
         <rect>
-         <x>0</x>
-         <y>0</y>
+         <x>-20</x>
+         <y>20</y>
          <width>101</width>
          <height>16</height>
         </rect>
@@ -1498,7 +1539,7 @@ color: rgb(255, 255, 255);</string>
         </font>
        </property>
        <property name="text">
-        <string>state change</string>
+        <string>State :</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1507,8 +1548,8 @@ color: rgb(255, 255, 255);</string>
       <widget class="QLabel" name="label_23">
        <property name="geometry">
         <rect>
-         <x>-10</x>
-         <y>40</y>
+         <x>-50</x>
+         <y>60</y>
          <width>131</width>
          <height>16</height>
         </rect>
@@ -1523,7 +1564,7 @@ color: rgb(255, 255, 255);</string>
         </font>
        </property>
        <property name="text">
-        <string>substate change</string>
+        <string>Substate :</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

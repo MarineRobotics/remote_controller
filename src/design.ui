@@ -2054,7 +2054,7 @@ background: transparent;</string>
    </widget>
    <widget class="QPushButton" name="btnStop">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>

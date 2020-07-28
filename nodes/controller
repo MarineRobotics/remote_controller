@@ -86,6 +86,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         # self.connect(self.rc, SIGNAL("sail_data(float, float, str)"), self.update_sail_data)
         self.rc.sail_data_updated.connect(self.update_sail_data)
         self.rc.vessel_heading_updated.connect(self.update_vessel_heading)
+        self.rc.sail_heading_updated.connect(self.update_sail_heading)
         self.rc.water_depth_updated.connect(self.update_water_depth)
         self.rc.water_speed_updated.connect(self.update_water_speed)
         self.rc.gnss_data_updated.connect(self.update_gnss_data)
@@ -103,6 +104,10 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     def update_vessel_heading(self, heading):
         """Update GUI field with heading data"""
         self.txtHeading.setText(str(heading))
+
+    def update_sail_heading(self, heading):
+        """Update GUI field with heading data"""
+        self.txtHeading_2.setText(str(heading))
 
     def update_water_depth(self, depth):
         """Update GUI field with water depth and format float"""
@@ -261,6 +266,7 @@ class RosThread(QThread):
 
     sail_data_updated = pyqtSignal(float, float, str)
     vessel_heading_updated = pyqtSignal(int)
+    sail_heading_updated = pyqtSignal(int)
     water_depth_updated = pyqtSignal(float)
     water_speed_updated = pyqtSignal(float)
     gnss_data_updated = pyqtSignal(int)
@@ -343,6 +349,9 @@ class RosThread(QThread):
     def handle_vessel_heading(self, heading):
         self.vessel_heading_updated.emit(heading.heading)
 
+    def handle_sail_heading(self, heading):
+        self.sail_heading_updated.emit(heading.heading)
+
     def handle_water_depth(self, depth):
         self.water_depth_updated.emit(depth.depth)
 
@@ -416,13 +425,14 @@ class RosThread(QThread):
             return
 
     def run(self):
-        rospy.loginfo("entered run thread")        
+        rospy.loginfo("entered run thread")
         s = rospy.Service('share_bond_id',
                           BondIDRequest,
                           self._create_bond)
         rospy.loginfo("sent bond service")
         rospy.Subscriber("wind_info", WIND, self.handle_wind_info)
         rospy.Subscriber("vessel_heading", Heading, self.handle_vessel_heading)
+        rospy.Subscriber("sail_heading", Heading, self.handle_sail_heading)
         rospy.Subscriber("water_depth", Depth, self.handle_water_depth)
         rospy.Subscriber("water_speed", Speed, self.handle_water_speed)
         rospy.Subscriber("gnss_position", GNSSData, self.handle_gnss)
