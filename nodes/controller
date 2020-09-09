@@ -117,15 +117,15 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
 
     def update_temperature(self, temp):
         """Update GUI field with temperature and format float"""
-        self.txtDepth2.setText("{0:.2f}".format(round(temp, 2)))
+        self.txtTemp.setText("{0:.2f}".format(round(temp, 2)))
 
     def update_humidity(self, humid):
         """Update GUI field with humidity and format float"""
-        self.txtDepth3.setText("{0:.2f}".format(round(humid, 2)))
+        self.txtHumid.setText("{0:.2f}".format(round(humid, 2)))
 
     def update_air_pressure(self, pressure):
         """Update GUI field with air pressure and format float"""
-        self.txtDepth4.setText("{0:.2f}".format(round(pressure, 2)))
+        self.txtPres.setText("{0:.2f}".format(round(pressure, 2)))
 
     def update_water_speed(self, speed):
         """Update GUI field with water speed and format float"""

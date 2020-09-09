@@ -963,7 +963,7 @@ color: rgb(255, 255, 255);</string>
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
-      <widget class="QLineEdit" name="txtDepth_2">
+      <widget class="QLineEdit" name="txtTemp">
        <property name="enabled">
         <bool>false</bool>
        </property>
@@ -976,7 +976,7 @@ color: rgb(255, 255, 255);</string>
         </rect>
        </property>
       </widget>
-      <widget class="QLineEdit" name="txtDepth_3">
+      <widget class="QLineEdit" name="txtHumid">
        <property name="enabled">
         <bool>false</bool>
        </property>
@@ -989,7 +989,7 @@ color: rgb(255, 255, 255);</string>
         </rect>
        </property>
       </widget>
-      <widget class="QLineEdit" name="txtDepth_4">
+      <widget class="QLineEdit" name="txtPres">
        <property name="enabled">
         <bool>false</bool>
        </property>
