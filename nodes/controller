@@ -9,7 +9,7 @@ from PyQt5 import QtGui, QtCore, uic, QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5.QtCore import QThread, pyqtSignal
 from bondpy import bondpy
-from remote_controller import design5 as design
+from remote_controller import design
 
 PKG = 'remote_controller'
 
@@ -131,10 +131,10 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.txtNumSats.setText(str(num_sats))
         # make background green if 4 or more satellites are connected
         if num_sats >= 4:
-            self.txtNumSats.setStyleSheet("background-color: rgb(0, 150, 0);color: rgb(255, 255, 255")
+            self.txtNumSats.setStyleSheet("background-color: rgb(0, 150, 0);color: rgb(255, 255, 255)")
         # make background red if less than 4 satellites are connected
         else:
-            self.txtNumSats.setStyleSheet("background-color: rgb(150, 0, 0);color: rgb(0, 0, 0")
+            self.txtNumSats.setStyleSheet("background-color: rgb(150, 0, 0);color: rgb(0, 0, 0)")
 
     def update_current_data(self, current):
         self.txtCurrentDraw.setText("{0:.2f}".format(round(current, 2)))
@@ -310,10 +310,11 @@ class RosThread(QThread):
                                                queue_size=1)
 
     def pub_rudder_effort(self, effort):
+        rospy.loginfo("[REMOTE CTRL] entered pub rudder effort handler")        
         self.rudder_effort_pub.publish(effort)
 
     def pub_prop_effort(self, speed):
-        rospy.loginfo("[REMOTE CTRL] entered pup prop effort handler")
+        rospy.loginfo("[REMOTE CTRL] entered pub prop effort handler")
         self.prop_effort_pub.publish(speed)
         rospy.loginfo("[REMOTE CTRL] finished calling prop effort publisher")
 
