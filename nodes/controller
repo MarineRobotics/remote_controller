@@ -4,16 +4,10 @@ import rospy
 import sys
 from std_msgs.msg import Float64, String
 from mr_messages.srv import BondIDRequest, BondIDRequestResponse
-<<<<<<< HEAD
 from mr_messages.msg import WIND, Heading, Depth, Speed, GNSSData, ADCReading, RoboclawStatus
 from PyQt5 import QtGui, QtCore, uic, QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5.QtCore import QThread, pyqtSignal
-=======
-from mr_messages.msg import WIND, Heading, Depth, Speed, GNSSData, ADCReading, RoboclawStatus, TEMP, PRESSURE, HUMIDITY
-from PyQt4 import QtGui, QtCore
-from PyQt4.QtCore import QThread, pyqtSignal
->>>>>>> developer
 from bondpy import bondpy
 from remote_controller import design
 
