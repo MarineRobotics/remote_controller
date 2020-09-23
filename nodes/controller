@@ -4,10 +4,16 @@ import rospy
 import sys
 from std_msgs.msg import Float64, String
 from mr_messages.srv import BondIDRequest, BondIDRequestResponse
+<<<<<<< HEAD
 from mr_messages.msg import WIND, Heading, Depth, Speed, GNSSData, ADCReading, RoboclawStatus
 from PyQt5 import QtGui, QtCore, uic, QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5.QtCore import QThread, pyqtSignal
+=======
+from mr_messages.msg import WIND, Heading, Depth, Speed, GNSSData, ADCReading, RoboclawStatus, TEMP, PRESSURE, HUMIDITY
+from PyQt4 import QtGui, QtCore
+from PyQt4.QtCore import QThread, pyqtSignal
+>>>>>>> developer
 from bondpy import bondpy
 from remote_controller import design
 
@@ -88,6 +94,9 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.rc.vessel_heading_updated.connect(self.update_vessel_heading)
         self.rc.sail_heading_updated.connect(self.update_sail_heading)
         self.rc.water_depth_updated.connect(self.update_water_depth)
+        self.rc.temperature_updated.connect(self.update_temperature)
+        self.rc.humidity_updated.connect(self.update_humidity)
+        self.rc.air_pressure_updated.connect(self.update_air_pressure)
         self.rc.water_speed_updated.connect(self.update_water_speed)
         self.rc.gnss_data_updated.connect(self.update_gnss_data)
         self.rc.current_data_updated.connect(self.update_current_data)
@@ -112,6 +121,18 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     def update_water_depth(self, depth):
         """Update GUI field with water depth and format float"""
         self.txtDepth.setText("{0:.2f}".format(round(depth, 2)))
+
+    def update_temperature(self, temp):
+        """Update GUI field with temperature and format float"""
+        self.txtTemp.setText("{0:.2f}".format(round(temp, 2)))
+
+    def update_humidity(self, humid):
+        """Update GUI field with humidity and format float"""
+        self.txtHumid.setText("{0:.2f}".format(round(humid, 2)))
+
+    def update_air_pressure(self, pressure):
+        """Update GUI field with air pressure and format float"""
+        self.txtPres.setText("{0:.2f}".format(round(pressure, 2)))
 
     def update_water_speed(self, speed):
         """Update GUI field with water speed and format float"""
@@ -268,6 +289,9 @@ class RosThread(QThread):
     vessel_heading_updated = pyqtSignal(int)
     sail_heading_updated = pyqtSignal(int)
     water_depth_updated = pyqtSignal(float)
+    temperature_updated = pyqtSignal(float)
+    humidity_updated = pyqtSignal(float)
+    air_pressure_updated = pyqtSignal(float)
     water_speed_updated = pyqtSignal(float)
     gnss_data_updated = pyqtSignal(int)
     current_data_updated = pyqtSignal(float)
@@ -356,6 +380,15 @@ class RosThread(QThread):
     def handle_water_depth(self, depth):
         self.water_depth_updated.emit(depth.depth)
 
+    def handle_temperature(self, temp):
+        self.temperature_updated.emit(temp.temp)
+
+    def handle_humidity(self, humid):
+        self.humidity_updated.emit(humid.humid)
+
+    def handle_air_pressure(self, pressure):
+        self.air_pressure_updated.emit(pressure.pressure)
+
     def handle_water_speed(self, speed):
         self.water_speed_updated.emit(speed.speed)
 
@@ -435,6 +468,9 @@ class RosThread(QThread):
         rospy.Subscriber("vessel_heading", Heading, self.handle_vessel_heading)
         rospy.Subscriber("sail_heading", Heading, self.handle_sail_heading)
         rospy.Subscriber("water_depth", Depth, self.handle_water_depth)
+        rospy.Subscriber("temperature", TEMP, self.handle_temperature)
+        rospy.Subscriber("humidity", HUMIDITY, self.handle_humidity)
+        rospy.Subscriber("pressure", PRESSURE, self.handle_air_pressure)
         rospy.Subscriber("water_speed", Speed, self.handle_water_speed)
         rospy.Subscriber("gnss_position", GNSSData, self.handle_gnss)
         rospy.Subscriber("current_ave", ADCReading, self.handle_current_draw)
