@@ -98,6 +98,7 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
         self.rc.state_change_updated.connect(self.update_state_change)
         self.rc.substate_change_updated.connect(self.update_substate_change)
         self.rc.declination_updated.connect(self.update_declination)
+        self.rc.sog_updated.connect(self.update_sog)
 
     def update_sail_data(self, speed, direction, reference):
         """Update GUI fields with provided data"""
@@ -138,7 +139,8 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
 
     def update_water_speed(self, speed):
         """Update GUI field with water speed and format float"""
-        self.txtWaterSpeed.setText("{0:.2f}".format(round(speed, 2)))
+        speed_kph = speed * 3.6
+        self.txtWaterSpeed.setText("{0:.2f}".format(round(speed_kph, 2)))
 
     def update_state_change(self, state):
         """Update GUI field with boat state change"""
@@ -149,7 +151,6 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
         self.txtSubstate.setText(str(substate))
 
     def update_gnss_data(self, num_sats):
-        pass
         """Update gui field with number of connected satellites"""
         self.txtNumSats.setText(str(num_sats))
         # make background green if 4 or more satellites are connected
@@ -158,6 +159,10 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
         # make background red if less than 4 satellites are connected
         else:
             self.txtNumSats.setStyleSheet("background-color: rgb(150, 0, 0);color: rgb(0, 0, 0")
+
+    def update_sog(self, speed):
+        speed_kph = speed * 3.6
+        self.txtSOG.setText("{0:.2f}".format(round(speed_kph, 2)))
 
     def update_current_data(self, current):
         self.txtCurrentDraw.setText("{0:.2f}".format(round(current, 2)))
@@ -302,6 +307,7 @@ class RosThread(QThread):
     state_change_updated = pyqtSignal(str)
     substate_change_updated = pyqtSignal(str)
     declination_updated = pyqtSignal(float)
+    sog_updated = pyqtSignal(float)
 
     def __init__(self):
         QThread.__init__(self)
@@ -406,6 +412,9 @@ class RosThread(QThread):
     def handle_gnss(self, gnss):
         self.gnss_data_updated.emit(gnss.num_sats)
 
+    def handle_sog(self, sog_msg):
+        self.sog_updated.emit(sog_msg.speed)
+
     def handle_current_draw(self, msg):
         self.current_readings.append(msg.value)
         # only update gui once a second
@@ -484,6 +493,7 @@ class RosThread(QThread):
         rospy.Subscriber("state_change", String, self.handle_state_change)
         rospy.Subscriber("substate_change", String, self.handle_substate_change)
         rospy.Subscriber("declination", Declination, self.handle_declination)
+        rospy.Subscriber("/sog", Speed, self.handle_sog)
         rospy.spin()
 
 
