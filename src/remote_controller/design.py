@@ -35,27 +35,27 @@ class Ui_MainWindow(object):
         self.tab = QtGui.QWidget()
         self.tab.setObjectName(_fromUtf8("tab"))
         self.frame = QtGui.QFrame(self.tab)
-        self.frame.setGeometry(QtCore.QRect(390, 80, 251, 131))
+        self.frame.setGeometry(QtCore.QRect(390, 80, 251, 161))
         self.frame.setFrameShape(QtGui.QFrame.StyledPanel)
         self.frame.setFrameShadow(QtGui.QFrame.Raised)
         self.frame.setObjectName(_fromUtf8("frame"))
         self.txtHeading = QtGui.QLineEdit(self.frame)
         self.txtHeading.setEnabled(True)
-        self.txtHeading.setGeometry(QtCore.QRect(170, 10, 61, 20))
+        self.txtHeading.setGeometry(QtCore.QRect(200, 10, 41, 20))
         self.txtHeading.setReadOnly(True)
         self.txtHeading.setObjectName(_fromUtf8("txtHeading"))
         self.txtWaterSpeed = QtGui.QLineEdit(self.frame)
         self.txtWaterSpeed.setEnabled(True)
-        self.txtWaterSpeed.setGeometry(QtCore.QRect(170, 70, 61, 20))
+        self.txtWaterSpeed.setGeometry(QtCore.QRect(200, 100, 41, 20))
         self.txtWaterSpeed.setReadOnly(True)
         self.txtWaterSpeed.setObjectName(_fromUtf8("txtWaterSpeed"))
         self.txtSOG = QtGui.QLineEdit(self.frame)
         self.txtSOG.setEnabled(True)
-        self.txtSOG.setGeometry(QtCore.QRect(170, 100, 61, 20))
+        self.txtSOG.setGeometry(QtCore.QRect(200, 130, 41, 20))
         self.txtSOG.setReadOnly(True)
         self.txtSOG.setObjectName(_fromUtf8("txtSOG"))
         self.label = QtGui.QLabel(self.frame)
-        self.label.setGeometry(QtCore.QRect(10, 10, 151, 20))
+        self.label.setGeometry(QtCore.QRect(0, 10, 191, 20))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Monospace"))
         font.setPointSize(10)
@@ -66,7 +66,7 @@ class Ui_MainWindow(object):
         self.label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label.setObjectName(_fromUtf8("label"))
         self.label_2 = QtGui.QLabel(self.frame)
-        self.label_2.setGeometry(QtCore.QRect(10, 70, 151, 20))
+        self.label_2.setGeometry(QtCore.QRect(40, 100, 151, 20))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Monospace"))
         font.setPointSize(10)
@@ -77,7 +77,7 @@ class Ui_MainWindow(object):
         self.label_2.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label_2.setObjectName(_fromUtf8("label_2"))
         self.label_6 = QtGui.QLabel(self.frame)
-        self.label_6.setGeometry(QtCore.QRect(60, 100, 101, 16))
+        self.label_6.setGeometry(QtCore.QRect(90, 130, 101, 16))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Monospace"))
         font.setPointSize(10)
@@ -88,7 +88,7 @@ class Ui_MainWindow(object):
         self.label_6.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label_6.setObjectName(_fromUtf8("label_6"))
         self.label_24 = QtGui.QLabel(self.frame)
-        self.label_24.setGeometry(QtCore.QRect(10, 40, 151, 20))
+        self.label_24.setGeometry(QtCore.QRect(0, 40, 191, 20))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Monospace"))
         font.setPointSize(10)
@@ -98,13 +98,29 @@ class Ui_MainWindow(object):
         self.label_24.setFont(font)
         self.label_24.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label_24.setObjectName(_fromUtf8("label_24"))
-        self.txtHeading_2 = QtGui.QLineEdit(self.frame)
-        self.txtHeading_2.setEnabled(True)
-        self.txtHeading_2.setGeometry(QtCore.QRect(170, 40, 61, 20))
-        self.txtHeading_2.setReadOnly(True)
-        self.txtHeading_2.setObjectName(_fromUtf8("txtHeading_2"))
+        self.txtSailHeading = QtGui.QLineEdit(self.frame)
+        self.txtSailHeading.setEnabled(True)
+        self.txtSailHeading.setGeometry(QtCore.QRect(200, 40, 41, 20))
+        self.txtSailHeading.setReadOnly(True)
+        self.txtSailHeading.setObjectName(_fromUtf8("txtSailHeading"))
+        self.txtDeclination = QtGui.QLineEdit(self.frame)
+        self.txtDeclination.setEnabled(True)
+        self.txtDeclination.setGeometry(QtCore.QRect(200, 70, 41, 20))
+        self.txtDeclination.setReadOnly(True)
+        self.txtDeclination.setObjectName(_fromUtf8("txtDeclination"))
+        self.label_54 = QtGui.QLabel(self.frame)
+        self.label_54.setGeometry(QtCore.QRect(40, 70, 151, 20))
+        font = QtGui.QFont()
+        font.setFamily(_fromUtf8("Monospace"))
+        font.setPointSize(10)
+        font.setBold(True)
+        font.setItalic(False)
+        font.setWeight(75)
+        self.label_54.setFont(font)
+        self.label_54.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_54.setObjectName(_fromUtf8("label_54"))
         self.lblActuatorStatus_3 = QtGui.QLabel(self.tab)
-        self.lblActuatorStatus_3.setGeometry(QtCore.QRect(450, 220, 221, 41))
+        self.lblActuatorStatus_3.setGeometry(QtCore.QRect(400, 250, 221, 41))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Liberation Mono"))
         font.setPointSize(20)
@@ -112,217 +128,6 @@ class Ui_MainWindow(object):
         font.setWeight(75)
         self.lblActuatorStatus_3.setFont(font)
         self.lblActuatorStatus_3.setObjectName(_fromUtf8("lblActuatorStatus_3"))
-        self.layoutWidget = QtGui.QWidget(self.tab)
-        self.layoutWidget.setGeometry(QtCore.QRect(740, 410, 258, 242))
-        self.layoutWidget.setObjectName(_fromUtf8("layoutWidget"))
-        self.verticalLayout = QtGui.QVBoxLayout(self.layoutWidget)
-        self.verticalLayout.setMargin(0)
-        self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
-        self.lblActuatorStatus = QtGui.QLabel(self.layoutWidget)
-        font = QtGui.QFont()
-        font.setFamily(_fromUtf8("Liberation Mono"))
-        font.setPointSize(20)
-        font.setBold(True)
-        font.setWeight(75)
-        self.lblActuatorStatus.setFont(font)
-        self.lblActuatorStatus.setObjectName(_fromUtf8("lblActuatorStatus"))
-        self.verticalLayout.addWidget(self.lblActuatorStatus)
-        self.label_3 = QtGui.QLabel(self.layoutWidget)
-        font = QtGui.QFont()
-        font.setFamily(_fromUtf8("Liberation Mono"))
-        font.setPointSize(12)
-        font.setBold(True)
-        font.setWeight(75)
-        self.label_3.setFont(font)
-        self.label_3.setObjectName(_fromUtf8("label_3"))
-        self.verticalLayout.addWidget(self.label_3)
-        self.slidePropeller = QtGui.QSlider(self.layoutWidget)
-        self.slidePropeller.setStyleSheet(_fromUtf8("QSlider::groove:horizontal {\n"
-"border: 1px solid #bbb;\n"
-"background: white;\n"
-"height: 10px;\n"
-"border-radius: 4px;\n"
-"}\n"
-"\n"
-"\n"
-"QSlider::add-page:horizontal {\n"
-"background: #fff;\n"
-"border: 1px solid #777;\n"
-"height: 10px;\n"
-"border-radius: 4px;\n"
-"}\n"
-"\n"
-"QSlider::handle:horizontal {\n"
-"background: qlineargradient(x1:0, y1:0, x2:1, y2:1,\n"
-"    stop:0 #eee, stop:1 #ccc);\n"
-"border: 1px solid #777;\n"
-"width: 13px;\n"
-"margin-top: -2px;\n"
-"margin-bottom: -2px;\n"
-"border-radius: 4px;\n"
-"}\n"
-"\n"
-"QSlider::handle:horizontal:hover {\n"
-"background: qlineargradient(x1:0, y1:0, x2:1, y2:1,\n"
-"    stop:0 #fff, stop:1 #ddd);\n"
-"border: 1px solid #444;\n"
-"border-radius: 4px;\n"
-"}\n"
-"\n"
-"QSlider::sub-page:horizontal:disabled {\n"
-"background: #bbb;\n"
-"border-color: #999;\n"
-"}\n"
-"\n"
-"QSlider::add-page:horizontal:disabled {\n"
-"background: #eee;\n"
-"border-color: #999;\n"
-"}\n"
-"\n"
-"QSlider::handle:horizontal:disabled {\n"
-"background: #eee;\n"
-"border: 1px solid #aaa;\n"
-"border-radius: 4px;\n"
-"}"))
-        self.slidePropeller.setMinimum(-127)
-        self.slidePropeller.setMaximum(127)
-        self.slidePropeller.setProperty("value", 0)
-        self.slidePropeller.setSliderPosition(0)
-        self.slidePropeller.setOrientation(QtCore.Qt.Horizontal)
-        self.slidePropeller.setInvertedAppearance(False)
-        self.slidePropeller.setTickPosition(QtGui.QSlider.TicksBothSides)
-        self.slidePropeller.setTickInterval(123)
-        self.slidePropeller.setObjectName(_fromUtf8("slidePropeller"))
-        self.verticalLayout.addWidget(self.slidePropeller)
-        self.label_4 = QtGui.QLabel(self.layoutWidget)
-        font = QtGui.QFont()
-        font.setFamily(_fromUtf8("Liberation Mono"))
-        font.setPointSize(12)
-        font.setBold(True)
-        font.setWeight(75)
-        self.label_4.setFont(font)
-        self.label_4.setObjectName(_fromUtf8("label_4"))
-        self.verticalLayout.addWidget(self.label_4)
-        self.slideRudder = QtGui.QSlider(self.layoutWidget)
-        self.slideRudder.setStyleSheet(_fromUtf8("QSlider::groove:horizontal {\n"
-"border: 1px solid #bbb;\n"
-"background: white;\n"
-"height: 10px;\n"
-"border-radius: 4px;\n"
-"}\n"
-"\n"
-"\n"
-"QSlider::add-page:horizontal {\n"
-"background: #fff;\n"
-"border: 1px solid #777;\n"
-"height: 10px;\n"
-"border-radius: 4px;\n"
-"}\n"
-"\n"
-"QSlider::handle:horizontal {\n"
-"background: qlineargradient(x1:0, y1:0, x2:1, y2:1,\n"
-"    stop:0 #eee, stop:1 #ccc);\n"
-"border: 1px solid #777;\n"
-"width: 13px;\n"
-"margin-top: -2px;\n"
-"margin-bottom: -2px;\n"
-"border-radius: 4px;\n"
-"}\n"
-"\n"
-"QSlider::handle:horizontal:hover {\n"
-"background: qlineargradient(x1:0, y1:0, x2:1, y2:1,\n"
-"    stop:0 #fff, stop:1 #ddd);\n"
-"border: 1px solid #444;\n"
-"border-radius: 4px;\n"
-"}\n"
-"\n"
-"QSlider::sub-page:horizontal:disabled {\n"
-"background: #bbb;\n"
-"border-color: #999;\n"
-"}\n"
-"\n"
-"QSlider::add-page:horizontal:disabled {\n"
-"background: #eee;\n"
-"border-color: #999;\n"
-"}\n"
-"\n"
-"QSlider::handle:horizontal:disabled {\n"
-"background: #eee;\n"
-"border: 1px solid #aaa;\n"
-"border-radius: 4px;\n"
-"}"))
-        self.slideRudder.setMinimum(-127)
-        self.slideRudder.setMaximum(127)
-        self.slideRudder.setSliderPosition(0)
-        self.slideRudder.setOrientation(QtCore.Qt.Horizontal)
-        self.slideRudder.setInvertedAppearance(False)
-        self.slideRudder.setTickPosition(QtGui.QSlider.TicksBothSides)
-        self.slideRudder.setObjectName(_fromUtf8("slideRudder"))
-        self.verticalLayout.addWidget(self.slideRudder)
-        self.label_5 = QtGui.QLabel(self.layoutWidget)
-        font = QtGui.QFont()
-        font.setFamily(_fromUtf8("Liberation Mono"))
-        font.setPointSize(12)
-        font.setBold(True)
-        font.setWeight(75)
-        self.label_5.setFont(font)
-        self.label_5.setObjectName(_fromUtf8("label_5"))
-        self.verticalLayout.addWidget(self.label_5)
-        self.slideSail = QtGui.QSlider(self.layoutWidget)
-        self.slideSail.setStyleSheet(_fromUtf8("QSlider::groove:horizontal {\n"
-"border: 1px solid #bbb;\n"
-"background: white;\n"
-"height: 10px;\n"
-"border-radius: 4px;\n"
-"}\n"
-"\n"
-"\n"
-"QSlider::add-page:horizontal {\n"
-"background: #fff;\n"
-"border: 1px solid #777;\n"
-"height: 10px;\n"
-"border-radius: 4px;\n"
-"}\n"
-"\n"
-"QSlider::handle:horizontal {\n"
-"background: qlineargradient(x1:0, y1:0, x2:1, y2:1,\n"
-"    stop:0 #eee, stop:1 #ccc);\n"
-"border: 1px solid #777;\n"
-"width: 13px;\n"
-"margin-top: -2px;\n"
-"margin-bottom: -2px;\n"
-"border-radius: 4px;\n"
-"}\n"
-"\n"
-"QSlider::handle:horizontal:hover {\n"
-"background: qlineargradient(x1:0, y1:0, x2:1, y2:1,\n"
-"    stop:0 #fff, stop:1 #ddd);\n"
-"border: 1px solid #444;\n"
-"border-radius: 4px;\n"
-"}\n"
-"\n"
-"QSlider::sub-page:horizontal:disabled {\n"
-"background: #bbb;\n"
-"border-color: #999;\n"
-"}\n"
-"\n"
-"QSlider::add-page:horizontal:disabled {\n"
-"background: #eee;\n"
-"border-color: #999;\n"
-"}\n"
-"\n"
-"QSlider::handle:horizontal:disabled {\n"
-"background: #eee;\n"
-"border: 1px solid #aaa;\n"
-"border-radius: 4px;\n"
-"}"))
-        self.slideSail.setMinimum(-127)
-        self.slideSail.setMaximum(127)
-        self.slideSail.setSliderPosition(0)
-        self.slideSail.setOrientation(QtCore.Qt.Horizontal)
-        self.slideSail.setInvertedAppearance(False)
-        self.slideSail.setObjectName(_fromUtf8("slideSail"))
-        self.verticalLayout.addWidget(self.slideSail)
         self.btnStartManual = QtGui.QPushButton(self.tab)
         self.btnStartManual.setGeometry(QtCore.QRect(20, 70, 171, 31))
         font = QtGui.QFont()
@@ -333,7 +138,7 @@ class Ui_MainWindow(object):
         self.btnStartManual.setFont(font)
         self.btnStartManual.setObjectName(_fromUtf8("btnStartManual"))
         self.lblActuatorStatus_2 = QtGui.QLabel(self.tab)
-        self.lblActuatorStatus_2.setGeometry(QtCore.QRect(450, 20, 191, 41))
+        self.lblActuatorStatus_2.setGeometry(QtCore.QRect(400, 30, 191, 41))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Liberation Mono"))
         font.setPointSize(20)
@@ -437,24 +242,24 @@ class Ui_MainWindow(object):
         self.btnDisableManual.setFont(font)
         self.btnDisableManual.setObjectName(_fromUtf8("btnDisableManual"))
         self.frame_2 = QtGui.QFrame(self.tab)
-        self.frame_2.setGeometry(QtCore.QRect(390, 270, 251, 191))
+        self.frame_2.setGeometry(QtCore.QRect(390, 290, 251, 231))
         self.frame_2.setFrameShape(QtGui.QFrame.StyledPanel)
         self.frame_2.setFrameShadow(QtGui.QFrame.Raised)
         self.frame_2.setObjectName(_fromUtf8("frame_2"))
-        self.txtWindDir = QtGui.QLineEdit(self.frame_2)
-        self.txtWindDir.setEnabled(False)
-        self.txtWindDir.setGeometry(QtCore.QRect(170, 10, 61, 20))
-        self.txtWindDir.setObjectName(_fromUtf8("txtWindDir"))
+        self.txtWindTrue = QtGui.QLineEdit(self.frame_2)
+        self.txtWindTrue.setEnabled(False)
+        self.txtWindTrue.setGeometry(QtCore.QRect(180, 10, 61, 20))
+        self.txtWindTrue.setObjectName(_fromUtf8("txtWindTrue"))
         self.txtWindSpeed = QtGui.QLineEdit(self.frame_2)
         self.txtWindSpeed.setEnabled(False)
-        self.txtWindSpeed.setGeometry(QtCore.QRect(170, 40, 61, 20))
+        self.txtWindSpeed.setGeometry(QtCore.QRect(180, 70, 61, 20))
         self.txtWindSpeed.setObjectName(_fromUtf8("txtWindSpeed"))
         self.txtDepth = QtGui.QLineEdit(self.frame_2)
         self.txtDepth.setEnabled(False)
-        self.txtDepth.setGeometry(QtCore.QRect(170, 70, 61, 20))
+        self.txtDepth.setGeometry(QtCore.QRect(180, 100, 61, 20))
         self.txtDepth.setObjectName(_fromUtf8("txtDepth"))
         self.label_10 = QtGui.QLabel(self.frame_2)
-        self.label_10.setGeometry(QtCore.QRect(30, 10, 131, 20))
+        self.label_10.setGeometry(QtCore.QRect(40, 10, 131, 20))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Monospace"))
         font.setPointSize(10)
@@ -465,7 +270,7 @@ class Ui_MainWindow(object):
         self.label_10.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label_10.setObjectName(_fromUtf8("label_10"))
         self.label_11 = QtGui.QLabel(self.frame_2)
-        self.label_11.setGeometry(QtCore.QRect(20, 40, 141, 20))
+        self.label_11.setGeometry(QtCore.QRect(30, 70, 141, 20))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Monospace"))
         font.setPointSize(10)
@@ -476,7 +281,7 @@ class Ui_MainWindow(object):
         self.label_11.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label_11.setObjectName(_fromUtf8("label_11"))
         self.label_12 = QtGui.QLabel(self.frame_2)
-        self.label_12.setGeometry(QtCore.QRect(70, 70, 91, 20))
+        self.label_12.setGeometry(QtCore.QRect(80, 100, 91, 20))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Monospace"))
         font.setPointSize(10)
@@ -487,7 +292,7 @@ class Ui_MainWindow(object):
         self.label_12.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label_12.setObjectName(_fromUtf8("label_12"))
         self.label_25 = QtGui.QLabel(self.frame_2)
-        self.label_25.setGeometry(QtCore.QRect(20, 100, 141, 20))
+        self.label_25.setGeometry(QtCore.QRect(30, 130, 141, 20))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Monospace"))
         font.setPointSize(10)
@@ -499,18 +304,18 @@ class Ui_MainWindow(object):
         self.label_25.setObjectName(_fromUtf8("label_25"))
         self.txtTemp = QtGui.QLineEdit(self.frame_2)
         self.txtTemp.setEnabled(False)
-        self.txtTemp.setGeometry(QtCore.QRect(170, 100, 61, 20))
+        self.txtTemp.setGeometry(QtCore.QRect(180, 130, 61, 20))
         self.txtTemp.setObjectName(_fromUtf8("txtTemp"))
         self.txtHumid = QtGui.QLineEdit(self.frame_2)
         self.txtHumid.setEnabled(False)
-        self.txtHumid.setGeometry(QtCore.QRect(170, 130, 61, 20))
+        self.txtHumid.setGeometry(QtCore.QRect(180, 160, 61, 20))
         self.txtHumid.setObjectName(_fromUtf8("txtHumid"))
         self.txtPres = QtGui.QLineEdit(self.frame_2)
         self.txtPres.setEnabled(False)
-        self.txtPres.setGeometry(QtCore.QRect(170, 160, 61, 20))
+        self.txtPres.setGeometry(QtCore.QRect(180, 190, 61, 20))
         self.txtPres.setObjectName(_fromUtf8("txtPres"))
         self.label_26 = QtGui.QLabel(self.frame_2)
-        self.label_26.setGeometry(QtCore.QRect(50, 130, 111, 20))
+        self.label_26.setGeometry(QtCore.QRect(60, 160, 111, 20))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Monospace"))
         font.setPointSize(10)
@@ -521,7 +326,7 @@ class Ui_MainWindow(object):
         self.label_26.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label_26.setObjectName(_fromUtf8("label_26"))
         self.label_27 = QtGui.QLabel(self.frame_2)
-        self.label_27.setGeometry(QtCore.QRect(10, 160, 151, 20))
+        self.label_27.setGeometry(QtCore.QRect(10, 190, 161, 20))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Monospace"))
         font.setPointSize(10)
@@ -531,6 +336,22 @@ class Ui_MainWindow(object):
         self.label_27.setFont(font)
         self.label_27.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label_27.setObjectName(_fromUtf8("label_27"))
+        self.label_55 = QtGui.QLabel(self.frame_2)
+        self.label_55.setGeometry(QtCore.QRect(0, 40, 171, 20))
+        font = QtGui.QFont()
+        font.setFamily(_fromUtf8("Monospace"))
+        font.setPointSize(10)
+        font.setBold(True)
+        font.setItalic(False)
+        font.setWeight(75)
+        self.label_55.setFont(font)
+        self.label_55.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_55.setObjectName(_fromUtf8("label_55"))
+        self.txtWindApp = QtGui.QLineEdit(self.frame_2)
+        self.txtWindApp.setEnabled(False)
+        self.txtWindApp.setGeometry(QtCore.QRect(180, 40, 61, 20))
+        self.txtWindApp.setText(_fromUtf8(""))
+        self.txtWindApp.setObjectName(_fromUtf8("txtWindApp"))
         self.lblActuatorStatus_5 = QtGui.QLabel(self.tab)
         self.lblActuatorStatus_5.setGeometry(QtCore.QRect(750, 220, 191, 41))
         font = QtGui.QFont()
@@ -628,13 +449,13 @@ class Ui_MainWindow(object):
         self.label_17.setFont(font)
         self.label_17.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label_17.setObjectName(_fromUtf8("label_17"))
-        self.layoutWidget1 = QtGui.QWidget(self.tab)
-        self.layoutWidget1.setGeometry(QtCore.QRect(30, 210, 211, 41))
-        self.layoutWidget1.setObjectName(_fromUtf8("layoutWidget1"))
-        self.horizontalLayout = QtGui.QHBoxLayout(self.layoutWidget1)
+        self.layoutWidget = QtGui.QWidget(self.tab)
+        self.layoutWidget.setGeometry(QtCore.QRect(30, 210, 211, 41))
+        self.layoutWidget.setObjectName(_fromUtf8("layoutWidget"))
+        self.horizontalLayout = QtGui.QHBoxLayout(self.layoutWidget)
         self.horizontalLayout.setMargin(0)
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
-        self.txtDesHeading = QtGui.QLineEdit(self.layoutWidget1)
+        self.txtDesHeading = QtGui.QLineEdit(self.layoutWidget)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -642,7 +463,7 @@ class Ui_MainWindow(object):
         self.txtDesHeading.setSizePolicy(sizePolicy)
         self.txtDesHeading.setObjectName(_fromUtf8("txtDesHeading"))
         self.horizontalLayout.addWidget(self.txtDesHeading)
-        self.btnDesHeading = QtGui.QPushButton(self.layoutWidget1)
+        self.btnDesHeading = QtGui.QPushButton(self.layoutWidget)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -786,7 +607,7 @@ class Ui_MainWindow(object):
         self.label_21.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label_21.setObjectName(_fromUtf8("label_21"))
         self.frame_5 = QtGui.QFrame(self.tab)
-        self.frame_5.setGeometry(QtCore.QRect(390, 550, 251, 100))
+        self.frame_5.setGeometry(QtCore.QRect(750, 490, 251, 100))
         self.frame_5.setFrameShape(QtGui.QFrame.StyledPanel)
         self.frame_5.setFrameShadow(QtGui.QFrame.Raised)
         self.frame_5.setObjectName(_fromUtf8("frame_5"))
@@ -823,7 +644,7 @@ class Ui_MainWindow(object):
         self.label_23.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label_23.setObjectName(_fromUtf8("label_23"))
         self.lblActuatorStatus_6 = QtGui.QLabel(self.tab)
-        self.lblActuatorStatus_6.setGeometry(QtCore.QRect(440, 500, 221, 41))
+        self.lblActuatorStatus_6.setGeometry(QtCore.QRect(750, 440, 221, 41))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Liberation Mono"))
         font.setPointSize(20)
@@ -1105,15 +926,13 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow", None))
-        self.label.setText(_translate("MainWindow", "Boat Heading (deg):", None))
+        self.txtHeading.setText(_translate("MainWindow", "123", None))
+        self.label.setText(_translate("MainWindow", "Boat Heading true (deg):", None))
         self.label_2.setText(_translate("MainWindow", "Water speed (m/s):", None))
         self.label_6.setText(_translate("MainWindow", "SOG (m/s):", None))
-        self.label_24.setText(_translate("MainWindow", "Sail Heading (deg):", None))
+        self.label_24.setText(_translate("MainWindow", "Sail Heading true (deg):", None))
+        self.label_54.setText(_translate("MainWindow", "Declination (deg):", None))
         self.lblActuatorStatus_3.setText(_translate("MainWindow", "Environment", None))
-        self.lblActuatorStatus.setText(_translate("MainWindow", "Actuator status", None))
-        self.label_3.setText(_translate("MainWindow", "Propeller", None))
-        self.label_4.setText(_translate("MainWindow", "Rudder", None))
-        self.label_5.setText(_translate("MainWindow", "Sail", None))
         self.btnStartManual.setText(_translate("MainWindow", "Enable manual", None))
         self.lblActuatorStatus_2.setText(_translate("MainWindow", "NAV Info", None))
         self.txtConnectionStatus.setText(_translate("MainWindow", "DISCONNECTED", None))
@@ -1123,12 +942,13 @@ class Ui_MainWindow(object):
         self.label_14.setText(_translate("MainWindow", "Current draw", None))
         self.label_35.setText(_translate("MainWindow", "Sats in view", None))
         self.btnDisableManual.setText(_translate("MainWindow", "Disable manual", None))
-        self.label_10.setText(_translate("MainWindow", "Wind dir (deg):", None))
+        self.label_10.setText(_translate("MainWindow", "True wind(deg):", None))
         self.label_11.setText(_translate("MainWindow", "Wind speed(m/s):", None))
         self.label_12.setText(_translate("MainWindow", "Depth (m):", None))
         self.label_25.setText(_translate("MainWindow", "Temperature (C):", None))
         self.label_26.setText(_translate("MainWindow", "Humidity (%):", None))
-        self.label_27.setText(_translate("MainWindow", "Air Pressure (Pa):", None))
+        self.label_27.setText(_translate("MainWindow", "Air Pressure (mbar):", None))
+        self.label_55.setText(_translate("MainWindow", "Apparent wind(deg):", None))
         self.lblActuatorStatus_5.setText(_translate("MainWindow", "Status", None))
         self.lblActuatorStatus_4.setText(_translate("MainWindow", "Stats", None))
         self.label_15.setText(_translate("MainWindow", "Desired heading:", None))
