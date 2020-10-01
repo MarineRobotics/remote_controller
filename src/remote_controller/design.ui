@@ -21,7 +21,7 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>10</y>
+      <y>0</y>
       <width>1121</width>
       <height>741</height>
      </rect>
@@ -143,7 +143,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Water speed (m/s):</string>
+        <string>Water speed (km/h):</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -168,7 +168,7 @@
         </font>
        </property>
        <property name="text">
-        <string>SOG (m/s):</string>
+        <string>SOG (km/h):</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
