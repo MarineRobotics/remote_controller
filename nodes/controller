@@ -457,7 +457,7 @@ class RosThread(QThread):
                           self._create_bond)
         rospy.loginfo("sent bond service")
         rospy.Subscriber("wind_info", WIND, self.handle_wind_info)
-        rospy.Subscriber("vessel_heading", Heading, self.handle_vessel_heading)
+        rospy.Subscriber("vessel_hdng_true_cal", Heading, self.handle_vessel_heading)
         rospy.Subscriber("sail_heading", Heading, self.handle_sail_heading)
         rospy.Subscriber("water_depth", Depth, self.handle_water_depth)
         rospy.Subscriber("temperature", TEMP, self.handle_temperature)
