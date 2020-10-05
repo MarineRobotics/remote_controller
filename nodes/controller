@@ -4,7 +4,7 @@ import rospy
 import sys
 from std_msgs.msg import Float64, String
 from mr_messages.srv import BondIDRequest, BondIDRequestResponse
-from mr_messages.msg import WIND, Heading, Depth, Speed, GNSSData, ADCReading, RoboclawStatus
+from mr_messages.msg import WIND, Heading, Depth, Speed, GNSSData, ADCReading, RoboclawStatus, TEMP, PRESSURE, HUMIDITY, Declination
 from PyQt5 import QtGui, QtCore, uic, QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5.QtCore import QThread, pyqtSignal
@@ -103,12 +103,13 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
     def update_sail_data(self, speed, direction, reference):
         """Update GUI fields with provided data"""
-        if wind_info.reference == "True (ground referenced to North)":
+        rospy.logwarn("wind speed = {} | direction = {} | reference = {}".format(speed, direction, reference))
+        if reference == "True (ground referenced to North)":
             self.txtWindTrue.setText("{0:.0f}".format(round(direction)))
             self.txtTrueWindSpeed.setText("{0:.2f}".format(round(speed, 2)))
-        elif wind_info.reference == "Apparent":
+        elif reference == "Apparent":
             self.txtWindApp.setText("{0:.0f}".format(round(direction)))
-            self.txtTrueWindSpeed.setText("{0:.2f}".format(round(speed, 2)))
+            self.txtApptWindSpeed.setText("{0:.2f}".format(round(speed, 2)))
 
     def update_vessel_heading(self, heading):
         """Update GUI field with heading data"""
@@ -120,7 +121,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
     def update_declination(self, declination):
         """Update GUI field with declination data"""
-        self.txtDeclination.setText(str(declination))
+        self.txtDeclination.setText("{0:.2f}".format(round(declination, 1)))
 
     def update_water_depth(self, depth):
         """Update GUI field with water depth and format float"""
