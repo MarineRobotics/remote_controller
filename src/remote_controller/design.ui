@@ -21,7 +21,7 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>20</y>
+      <y>0</y>
       <width>1121</width>
       <height>741</height>
      </rect>
@@ -39,7 +39,7 @@
         <x>390</x>
         <y>80</y>
         <width>251</width>
-        <height>131</height>
+        <height>161</height>
        </rect>
       </property>
       <property name="frameShape">
@@ -54,11 +54,14 @@
        </property>
        <property name="geometry">
         <rect>
-         <x>170</x>
+         <x>200</x>
          <y>10</y>
-         <width>61</width>
+         <width>41</width>
          <height>20</height>
         </rect>
+       </property>
+       <property name="text">
+        <string>123</string>
        </property>
        <property name="readOnly">
         <bool>true</bool>
@@ -70,9 +73,9 @@
        </property>
        <property name="geometry">
         <rect>
-         <x>170</x>
-         <y>70</y>
-         <width>61</width>
+         <x>200</x>
+         <y>100</y>
+         <width>41</width>
          <height>20</height>
         </rect>
        </property>
@@ -86,9 +89,9 @@
        </property>
        <property name="geometry">
         <rect>
-         <x>170</x>
-         <y>100</y>
-         <width>61</width>
+         <x>200</x>
+         <y>130</y>
+         <width>41</width>
          <height>20</height>
         </rect>
        </property>
@@ -99,9 +102,9 @@
       <widget class="QLabel" name="label">
        <property name="geometry">
         <rect>
-         <x>10</x>
+         <x>0</x>
          <y>10</y>
-         <width>151</width>
+         <width>191</width>
          <height>20</height>
         </rect>
        </property>
@@ -115,7 +118,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Boat Heading (deg):</string>
+        <string>Boat Heading true (deg):</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -124,8 +127,8 @@
       <widget class="QLabel" name="label_2">
        <property name="geometry">
         <rect>
-         <x>10</x>
-         <y>70</y>
+         <x>40</x>
+         <y>100</y>
          <width>151</width>
          <height>20</height>
         </rect>
@@ -140,7 +143,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Water speed (m/s):</string>
+        <string>Water speed (km/h):</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -149,8 +152,8 @@
       <widget class="QLabel" name="label_6">
        <property name="geometry">
         <rect>
-         <x>60</x>
-         <y>100</y>
+         <x>90</x>
+         <y>130</y>
          <width>101</width>
          <height>16</height>
         </rect>
@@ -165,7 +168,7 @@
         </font>
        </property>
        <property name="text">
-        <string>SOG (m/s):</string>
+        <string>SOG (km/h):</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -174,8 +177,65 @@
       <widget class="QLabel" name="label_24">
        <property name="geometry">
         <rect>
-         <x>10</x>
+         <x>0</x>
          <y>40</y>
+         <width>191</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Monospace</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <italic>false</italic>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Sail Heading true (deg):</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="txtSailHeading">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>200</x>
+         <y>40</y>
+         <width>41</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="txtDeclination">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>200</x>
+         <y>70</y>
+         <width>41</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_54">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>70</y>
          <width>151</width>
          <height>20</height>
         </rect>
@@ -190,34 +250,18 @@
         </font>
        </property>
        <property name="text">
-        <string>Sail Heading (deg):</string>
+        <string>Declination (deg):</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="txtHeading_2">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>170</x>
-         <y>40</y>
-         <width>61</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="readOnly">
-        <bool>true</bool>
        </property>
       </widget>
      </widget>
      <widget class="QLabel" name="lblActuatorStatus_3">
       <property name="geometry">
        <rect>
-        <x>450</x>
-        <y>220</y>
+        <x>400</x>
+        <y>250</y>
         <width>221</width>
         <height>41</height>
        </rect>
@@ -233,294 +277,6 @@
       <property name="text">
        <string>Environment</string>
       </property>
-     </widget>
-     <widget class="QWidget" name="layoutWidget">
-      <property name="geometry">
-       <rect>
-        <x>740</x>
-        <y>410</y>
-        <width>258</width>
-        <height>242</height>
-       </rect>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QLabel" name="lblActuatorStatus">
-         <property name="font">
-          <font>
-           <family>Liberation Mono</family>
-           <pointsize>20</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Actuator status</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_3">
-         <property name="font">
-          <font>
-           <family>Liberation Mono</family>
-           <pointsize>12</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Propeller</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QSlider" name="slidePropeller">
-         <property name="styleSheet">
-          <string notr="true">QSlider::groove:horizontal {
-border: 1px solid #bbb;
-background: white;
-height: 10px;
-border-radius: 4px;
-}
-
-
-QSlider::add-page:horizontal {
-background: #fff;
-border: 1px solid #777;
-height: 10px;
-border-radius: 4px;
-}
-
-QSlider::handle:horizontal {
-background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-    stop:0 #eee, stop:1 #ccc);
-border: 1px solid #777;
-width: 13px;
-margin-top: -2px;
-margin-bottom: -2px;
-border-radius: 4px;
-}
-
-QSlider::handle:horizontal:hover {
-background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-    stop:0 #fff, stop:1 #ddd);
-border: 1px solid #444;
-border-radius: 4px;
-}
-
-QSlider::sub-page:horizontal:disabled {
-background: #bbb;
-border-color: #999;
-}
-
-QSlider::add-page:horizontal:disabled {
-background: #eee;
-border-color: #999;
-}
-
-QSlider::handle:horizontal:disabled {
-background: #eee;
-border: 1px solid #aaa;
-border-radius: 4px;
-}</string>
-         </property>
-         <property name="minimum">
-          <number>-127</number>
-         </property>
-         <property name="maximum">
-          <number>127</number>
-         </property>
-         <property name="value">
-          <number>0</number>
-         </property>
-         <property name="sliderPosition">
-          <number>0</number>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="invertedAppearance">
-          <bool>false</bool>
-         </property>
-         <property name="tickPosition">
-          <enum>QSlider::TicksBothSides</enum>
-         </property>
-         <property name="tickInterval">
-          <number>123</number>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_4">
-         <property name="font">
-          <font>
-           <family>Liberation Mono</family>
-           <pointsize>12</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Rudder</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QSlider" name="slideRudder">
-         <property name="styleSheet">
-          <string notr="true">QSlider::groove:horizontal {
-border: 1px solid #bbb;
-background: white;
-height: 10px;
-border-radius: 4px;
-}
-
-
-QSlider::add-page:horizontal {
-background: #fff;
-border: 1px solid #777;
-height: 10px;
-border-radius: 4px;
-}
-
-QSlider::handle:horizontal {
-background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-    stop:0 #eee, stop:1 #ccc);
-border: 1px solid #777;
-width: 13px;
-margin-top: -2px;
-margin-bottom: -2px;
-border-radius: 4px;
-}
-
-QSlider::handle:horizontal:hover {
-background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-    stop:0 #fff, stop:1 #ddd);
-border: 1px solid #444;
-border-radius: 4px;
-}
-
-QSlider::sub-page:horizontal:disabled {
-background: #bbb;
-border-color: #999;
-}
-
-QSlider::add-page:horizontal:disabled {
-background: #eee;
-border-color: #999;
-}
-
-QSlider::handle:horizontal:disabled {
-background: #eee;
-border: 1px solid #aaa;
-border-radius: 4px;
-}</string>
-         </property>
-         <property name="minimum">
-          <number>-127</number>
-         </property>
-         <property name="maximum">
-          <number>127</number>
-         </property>
-         <property name="sliderPosition">
-          <number>0</number>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="invertedAppearance">
-          <bool>false</bool>
-         </property>
-         <property name="tickPosition">
-          <enum>QSlider::TicksBothSides</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_5">
-         <property name="font">
-          <font>
-           <family>Liberation Mono</family>
-           <pointsize>12</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Sail</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QSlider" name="slideSail">
-         <property name="styleSheet">
-          <string notr="true">QSlider::groove:horizontal {
-border: 1px solid #bbb;
-background: white;
-height: 10px;
-border-radius: 4px;
-}
-
-
-QSlider::add-page:horizontal {
-background: #fff;
-border: 1px solid #777;
-height: 10px;
-border-radius: 4px;
-}
-
-QSlider::handle:horizontal {
-background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-    stop:0 #eee, stop:1 #ccc);
-border: 1px solid #777;
-width: 13px;
-margin-top: -2px;
-margin-bottom: -2px;
-border-radius: 4px;
-}
-
-QSlider::handle:horizontal:hover {
-background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-    stop:0 #fff, stop:1 #ddd);
-border: 1px solid #444;
-border-radius: 4px;
-}
-
-QSlider::sub-page:horizontal:disabled {
-background: #bbb;
-border-color: #999;
-}
-
-QSlider::add-page:horizontal:disabled {
-background: #eee;
-border-color: #999;
-}
-
-QSlider::handle:horizontal:disabled {
-background: #eee;
-border: 1px solid #aaa;
-border-radius: 4px;
-}</string>
-         </property>
-         <property name="minimum">
-          <number>-127</number>
-         </property>
-         <property name="maximum">
-          <number>127</number>
-         </property>
-         <property name="sliderPosition">
-          <number>0</number>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="invertedAppearance">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-      </layout>
      </widget>
      <widget class="QPushButton" name="btnStartManual">
       <property name="geometry">
@@ -546,8 +302,8 @@ border-radius: 4px;
      <widget class="QLabel" name="lblActuatorStatus_2">
       <property name="geometry">
        <rect>
-        <x>450</x>
-        <y>20</y>
+        <x>400</x>
+        <y>30</y>
         <width>191</width>
         <height>41</height>
        </rect>
@@ -813,9 +569,9 @@ color: rgb(255, 255, 255);</string>
       <property name="geometry">
        <rect>
         <x>390</x>
-        <y>270</y>
+        <y>290</y>
         <width>251</width>
-        <height>191</height>
+        <height>301</height>
        </rect>
       </property>
       <property name="frameShape">
@@ -824,26 +580,26 @@ color: rgb(255, 255, 255);</string>
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <widget class="QLineEdit" name="txtWindDir">
+      <widget class="QLineEdit" name="txtWindTrue">
        <property name="enabled">
         <bool>false</bool>
        </property>
        <property name="geometry">
         <rect>
-         <x>170</x>
+         <x>180</x>
          <y>10</y>
          <width>61</width>
          <height>20</height>
         </rect>
        </property>
       </widget>
-      <widget class="QLineEdit" name="txtWindSpeed">
+      <widget class="QLineEdit" name="txtTrueWindSpeed">
        <property name="enabled">
         <bool>false</bool>
        </property>
        <property name="geometry">
         <rect>
-         <x>170</x>
+         <x>180</x>
          <y>40</y>
          <width>61</width>
          <height>20</height>
@@ -856,8 +612,8 @@ color: rgb(255, 255, 255);</string>
        </property>
        <property name="geometry">
         <rect>
-         <x>170</x>
-         <y>70</y>
+         <x>180</x>
+         <y>130</y>
          <width>61</width>
          <height>20</height>
         </rect>
@@ -866,7 +622,7 @@ color: rgb(255, 255, 255);</string>
       <widget class="QLabel" name="label_10">
        <property name="geometry">
         <rect>
-         <x>30</x>
+         <x>40</x>
          <y>10</y>
          <width>131</width>
          <height>20</height>
@@ -882,7 +638,7 @@ color: rgb(255, 255, 255);</string>
         </font>
        </property>
        <property name="text">
-        <string>Wind dir (deg):</string>
+        <string>True wind(deg):</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -891,9 +647,9 @@ color: rgb(255, 255, 255);</string>
       <widget class="QLabel" name="label_11">
        <property name="geometry">
         <rect>
-         <x>20</x>
+         <x>0</x>
          <y>40</y>
-         <width>141</width>
+         <width>171</width>
          <height>20</height>
         </rect>
        </property>
@@ -907,7 +663,7 @@ color: rgb(255, 255, 255);</string>
         </font>
        </property>
        <property name="text">
-        <string>Wind speed(m/s):</string>
+        <string>True wind speed(m/s):</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -916,8 +672,8 @@ color: rgb(255, 255, 255);</string>
       <widget class="QLabel" name="label_12">
        <property name="geometry">
         <rect>
-         <x>70</x>
-         <y>70</y>
+         <x>80</x>
+         <y>130</y>
          <width>91</width>
          <height>20</height>
         </rect>
@@ -941,8 +697,8 @@ color: rgb(255, 255, 255);</string>
       <widget class="QLabel" name="label_25">
        <property name="geometry">
         <rect>
-         <x>20</x>
-         <y>100</y>
+         <x>30</x>
+         <y>160</y>
          <width>141</width>
          <height>20</height>
         </rect>
@@ -969,8 +725,8 @@ color: rgb(255, 255, 255);</string>
        </property>
        <property name="geometry">
         <rect>
-         <x>170</x>
-         <y>100</y>
+         <x>180</x>
+         <y>160</y>
          <width>61</width>
          <height>20</height>
         </rect>
@@ -982,8 +738,8 @@ color: rgb(255, 255, 255);</string>
        </property>
        <property name="geometry">
         <rect>
-         <x>170</x>
-         <y>130</y>
+         <x>180</x>
+         <y>190</y>
          <width>61</width>
          <height>20</height>
         </rect>
@@ -995,8 +751,8 @@ color: rgb(255, 255, 255);</string>
        </property>
        <property name="geometry">
         <rect>
-         <x>170</x>
-         <y>160</y>
+         <x>180</x>
+         <y>220</y>
          <width>61</width>
          <height>20</height>
         </rect>
@@ -1005,8 +761,8 @@ color: rgb(255, 255, 255);</string>
       <widget class="QLabel" name="label_26">
        <property name="geometry">
         <rect>
-         <x>50</x>
-         <y>130</y>
+         <x>60</x>
+         <y>190</y>
          <width>111</width>
          <height>20</height>
         </rect>
@@ -1031,8 +787,8 @@ color: rgb(255, 255, 255);</string>
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>160</y>
-         <width>151</width>
+         <y>220</y>
+         <width>161</width>
          <height>20</height>
         </rect>
        </property>
@@ -1046,7 +802,86 @@ color: rgb(255, 255, 255);</string>
         </font>
        </property>
        <property name="text">
-        <string>Air Pressure (Pa):</string>
+        <string>Air Pressure (mbar):</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_55">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>70</y>
+         <width>171</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Monospace</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <italic>false</italic>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Apparent wind(deg):</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="txtWindApp">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>180</x>
+         <y>70</y>
+         <width>61</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="txtApptWindSpeed">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>180</x>
+         <y>100</y>
+         <width>61</width>
+         <height>20</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_56">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>100</y>
+         <width>171</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Monospace</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <italic>false</italic>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Appt wind speed(m/s):</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1590,8 +1425,8 @@ color: rgb(255, 255, 255);</string>
      <widget class="QFrame" name="frame_5">
       <property name="geometry">
        <rect>
-        <x>390</x>
-        <y>550</y>
+        <x>750</x>
+        <y>490</y>
         <width>251</width>
         <height>100</height>
        </rect>
@@ -1688,8 +1523,8 @@ color: rgb(255, 255, 255);</string>
      <widget class="QLabel" name="lblActuatorStatus_6">
       <property name="geometry">
        <rect>
-        <x>440</x>
-        <y>500</y>
+        <x>750</x>
+        <y>440</y>
         <width>221</width>
         <height>41</height>
        </rect>

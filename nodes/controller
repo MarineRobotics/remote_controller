@@ -98,11 +98,17 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.rc.robo_status_updated.connect(self.update_roboclaw_status)
         self.rc.state_change_updated.connect(self.update_state_change)
         self.rc.substate_change_updated.connect(self.update_substate_change)
+        self.rc.declination_updated.connect(self.update_declination)
+        self.rc.sog_updated.connect(self.update_sog)
 
     def update_sail_data(self, speed, direction, reference):
         """Update GUI fields with provided data"""
-        self.txtWindDir.setText("{0:.0f}".format(round(direction)))
-        self.txtWindSpeed.setText("{0:.2f}".format(round(speed, 2)))
+        if wind_info.reference == "True (ground referenced to North)":
+            self.txtWindTrue.setText("{0:.0f}".format(round(direction)))
+            self.txtTrueWindSpeed.setText("{0:.2f}".format(round(speed, 2)))
+        elif wind_info.reference == "Apparent":
+            self.txtWindApp.setText("{0:.0f}".format(round(direction)))
+            self.txtTrueWindSpeed.setText("{0:.2f}".format(round(speed, 2)))
 
     def update_vessel_heading(self, heading):
         """Update GUI field with heading data"""
@@ -110,7 +116,11 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
     def update_sail_heading(self, heading):
         """Update GUI field with heading data"""
-        self.txtHeading_2.setText(str(heading))
+        self.txtSailHeading.setText(str(heading))
+
+    def update_declination(self, declination):
+        """Update GUI field with declination data"""
+        self.txtDeclination.setText(str(declination))
 
     def update_water_depth(self, depth):
         """Update GUI field with water depth and format float"""
@@ -130,7 +140,8 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
     def update_water_speed(self, speed):
         """Update GUI field with water speed and format float"""
-        self.txtWaterSpeed.setText("{0:.2f}".format(round(speed, 2)))
+        speed_kph = speed * 3.6
+        self.txtWaterSpeed.setText("{0:.2f}".format(round(speed_kph, 2)))
 
     def update_state_change(self, state):
         """Update GUI field with boat state change"""
@@ -141,7 +152,6 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.txtSubstate.setText(str(substate))
 
     def update_gnss_data(self, num_sats):
-        pass
         """Update gui field with number of connected satellites"""
         self.txtNumSats.setText(str(num_sats))
         # make background green if 4 or more satellites are connected
@@ -150,6 +160,10 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         # make background red if less than 4 satellites are connected
         else:
             self.txtNumSats.setStyleSheet("background-color: rgb(150, 0, 0);color: rgb(0, 0, 0)")
+
+    def update_sog(self, speed):
+        speed_kph = speed * 3.6
+        self.txtSOG.setText("{0:.2f}".format(round(speed_kph, 2)))
 
     def update_current_data(self, current):
         self.txtCurrentDraw.setText("{0:.2f}".format(round(current, 2)))
@@ -293,6 +307,8 @@ class RosThread(QThread):
     robo_status_updated = pyqtSignal(int, int, str)
     state_change_updated = pyqtSignal(str)
     substate_change_updated = pyqtSignal(str)
+    declination_updated = pyqtSignal(float)
+    sog_updated = pyqtSignal(float)
 
     def __init__(self):
         QThread.__init__(self)
@@ -371,6 +387,9 @@ class RosThread(QThread):
     def handle_sail_heading(self, heading):
         self.sail_heading_updated.emit(heading.heading)
 
+    def handle_declination(self, decl_msg):
+        self.declination_updated.emit(decl_msg.declination)
+
     def handle_water_depth(self, depth):
         self.water_depth_updated.emit(depth.depth)
 
@@ -394,6 +413,9 @@ class RosThread(QThread):
 
     def handle_gnss(self, gnss):
         self.gnss_data_updated.emit(gnss.num_sats)
+
+    def handle_sog(self, sog_msg):
+        self.sog_updated.emit(sog_msg.speed)
 
     def handle_current_draw(self, msg):
         self.current_readings.append(msg.value)
@@ -459,8 +481,8 @@ class RosThread(QThread):
                           self._create_bond)
         rospy.loginfo("sent bond service")
         rospy.Subscriber("wind_info", WIND, self.handle_wind_info)
-        rospy.Subscriber("vessel_heading", Heading, self.handle_vessel_heading)
-        rospy.Subscriber("sail_heading", Heading, self.handle_sail_heading)
+        rospy.Subscriber("vessel_hdng_true_cal", Heading, self.handle_vessel_heading)
+        rospy.Subscriber("sail_hdng_true_cal", Heading, self.handle_sail_heading)
         rospy.Subscriber("water_depth", Depth, self.handle_water_depth)
         rospy.Subscriber("temperature", TEMP, self.handle_temperature)
         rospy.Subscriber("humidity", HUMIDITY, self.handle_humidity)
@@ -472,6 +494,8 @@ class RosThread(QThread):
         rospy.Subscriber("roboclaw_status", RoboclawStatus, self.handle_roboclaw_status)
         rospy.Subscriber("state_change", String, self.handle_state_change)
         rospy.Subscriber("substate_change", String, self.handle_substate_change)
+        rospy.Subscriber("declination", Declination, self.handle_declination)
+        rospy.Subscriber("/sog", Speed, self.handle_sog)
         rospy.spin()
 
 
