@@ -103,7 +103,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
     def update_sail_data(self, speed, direction, reference):
         """Update GUI fields with provided data"""
-        rospy.logwarn("wind speed = {} | direction = {} | reference = {}".format(speed, direction, reference))
+        speed = speed*3.6  # convert to km/h
         if reference == "True (ground referenced to North)":
             self.txtWindTrue.setText("{0:.0f}".format(round(direction)))
             self.txtTrueWindSpeed.setText("{0:.2f}".format(round(speed, 2)))
