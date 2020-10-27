@@ -4,7 +4,7 @@ import rospy
 import sys
 from std_msgs.msg import Float64, String, Bool
 from mr_messages.srv import BondIDRequest, BondIDRequestResponse
-from mr_messages.msg import WIND, Heading, Depth, Speed, GNSSData, ADCReading, RoboclawStatus, TEMP, PRESSURE, HUMIDITY, Declination
+from mr_messages.msg import WIND, Heading, Depth, Speed, GNSSData, ADCReading, RoboclawStatus, TEMP, PRESSURE, HUMIDITY, Declination, ADCReading
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import QThread, pyqtSignal
 from bondpy import bondpy
@@ -106,6 +106,8 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
         self.rc.substate_change_updated.connect(self.update_substate_change)
         self.rc.declination_updated.connect(self.update_declination)
         self.rc.sog_updated.connect(self.update_sog)
+        self.rc.bat_level_updated.connect(self.update_bat_lvl)
+        self.rc.power_consumption_updated.connect(self.update_power_consumption)
 
     def update_sail_data(self, speed, direction, reference):
         """Update GUI fields with provided data"""
@@ -192,6 +194,12 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
         text_field.setText("{}: {}".format(hex(address), status_msg))
         text_field.setStyleSheet("background-color: {}"
                                  .format(self.ERRORS[status_id][2]))
+
+    def update_bat_lvl(self, level):
+        self.txtBatRemaining.setText("{0:.0f}".format(round(level)))
+
+    def update_power_consumption(self, power):
+        self.txtPower.setText(str(power))
 
     def set_heading(self):
         des_heading = int(self.txtDesHeading.text())
@@ -342,6 +350,8 @@ class RosThread(QThread):
     substate_change_updated = pyqtSignal(str)
     declination_updated = pyqtSignal(float)
     sog_updated = pyqtSignal(float)
+    bat_level_updated = pyqtSignal(float)
+    power_consumption_updated = pyqtSignal(float)
 
     def __init__(self):
         QThread.__init__(self)
@@ -487,6 +497,14 @@ class RosThread(QThread):
         status = msg.status_message
         self.robo_status_updated.emit(address, status_id, status)
 
+    def handle_bat_level(self, msg):
+        level = msg.value
+        self.bat_level_updated.emit(level)
+
+    def handle_power_consumption(self, msg):
+        power = msg.value
+        self.power_consumption_updated.emit(power)
+
     def _create_bond(self, req):
         self.flush_broken()
         id = req.id
@@ -548,6 +566,10 @@ class RosThread(QThread):
                          self.handle_substate_change)
         rospy.Subscriber("declination", Declination, self.handle_declination)
         rospy.Subscriber("/sog", Speed, self.handle_sog)
+
+        rospy.Subscriber("/battery_level", ADCReading, self.handle_bat_level)
+        rospy.Subscriber("/power_consumption", ADCReading, self.handle_power_consumption)
+
         rospy.spin()
 
 
