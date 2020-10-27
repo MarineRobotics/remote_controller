@@ -1,13 +1,12 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import rospy
 import sys
 from std_msgs.msg import Float64, String, Bool
 from mr_messages.srv import BondIDRequest, BondIDRequestResponse
 from mr_messages.msg import WIND, Heading, Depth, Speed, GNSSData, ADCReading, RoboclawStatus, TEMP, PRESSURE, HUMIDITY, Declination
-from PyQt5 import QtGui, QtCore, uic, QtWidgets
-from PyQt5.QtWidgets import QMainWindow, QApplication
-from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt4 import QtGui, QtCore
+from PyQt4.QtCore import QThread, pyqtSignal
 from bondpy import bondpy
 from remote_controller import design
 
@@ -24,7 +23,7 @@ COLOR_ERR = "rgb(186, 7, 7)"
 COLOR_OK = "rgb(0, 150, 0)"
 
 
-class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
+class Window(QtGui.QMainWindow, design.Ui_MainWindow):
 
     def __init__(self):
         self.rc = RosThread()
@@ -148,7 +147,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
     def update_air_pressure(self, pressure):
         """Update GUI field with air pressure and format float"""
-        self.txtPres.setText("{0:.0f}".format(round(pressure)))
+        self.txtPres.setText("{0:.2f}".format(round(pressure)))
 
     def update_water_speed(self, speed):
         """Update GUI field with water speed and format float"""
@@ -553,6 +552,6 @@ class RosThread(QThread):
 
 
 if __name__ == '__main__':
-    app = QtWidgets.QApplication(sys.argv)
+    app = QtGui.QApplication(sys.argv)
     GUI = Window()
     sys.exit(app.exec_())
