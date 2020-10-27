@@ -2,9 +2,9 @@
 
 import rospy
 import sys
-from std_msgs.msg import Float64, String
+from std_msgs.msg import Float64, String, Bool
 from mr_messages.srv import BondIDRequest, BondIDRequestResponse
-from mr_messages.msg import WIND, Heading, Depth, Speed, GNSSData, ADCReading, RoboclawStatus
+from mr_messages.msg import WIND, Heading, Depth, Speed, GNSSData, ADCReading, RoboclawStatus, TEMP, PRESSURE, HUMIDITY, Declination
 from PyQt5 import QtGui, QtCore, uic, QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5.QtCore import QThread, pyqtSignal
@@ -12,7 +12,6 @@ from bondpy import bondpy
 from remote_controller import design
 
 PKG = 'remote_controller'
-
 
 
 NODE = 'send_key_cmd'
@@ -23,6 +22,7 @@ SAIL_SPEED = 100
 COLOR_WARN = "rgb(252, 186, 3)"
 COLOR_ERR = "rgb(186, 7, 7)"
 COLOR_OK = "rgb(0, 150, 0)"
+
 
 class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
@@ -51,7 +51,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
             0x2000: ("warn", "Temperature2", COLOR_WARN),
             0x4000: ("ok", "M1 home", COLOR_OK),
             0x8000: ("ok", "M2 home", COLOR_OK)
-            }
+        }
 
     def home(self):
         # Setup enable/disable buttons
@@ -61,8 +61,13 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         # Setup prop on/off buttons
         self.btnPropOn.hide()
         self.btnPropOff.hide()
+        # Setup auto sail buttons
+        self.btnAutoSail.hide()
+        self.btnAutoSailDisable.hide()
         self.btnPropOn.clicked.connect(self.start_prop)
         self.btnPropOff.clicked.connect(self.stop_prop)
+        self.btnAutoSail.clicked.connect(self.start_auto_sail)
+        self.btnAutoSailDisable.clicked.connect(self.stop_auto_sail)
         self.btnDesHeading.clicked.connect(self.set_heading)
         self.btnDesSail.clicked.connect(self.set_sail_heading)
         self.btnDesSailAngle.clicked.connect(self.set_sail_angle)
@@ -79,7 +84,8 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.show()
 
     def displayTime(self):
-        self.txtUTC.setText(QtCore.QDateTime.currentDateTime().toUTC().toString())
+        self.txtUTC.setText(
+            QtCore.QDateTime.currentDateTime().toUTC().toString())
 
     def connect_signals(self):
         """Connect all signals needed to update the GUI from our ROS thread"""
@@ -88,7 +94,8 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.rc.vessel_heading_updated.connect(self.update_vessel_heading)
         self.rc.sail_heading_updated.connect(self.update_sail_heading)
         self.rc.water_depth_updated.connect(self.update_water_depth)
-        self.rc.temperature_updated.connect(self.update_temperature)
+        self.rc.air_temp_updated.connect(self.update_air_temp)
+        self.rc.water_temp_updated.connect(self.update_water_temp)
         self.rc.humidity_updated.connect(self.update_humidity)
         self.rc.air_pressure_updated.connect(self.update_air_pressure)
         self.rc.water_speed_updated.connect(self.update_water_speed)
@@ -103,12 +110,13 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
     def update_sail_data(self, speed, direction, reference):
         """Update GUI fields with provided data"""
-        if wind_info.reference == "True (ground referenced to North)":
+        speed = speed*3.6  # convert to km/h
+        if reference == "True (ground referenced to North)":
             self.txtWindTrue.setText("{0:.0f}".format(round(direction)))
             self.txtTrueWindSpeed.setText("{0:.2f}".format(round(speed, 2)))
-        elif wind_info.reference == "Apparent":
+        elif reference == "Apparent":
             self.txtWindApp.setText("{0:.0f}".format(round(direction)))
-            self.txtTrueWindSpeed.setText("{0:.2f}".format(round(speed, 2)))
+            self.txtApptWindSpeed.setText("{0:.2f}".format(round(speed, 2)))
 
     def update_vessel_heading(self, heading):
         """Update GUI field with heading data"""
@@ -120,15 +128,19 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
     def update_declination(self, declination):
         """Update GUI field with declination data"""
-        self.txtDeclination.setText(str(declination))
+        self.txtDeclination.setText("{0:.2f}".format(round(declination, 1)))
 
     def update_water_depth(self, depth):
         """Update GUI field with water depth and format float"""
         self.txtDepth.setText("{0:.2f}".format(round(depth, 2)))
 
-    def update_temperature(self, temp):
+    def update_air_temp(self, temp):
         """Update GUI field with temperature and format float"""
-        self.txtTemp.setText("{0:.2f}".format(round(temp, 2)))
+        self.txtAirTemp.setText("{0:.2f}".format(round(temp, 2)))
+
+    def update_water_temp(self, temp):
+        """Update GUI field with temperature and format float"""
+        self.txtWaterTemp.setText("{0:.2f}".format(round(temp, 2)))
 
     def update_humidity(self, humid):
         """Update GUI field with humidity and format float"""
@@ -156,10 +168,12 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.txtNumSats.setText(str(num_sats))
         # make background green if 4 or more satellites are connected
         if num_sats >= 4:
-            self.txtNumSats.setStyleSheet("background-color: rgb(0, 150, 0);color: rgb(255, 255, 255)")
+            self.txtNumSats.setStyleSheet(
+                "background-color: rgb(0, 150, 0);color: rgb(255, 255, 255)")
         # make background red if less than 4 satellites are connected
         else:
-            self.txtNumSats.setStyleSheet("background-color: rgb(150, 0, 0);color: rgb(0, 0, 0)")
+            self.txtNumSats.setStyleSheet(
+                "background-color: rgb(150, 0, 0);color: rgb(0, 0, 0)")
 
     def update_sog(self, speed):
         speed_kph = speed * 3.6
@@ -178,17 +192,19 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
             text_field = self.txt0x81Status
         text_field.setText("{}: {}".format(hex(address), status_msg))
         text_field.setStyleSheet("background-color: {}"
-                                    .format(self.ERRORS[status_id][2]))
+                                 .format(self.ERRORS[status_id][2]))
 
     def set_heading(self):
         des_heading = int(self.txtDesHeading.text())
         self.rc.pub_boat_heading(des_heading)
 
     def set_sail_heading(self):
+        self.stop_auto_sail()
         des_heading = int(self.txtDesSail.text())
         self.rc.pub_sail_heading(des_heading)
 
     def set_sail_angle(self):
+        self.stop_auto_sail()
         des_angle = int(self.txtDesSailAngle.text())
         self.rc.pub_sail_angle(des_angle)
 
@@ -204,21 +220,26 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
     def enable_manual(self):
         self.rc.pub_manual_cmd("start_manual")
-        self.txtMode.setStyleSheet("background-color: rgb(0, 150, 0);color: rgb(0, 0, 0)")
+        self.txtMode.setStyleSheet(
+            "background-color: rgb(0, 150, 0);color: rgb(0, 0, 0)")
         self.txtMode.setText("MANUAL ENABLED")
         self.btnStartManual.hide()
         self.btnDisableManual.show()
         self.btnPropOn.show()
+        self.btnAutoSail.show()
 
     def disable_manual(self):
         self.rc.pub_manual_cmd("stop_manual")
-        self.txtMode.setStyleSheet("background-color: rgb(150, 0, 0);color: rgb(255, 255, 255)")
+        self.txtMode.setStyleSheet(
+            "background-color: rgb(150, 0, 0);color: rgb(255, 255, 255)")
         self.txtMode.setText("MANUAL DISABLED")
         self.rc.break_bond()
         self.btnStartManual.show()
         self.btnDisableManual.hide()
         self.btnPropOn.hide()
         self.btnPropOff.hide()
+        self.btnAutoSail.hide()
+        self.btnAutoSailDisable.hide()
 
     def start_prop(self):
         self.rc.pub_prop_effort(PROP_SPEED)
@@ -231,6 +252,18 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         rospy.loginfo("prop off")
         self.btnPropOn.show()
         self.btnPropOff.hide()
+
+    def start_auto_sail(self):
+        self.rc.pub_sail_angle(0)
+        self.rc.pub_auto_sail_enable(True)
+        self.btnAutoSail.hide()
+        self.btnAutoSailDisable.show()
+
+    def stop_auto_sail(self):
+        self.rc.pub_auto_sail_enable(False)
+        self.rc.pub_sail_effort(0)  # pub manual sail effort, this changes state to manual
+        self.btnAutoSail.show()
+        self.btnAutoSailDisable.hide()
 
     def keyPressEvent(self, event):
         # SPEED EVENTS
@@ -297,7 +330,8 @@ class RosThread(QThread):
     vessel_heading_updated = pyqtSignal(int)
     sail_heading_updated = pyqtSignal(int)
     water_depth_updated = pyqtSignal(float)
-    temperature_updated = pyqtSignal(float)
+    air_temp_updated = pyqtSignal(float)
+    water_temp_updated = pyqtSignal(float)
     humidity_updated = pyqtSignal(float)
     air_pressure_updated = pyqtSignal(float)
     water_speed_updated = pyqtSignal(float)
@@ -334,17 +368,20 @@ class RosThread(QThread):
                                                 Heading,
                                                 queue_size=1)
         self.sail_angle_pub = rospy.Publisher('manual/cmd_sail_angle',
-                                                Heading,
-                                                queue_size=1)
+                                              Heading,
+                                              queue_size=1)
         self.boat_rot_pub = rospy.Publisher('manual/cmd_rot',
                                             Float64,
                                             queue_size=1)
         self.mission_cmd_pub = rospy.Publisher('cmd_mission',
                                                String,
                                                queue_size=1)
+        self.autosail_enable_pub = rospy.Publisher('/enable_sail_autonomy',
+                                                   Bool,
+                                                   queue_size=1)
 
     def pub_rudder_effort(self, effort):
-        rospy.loginfo("[REMOTE CTRL] entered pub rudder effort handler")        
+        rospy.loginfo("[REMOTE CTRL] entered pub rudder effort handler")
         self.rudder_effort_pub.publish(effort)
 
     def pub_prop_effort(self, speed):
@@ -370,6 +407,9 @@ class RosThread(QThread):
         msg.heading = angle
         self.sail_angle_pub.publish(msg)
 
+    def pub_auto_sail_enable(self, enable):
+        self.autosail_enable_pub.publish(enable)
+
     def pub_rot(self, rot):
         self.boat_rot_pub.publish(rot)
 
@@ -393,8 +433,11 @@ class RosThread(QThread):
     def handle_water_depth(self, depth):
         self.water_depth_updated.emit(depth.depth)
 
-    def handle_temperature(self, temp):
-        self.temperature_updated.emit(temp.temp)
+    def handle_air_temp(self, temp):
+        self.air_temp_updated.emit(temp.temp)
+
+    def handle_water_temp(self, temp):
+        self.water_temp_updated.emit(temp.temp)
 
     def handle_humidity(self, humid):
         self.humidity_updated.emit(humid.humid)
@@ -421,7 +464,8 @@ class RosThread(QThread):
         self.current_readings.append(msg.value)
         # only update gui once a second
         if (rospy.get_time() - self.last_current_update) > 1:
-            curr_average = sum(self.current_readings)/len(self.current_readings)
+            curr_average = sum(self.current_readings) / \
+                len(self.current_readings)
             self.current_data_updated.emit(curr_average)
             # clear list
             del self.current_readings[:]
@@ -435,7 +479,7 @@ class RosThread(QThread):
             # clear list
             del self.volt_readings[:]
 
-    #TODO: create fields per unique address, so to automatically show robo claw
+    # TODO: create fields per unique address, so to automatically show robo claw
     # status no matter what its address is or how many there are.
     def handle_roboclaw_status(self, msg):
         # time = msg.time
@@ -448,7 +492,8 @@ class RosThread(QThread):
         self.flush_broken()
         id = req.id
         topic = req.topic
-        rospy.loginfo("Received bond request with id {} and topic {}".format(id, topic))
+        rospy.loginfo(
+            "Received bond request with id {} and topic {}".format(id, topic))
         #self.bond = bondpy.Bond(topic, id, on_broken=self.shutdown_bond)
         self.bond = bondpy.Bond(topic, id)
         self.bond.start()
@@ -481,19 +526,27 @@ class RosThread(QThread):
                           self._create_bond)
         rospy.loginfo("sent bond service")
         rospy.Subscriber("wind_info", WIND, self.handle_wind_info)
-        rospy.Subscriber("vessel_hdng_true_cal", Heading, self.handle_vessel_heading)
-        rospy.Subscriber("sail_hdng_true_cal", Heading, self.handle_sail_heading)
+        rospy.Subscriber("vessel_hdng_true_cal", Heading,
+                         self.handle_vessel_heading)
+        rospy.Subscriber("sail_hdng_true_cal", Heading,
+                         self.handle_sail_heading)
         rospy.Subscriber("water_depth", Depth, self.handle_water_depth)
-        rospy.Subscriber("temperature", TEMP, self.handle_temperature)
+        
+        rospy.Subscriber("/air_temperature", TEMP, self.handle_air_temp)
+        rospy.Subscriber("/water_temperature", TEMP, self.handle_water_temp)
+
         rospy.Subscriber("humidity", HUMIDITY, self.handle_humidity)
         rospy.Subscriber("pressure", PRESSURE, self.handle_air_pressure)
         rospy.Subscriber("water_speed", Speed, self.handle_water_speed)
         rospy.Subscriber("gnss_position", GNSSData, self.handle_gnss)
         rospy.Subscriber("current_ave", ADCReading, self.handle_current_draw)
-        rospy.Subscriber("voltage_ave", ADCReading, self.handle_battery_voltage)
-        rospy.Subscriber("roboclaw_status", RoboclawStatus, self.handle_roboclaw_status)
+        rospy.Subscriber("voltage_ave", ADCReading,
+                         self.handle_battery_voltage)
+        rospy.Subscriber("roboclaw_status", RoboclawStatus,
+                         self.handle_roboclaw_status)
         rospy.Subscriber("state_change", String, self.handle_state_change)
-        rospy.Subscriber("substate_change", String, self.handle_substate_change)
+        rospy.Subscriber("substate_change", String,
+                         self.handle_substate_change)
         rospy.Subscriber("declination", Declination, self.handle_declination)
         rospy.Subscriber("/sog", Speed, self.handle_sog)
         rospy.spin()
