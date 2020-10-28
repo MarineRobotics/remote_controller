@@ -200,7 +200,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.txtBatRemaining.setText("{0:.0f}".format(round(level)))
 
     def update_power_consumption(self, power):
-        self.txtPower.setText(str(power))
+        self.txtPower.setText("{0:.2f}".format(round(power, 2)))
 
     def set_heading(self):
         des_heading = int(self.txtDesHeading.text())
