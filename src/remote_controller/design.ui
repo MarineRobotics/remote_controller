@@ -1739,6 +1739,69 @@ color: rgb(255, 255, 255);</string>
        <string>Disable auto sail</string>
       </property>
      </widget>
+     <widget class="QPushButton" name="btn10Ave">
+      <property name="geometry">
+       <rect>
+        <x>220</x>
+        <y>140</y>
+        <width>91</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Liberation Mono</family>
+        <pointsize>12</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>10s Ave </string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btn20sAve">
+      <property name="geometry">
+       <rect>
+        <x>220</x>
+        <y>160</y>
+        <width>91</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Liberation Mono</family>
+        <pointsize>12</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>20s Ave </string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="btn30sAve">
+      <property name="geometry">
+       <rect>
+        <x>220</x>
+        <y>180</y>
+        <width>91</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Liberation Mono</family>
+        <pointsize>12</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>30s Ave </string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_2">
      <property name="enabled">

@@ -67,6 +67,8 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
         self.btnPropOff.clicked.connect(self.stop_prop)
         self.btnAutoSail.clicked.connect(self.start_auto_sail)
         self.btnAutoSailDisable.clicked.connect(self.stop_auto_sail)
+        self.btn10Ave.clicked.connect(self.stop_auto_sail)
+        self.btn20sAve.clicked.connect(self.start_auto_sail)
         self.btnDesHeading.clicked.connect(self.set_heading)
         self.btnDesSail.clicked.connect(self.set_sail_heading)
         self.btnDesSailAngle.clicked.connect(self.set_sail_angle)
@@ -149,7 +151,7 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
 
     def update_air_pressure(self, pressure):
         """Update GUI field with air pressure and format float"""
-        self.txtPres.setText("{0:.2f}".format(round(pressure)))
+        self.txtPres.setText("{0:.2f}".format(pressure))
 
     def update_water_speed(self, speed):
         """Update GUI field with water speed and format float"""
@@ -548,7 +550,7 @@ class RosThread(QThread):
         rospy.Subscriber("sail_hdng_true_cal", Heading,
                          self.handle_sail_heading)
         rospy.Subscriber("water_depth", Depth, self.handle_water_depth)
-        
+
         rospy.Subscriber("/air_temperature", TEMP, self.handle_air_temp)
         rospy.Subscriber("/water_temperature", TEMP, self.handle_water_temp)
 
