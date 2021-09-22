@@ -149,7 +149,7 @@ class Window(QtGui.QMainWindow, design.Ui_MainWindow):
 
     def update_air_pressure(self, pressure):
         """Update GUI field with air pressure and format float"""
-        self.txtPres.setText("{0:.2f}".format(round(pressure)))
+        self.txtPres.setText("{0:.2f}".format(pressure))
 
     def update_water_speed(self, speed):
         """Update GUI field with water speed and format float"""
