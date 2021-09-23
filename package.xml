@@ -59,7 +59,7 @@
   <exec_depend>mr_messages</exec_depend>
   <exec_depend>rospy</exec_depend>
   <exec_depend>std_msgs</exec_depend>
-  <exec_depend>pyqt5-dev-tools</exec_depend>
+  <exec_depend>pyqt4-dev-tools</exec_depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->
