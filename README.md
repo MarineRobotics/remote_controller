@@ -5,10 +5,10 @@ This is a work in progress...
 
 ## Contents
 
-- [System Overview](#systemoverview)
+- [System Overview](#system-overview)
 - [Environment](#environment)
-- [Run The Software](#runthesoftware)
-- [Control Interface](#controlinterface)
+- [Run The Software](#run-the-software)
+- [Control Interface](#control-interface)
 
 ## System Overview
 
@@ -21,7 +21,7 @@ Flowchart:
 Operating System: Ubuntu 16.04 LTS or up is required
 ROS: Kinetic or Melodic
 
-## Run the Software:
+## Run the Software
 
 SSH connect to the Pi (make sure IP address is up to date):
 ```
