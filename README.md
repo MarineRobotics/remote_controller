@@ -1,4 +1,5 @@
 <p align="center"><img src="https://user-images.githubusercontent.com/47678311/134843035-bf94204a-1e1a-4baa-b05a-0608b420d87e.png"></p>
+<p align="center"><© Marine Robotics, LLC></p>
 
 This is a work in progress...
 
