@@ -7,6 +7,7 @@ This is a work in progress...
 
 - [System Overview](#system-overview)
 - [Environment](#environment)
+- [Prerequisite](#prerequisite)
 - [Run The Software](#run-the-software)
 - [Control Interface](#control-interface)
 
@@ -18,8 +19,27 @@ Flowchart:
 <p align="center"><img src="https://user-images.githubusercontent.com/47678311/134934079-bc020045-4d39-49ab-9f9b-42817a68920d.png"></p>
 
 ## Environment
-Operating System: Ubuntu 16.04 LTS or up is required
-ROS: Kinetic or Melodic
+Operating System: Ubuntu 16.04 LTS or up is required.
+
+ROS: Kinetic or Melodic.
+
+## Prerequisite
+#### ROS setup
+To install and confiure ROS. Install ROS kinetic or melodic depending on the operating system, create a workspace and configure the environmental variables  (http://wiki.ros.org/ROS/Tutorials/InstallingandConfiguringROSEnvironment).
+
+Some of the ROS nodes require external python libraries like pyserial to be installed. Each of these required packages is defined in that ROS node’s “package.xml”, enabling rosdep to automatically find all dependencies. Make sure you initialize and update rosdep in your workspace (“rosdep init”, “rosdep update”). 
+
+Make sure pyqt is installed:
+```
+sudo apt-get install python-qt4 pyqt4-dev-tools
+```
+For Ubuntu 20.04:
+```
+pip3 install --user pyqt5  
+sudo apt-get install python3-pyqt5  
+sudo apt-get install pyqt5-dev-tools
+sudo apt-get install qttools5-dev-tools
+```
 
 ## Run the Software
 
