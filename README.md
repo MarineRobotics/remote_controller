@@ -27,7 +27,11 @@ ROS: Kinetic or Melodic.
 #### ROS setup
 To install and confiure ROS. Install ROS kinetic or melodic depending on the operating system, create a workspace and configure the environmental variables  (http://wiki.ros.org/ROS/Tutorials/InstallingandConfiguringROSEnvironment).
 
-Some of the ROS nodes require external python libraries like pyserial to be installed. Each of these required packages is defined in that ROS node’s “package.xml”, enabling rosdep to automatically find all dependencies. Make sure you initialize and update rosdep in your workspace (“rosdep init”, “rosdep update”). 
+Some of the ROS nodes require external python libraries like pyserial to be installed. Each of these required packages is defined in that ROS node’s “package.xml”, enabling rosdep to automatically find all dependencies. Make sure you initialize and update rosdep in your workspace:
+```
+rosdep init
+rosdep update
+```
 
 Make sure pyqt is installed:
 ```
