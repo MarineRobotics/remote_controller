@@ -19,8 +19,8 @@ Flowchart:
 <p align="center"><img src="https://user-images.githubusercontent.com/47678311/134934079-bc020045-4d39-49ab-9f9b-42817a68920d.png"></p>
 
 # Operating system requirements
-Operating System: Ubuntu 20.04 LTS is required.
-If you are running an older version, please go to the [Python 2 branch of the software](https://github.com/MarineRobotics/remote_controller/tree/developer)
+Operating System: Ubuntu 20.04 LTS is required.  
+:information_source: If you are running an older version, please go to the [Python 2 branch of the software](https://github.com/MarineRobotics/remote_controller/tree/developer)
 
 ROS: Noetic.
 
@@ -102,16 +102,16 @@ roslaunch remote_controller controller.launch
 ```
 ## Run MOOS
 
-On the Pi:
+**On the Pi:**
 
-#### :information_source: **Manual control must be disabled before executing the pAntler command**
+:information_source: **Manual control must be disabled before executing the pAntler command**  
 This is a bug that will be fixed soon, but right now, a moos mission can only be started if manual control was not enabled. It is ok for the remote control software to be running, just not for it to be enabled using the "enable manual" button.
 
 ```
 cd moos-ivp-mr/missions/mission_folder
 pAntler mission_robocat.moos
 ```
-On laptop:
+**On your laptop:**
 ```
 cd moos-ivp-mr/missions/mission_folder
 pAntler mission_shore.moos
