@@ -96,9 +96,8 @@ roslaunch fs_control start_frontseat.launch
 ## Start the remote controller
 Run controller from your laptop:
 ```
-cd catkin_ws
-source devel/setup.bash
-roslaunch remote_controller controller.launch
+$ cd catkin_ws/src/remote_controller
+$ ./run.sh
 ```
 ## Run MOOS
 
