@@ -89,6 +89,8 @@ http://wiki.ros.org/noetic/Installation/Ubuntu
   $ catkin build
   ```
 
+## TODO: link to MOOS install instructions
+## TODO: instructions on how to clone and build moos-ivp-mr
 
 # Run the software
 
@@ -96,7 +98,7 @@ http://wiki.ros.org/noetic/Installation/Ubuntu
 
 
 
-SSH connect to the front-seat RPi (make sure IP address is up to date):
+SSH connect to the front-seat RPi (IP address may change depending on your setup):
 ```
 ssh pi@192.168.1.160
 ```
@@ -118,7 +120,7 @@ $ ./run.sh
 **On the Pi:**
 
 :information_source: **Manual control must be disabled before executing the pAntler command**  
-This is a bug that will be fixed soon, but right now, a moos mission can only be started if manual control was not enabled. It is ok for the remote control software to be running, just not for it to be enabled using the "enable manual" button.
+This is a bug that will be fixed soon, but right now a moos mission can only be started if manual control was not enabled. It is ok for the remote control software to be running, just not for it to be enabled using the "enable manual" button.
 
 ```
 cd moos-ivp-mr/missions/mission_folder
