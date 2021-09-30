@@ -38,9 +38,23 @@ http://wiki.ros.org/noetic/Installation/Ubuntu
    $ apt-get update
    $ apt-get install python3-catkin-tools python3-osrf-pycommon python3-pip
    ```
+* Let's create and build a catkin workspace:
+  ```
+  $ mkdir -p ~/catkin_ws/src
+  $ cd ~/catkin_ws/
+  $ catkin build
+  ```
+  If you look in your current directory you should now have a 'build' and 'devel' folder. Inside the 'devel' folder you can see that there are now several setup.*sh files. Sourcing any of these files will overlay this workspace on top of your environment. 
+  
+* Before continuing source your new setup.*sh file:
+  ```
+  $ source devel/setup.bash
+  ```
 
-* Follow the `Create a workspace` instructions of the official ros tutorial
-http://wiki.ros.org/ROS/Tutorials/InstallingandConfiguringROSEnvironment#Create_a_ROS_Workspace
+* To make sure your workspace is properly overlayed by the setup script, make sure ROS_PACKAGE_PATH environment variable includes the directory you're in.
+  ```
+  $ echo $ROS_PACKAGE_PATH
+  ```
 
 ### Download and build remote controller
 
@@ -72,7 +86,7 @@ http://wiki.ros.org/ROS/Tutorials/InstallingandConfiguringROSEnvironment#Create_
 
 * Finally, build the remote controller software:
   ```
-  $ catkin_make
+  $ catkin build
   ```
 
 
