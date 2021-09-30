@@ -3,6 +3,7 @@
 
 # TODO: allow pi address to be specified as variable. Keep .160 as default
 # TODO: allow host ip to be specified as variable, don't look for it if that's the case
+# TODO: allow net id to be specified as variable.
 
 # Get list of host ip addresses
 # Find ip where network-id (192.168.1) matches the boat network id
@@ -27,7 +28,7 @@ if [ -z ${hostIP+x} ]; then
 fi
 
 echo "found host ip = ${hostIP}"
-export ROS_MASTER_URI=192.168.1.160:11311
+export ROS_MASTER_URI=http://192.168.1.160:11311
 export ROS_HOSTNAME=$hostIP
 
 # source ROS workspace
