@@ -68,8 +68,8 @@ http://wiki.ros.org/noetic/Installation/Ubuntu
   $ git clone https://github.com/MarineRobotics/remote_controller.git
   ```
 
-  To run correctly, our ROS node require external libraries like pyqt to be installed. Each of these required packages is defined in that ROS node’s “package.xml”. By using rosdep we can automatically find and install these dependencies.  
-  `The following steps should have been executed during the install part of this tutorial. If you didn't, enter the following commands:`
+  To run correctly, our ROS node requires external libraries like pyqt to be installed. Each of these required packages is defined in that ROS node’s “package.xml”. By using rosdep we can automatically find and install these dependencies.  
+  `Rosdep should have been initialized during the install part of this tutorial. If you didn't already dot it now:`
   ```
   $ rosdep init
   $ rosdep update
@@ -89,8 +89,6 @@ http://wiki.ros.org/noetic/Installation/Ubuntu
   $ catkin build
   ```
 
-## TODO: link to MOOS install instructions
-## TODO: instructions on how to clone and build moos-ivp-mr
 
 # Run the software
 
