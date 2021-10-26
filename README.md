@@ -16,7 +16,7 @@ This is a work in progress...
 A combination of MOOS-IvP and ROS is used for the boat system. MOOS-IvP is the backseat driver and handles all the user and mission related logic. ROS is used for the front seat. This contains all the low level logic communicating with the boat’s actuators and sensors.
 
 Flowchart:
-<p align="center"><img src="https://user-images.githubusercontent.com/47678311/134934079-bc020045-4d39-49ab-9f9b-42817a68920d.png"></p>
+<p align="center"><img src="https://user-images.githubusercontent.com/3636101/138930940-ef8233cf-61be-4b09-9d52-0d364ddd69f7.png"></p>
 
 # Operating system requirements
 Operating System: Ubuntu 20.04 LTS is required.  
@@ -136,3 +136,4 @@ WS for propeller, QE for sail and AD for rudder
 
 In Boat State section the status will show as payload during MOOS missions
 <p align="center"><img src="https://user-images.githubusercontent.com/47678311/134934203-96bc625d-c441-46ac-a2cf-9d8e144e75be.png"></p>
+![ROS architecture](https://user-images.githubusercontent.com/3636101/138930940-ef8233cf-61be-4b09-9d52-0d364ddd69f7.png)
