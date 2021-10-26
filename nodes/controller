@@ -253,12 +253,10 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.rc.pub_boat_heading(des_heading)
 
     def set_sail_heading(self):
-        self.stop_auto_sail()
         des_heading = int(self.txtDesSail.text())
         self.rc.pub_sail_heading(des_heading)
 
     def set_sail_angle(self):
-        self.stop_auto_sail()
         des_angle = int(self.txtDesSailAngle.text())
         self.rc.pub_sail_angle(des_angle)
 
@@ -311,12 +309,19 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.rc.pub_sail_angle(0)
         self.rc.pub_auto_sail_enable(True)
         self.btnAutoSail.hide()
+        # Disable manual sail control when using auto sail
+        sailGroup = self.sailCtrlGroup
+        if sailGroup is not None:
+            sailGroup.setEnabled(False)
         self.btnAutoSailDisable.show()
 
     def stop_auto_sail(self):
         self.rc.pub_auto_sail_enable(False)
         self.rc.pub_sail_effort(0)  # pub manual sail effort, this changes state to manual
         self.btnAutoSail.show()
+        sailGroup = self.sailCtrlGroup
+        if sailGroup is not None:
+            sailGroup.setEnabled(True)
         self.btnAutoSailDisable.hide()
 
     def keyPressEvent(self, event):
