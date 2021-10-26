@@ -313,7 +313,6 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         sailGroup = self.sailCtrlGroup
         if sailGroup is not None:
             sailGroup.setEnabled(False)
-        #self.sailCtrlGroup.disable()
         self.btnAutoSailDisable.show()
 
     def stop_auto_sail(self):
@@ -323,7 +322,6 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         sailGroup = self.sailCtrlGroup
         if sailGroup is not None:
             sailGroup.setEnabled(True)
-        #self.sailCtrlGroup.enable()
         self.btnAutoSailDisable.hide()
 
     def keyPressEvent(self, event):
