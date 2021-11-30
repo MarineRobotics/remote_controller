@@ -21,7 +21,7 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>0</y>
+      <y>20</y>
       <width>1121</width>
       <height>741</height>
      </rect>
@@ -37,9 +37,9 @@
       <property name="geometry">
        <rect>
         <x>390</x>
-        <y>80</y>
+        <y>280</y>
         <width>251</width>
-        <height>161</height>
+        <height>101</height>
        </rect>
       </property>
       <property name="frameShape">
@@ -48,25 +48,6 @@
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <widget class="QLineEdit" name="txtHeading">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>200</x>
-         <y>10</y>
-         <width>41</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
       <widget class="QLineEdit" name="txtWaterSpeed">
        <property name="enabled">
         <bool>true</bool>
@@ -74,7 +55,7 @@
        <property name="geometry">
         <rect>
          <x>200</x>
-         <y>100</y>
+         <y>40</y>
          <width>41</width>
          <height>20</height>
         </rect>
@@ -90,7 +71,7 @@
        <property name="geometry">
         <rect>
          <x>200</x>
-         <y>130</y>
+         <y>70</y>
          <width>41</width>
          <height>20</height>
         </rect>
@@ -99,36 +80,11 @@
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QLabel" name="label">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>10</y>
-         <width>191</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Monospace</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <italic>false</italic>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>Boat Heading true (deg):</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
       <widget class="QLabel" name="label_2">
        <property name="geometry">
         <rect>
          <x>40</x>
-         <y>100</y>
+         <y>40</y>
          <width>151</width>
          <height>20</height>
         </rect>
@@ -153,7 +109,7 @@
        <property name="geometry">
         <rect>
          <x>90</x>
-         <y>130</y>
+         <y>70</y>
          <width>101</width>
          <height>16</height>
         </rect>
@@ -174,47 +130,6 @@
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="label_24">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>40</y>
-         <width>191</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Monospace</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <italic>false</italic>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>Sail Heading true (deg):</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="txtSailHeading">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>200</x>
-         <y>40</y>
-         <width>41</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
       <widget class="QLineEdit" name="txtDeclination">
        <property name="enabled">
         <bool>true</bool>
@@ -222,7 +137,7 @@
        <property name="geometry">
         <rect>
          <x>200</x>
-         <y>70</y>
+         <y>10</y>
          <width>41</width>
          <height>20</height>
         </rect>
@@ -235,7 +150,7 @@
        <property name="geometry">
         <rect>
          <x>40</x>
-         <y>70</y>
+         <y>10</y>
          <width>151</width>
          <height>20</height>
         </rect>
@@ -261,7 +176,7 @@
       <property name="geometry">
        <rect>
         <x>400</x>
-        <y>250</y>
+        <y>390</y>
         <width>221</width>
         <height>41</height>
        </rect>
@@ -303,7 +218,7 @@
       <property name="geometry">
        <rect>
         <x>400</x>
-        <y>30</y>
+        <y>10</y>
         <width>191</width>
         <height>41</height>
        </rect>
@@ -317,7 +232,7 @@
        </font>
       </property>
       <property name="text">
-       <string>NAV Info</string>
+       <string>NAV</string>
       </property>
      </widget>
      <widget class="QLineEdit" name="txtConnectionStatus">
@@ -657,9 +572,9 @@ color: rgb(255, 255, 255);</string>
       <property name="geometry">
        <rect>
         <x>390</x>
-        <y>290</y>
+        <y>430</y>
         <width>251</width>
-        <height>301</height>
+        <height>281</height>
        </rect>
       </property>
       <property name="frameShape">
@@ -1752,6 +1667,107 @@ color: rgb(255, 255, 255);</string>
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
+     <widget class="QLabel" name="lblWind">
+      <property name="geometry">
+       <rect>
+        <x>380</x>
+        <y>20</y>
+        <width>271</width>
+        <height>271</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="pixmap">
+       <pixmap>assets/compass.png</pixmap>
+      </property>
+      <property name="scaledContents">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lblBoat">
+      <property name="geometry">
+       <rect>
+        <x>450</x>
+        <y>90</y>
+        <width>131</width>
+        <height>171</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="pixmap">
+       <pixmap>assets/boat.png</pixmap>
+      </property>
+      <property name="scaledContents">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lblSail">
+      <property name="geometry">
+       <rect>
+        <x>490</x>
+        <y>90</y>
+        <width>51</width>
+        <height>161</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="pixmap">
+       <pixmap>assets/sail.png</pixmap>
+      </property>
+      <property name="scaledContents">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="txtHeading">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>530</x>
+        <y>80</y>
+        <width>41</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_57">
+      <property name="geometry">
+       <rect>
+        <x>460</x>
+        <y>80</y>
+        <width>61</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Monospace</family>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <italic>false</italic>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Heading</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
      <zorder>sailCtrlGroup</zorder>
      <zorder>frame</zorder>
      <zorder>lblActuatorStatus_3</zorder>
@@ -1783,6 +1799,11 @@ color: rgb(255, 255, 255);</string>
      <zorder>label_15</zorder>
      <zorder>layoutWidget_3</zorder>
      <zorder>label_17</zorder>
+     <zorder>lblWind</zorder>
+     <zorder>lblBoat</zorder>
+     <zorder>lblSail</zorder>
+     <zorder>txtHeading</zorder>
+     <zorder>label_57</zorder>
     </widget>
     <widget class="QWidget" name="tab_2">
      <property name="enabled">
