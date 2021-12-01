@@ -718,7 +718,7 @@ class Ui_MainWindow(object):
         self.lblBoat.setScaledContents(True)
         self.lblBoat.setObjectName("lblBoat")
         self.lblSail = QtWidgets.QLabel(self.tab)
-        self.lblSail.setGeometry(QtCore.QRect(490, 90, 51, 161))
+        self.lblSail.setGeometry(QtCore.QRect(490, 80, 51, 161))
         self.lblSail.setText("")
         self.lblSail.setPixmap(QtGui.QPixmap("assets/sail.png"))
         self.lblSail.setScaledContents(True)
