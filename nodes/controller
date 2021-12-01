@@ -33,6 +33,21 @@ COLOR_ERR = "rgb(186, 7, 7)"
 COLOR_OK = "rgb(0, 150, 0)"
 
 
+class myIntValidator(QtGui.QIntValidator):
+    validationChanged = QtCore.pyqtSignal(QtGui.QValidator.State)
+
+    def validate(self, input, pos):
+        state, input, pos = super().validate(input, pos)
+        # forward non int keypresses
+        if state == QtGui.QValidator.Invalid:
+            # We assume user tried to manually control boat if input was not an int
+            # We then remove focus so their next keypress will register as intended
+            QtWidgets.QApplication.focusWidget().clearFocus()
+            rospy.logwarn("Attempted text input in int field. Removed focus")
+        self.validationChanged.emit(state)
+        return state, input, pos
+
+
 class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
     def __init__(self):
@@ -88,19 +103,44 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.txtDesROT.returnPressed.connect(self.set_rot)
         self.btnStop.clicked.connect(self.stop_all)
 
-
-        self.configure_compass()
-
+        # Connect signals
         self.connect_signals()
 
+        ####################
+        # Input Validation #
+        ####################
+
+        # Create int validator (will reject all non int input, and remove focus from field)
+        self.onlyInt = myIntValidator()
+
+        # Connect validator to input fields
+        self.txtDesHeading.setValidator(self.onlyInt)
+        self.txtDesROT.setValidator(self.onlyInt)
+        self.txtDesSail.setValidator(self.onlyInt)
+        self.txtDesSailAngle.setValidator(self.onlyInt)
+
+        ##################
+        # Compass widget #
+        ##################
+        self.configure_compass()
+
+        
+        #####################
+        # User clock widget #
+        #####################
         self.timer = QtCore.QTimer(self)
         self.timer.setInterval(1000)
         self.timer.timeout.connect(self.displayTime)
         self.timer.timeout.connect(self.check_connection_status)
         self.timer.start()
 
+        #########
+        # Start #
+        #########
+
         self.rc.start()
         self.show()
+
 
     def configure_compass(self):
         """
@@ -149,9 +189,9 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         # Save label centers
         point: namedtuple = namedtuple('point', 'x y')  # namedtuple to save x, y coordinates
-        self.lblWindCenter = point(self.lblWind.x() + self.lblWind.width()/2, self.lblWind.y() + self.lblWind.height()/2)
-        self.lblBoatCenter = point(self.lblBoat.x() + self.lblBoat.width()/2, self.lblBoat.y() + self.lblBoat.height()/2)
-        self.lblSailCenter = point(self.lblSail.x() + self.lblSail.width()/2, self.lblSail.y() + self.lblSail.height()/2)
+        self.lblWindCenter = point(int(self.lblWind.x() + self.lblWind.width()/2), int(self.lblWind.y() + self.lblWind.height()/2))
+        self.lblBoatCenter = point(int(self.lblBoat.x() + self.lblBoat.width()/2), int(self.lblBoat.y() + self.lblBoat.height()/2))
+        self.lblSailCenter = point(int(self.lblSail.x() + self.lblSail.width()/2), int(self.lblSail.y() + self.lblSail.height()/2))
         rospy.logerr(f"{self.lblSail.width()} | {self.lblSail.height()}")
         rospy.logerr(f"diag = {self.sailDiag}")
 
@@ -298,6 +338,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         #new
         self.rc.sail_angle_updated.connect(self.update_sail_angle)
+
 
     def update_sail_data(self, speed, direction, reference, apparent_wind_vessel, apparent_wind_north):
         """Update GUI fields with provided data"""
