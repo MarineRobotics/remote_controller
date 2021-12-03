@@ -791,6 +791,13 @@ class RosThread(QThread):
         power = msg.value
         self.power_consumption_updated.emit(power)
 
+    def handle_wind_interval(self, msg):
+        self.sail_angle = HO(msg.data)
+        self.apparent_wind_vessel = HO(msg.data)  # Heading object with 20 value mean
+        self.apparent_wind_sail = HO(msg.data)
+        self.apparent_wind_north = HO(msg.data)  # apparent wind north referenced
+        
+
     def _create_bond(self, req):
         self.flush_broken()
         id = req.id
@@ -855,6 +862,8 @@ class RosThread(QThread):
 
         rospy.Subscriber("/battery_level", ADCReading, self.handle_bat_level)
         rospy.Subscriber("/power_consumption", ADCReading, self.handle_power_consumption)
+
+        rospy.Subscriber("wind_avg_interval", Int32, self.handle_wind_interval)
 
         rospy.spin()
 
