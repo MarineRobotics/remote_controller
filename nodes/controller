@@ -192,9 +192,6 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.lblWindCenter = point(int(self.lblWind.x() + self.lblWind.width()/2), int(self.lblWind.y() + self.lblWind.height()/2))
         self.lblBoatCenter = point(int(self.lblBoat.x() + self.lblBoat.width()/2), int(self.lblBoat.y() + self.lblBoat.height()/2))
         self.lblSailCenter = point(int(self.lblSail.x() + self.lblSail.width()/2), int(self.lblSail.y() + self.lblSail.height()/2))
-        rospy.logerr(f"{self.lblSail.width()} | {self.lblSail.height()}")
-        rospy.logerr(f"diag = {self.sailDiag}")
-
 
         # Add pixmaps to labels
         self.lblWind.setPixmap(self.windPix)
@@ -220,8 +217,6 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.lblWindCenter = point(self.lblWind.x() + self.lblWind.width()/2, self.lblWind.y() + self.lblWind.height()/2)
         self.lblBoatCenter = point(self.lblBoat.x() + self.lblBoat.width()/2, self.lblBoat.y() + self.lblBoat.height()/2)
         self.lblSailCenter = point(self.lblSail.x() + self.lblSail.width()/2, self.lblSail.y() + self.lblSail.height()/2)
-        rospy.logerr(f"{self.lblSail.width()} | {self.lblSail.height()}")
-        rospy.logerr(f"diag = {self.sailDiag}")
 
         # Save label radius
         self.lblWindRadius = self.windDiag/2
@@ -236,7 +231,6 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.lblSailAngle.move(sailGeo.x() + sailGeo.width()/2, sailGeo.y() + sailGeo.height()/4)
 
         # Create label moving functions, can be called when a value is received from a ROS subscriber
-        rospy.logerr(f"wind center = {self.lblWindCenter} | sail center = {self.lblSailCenter} ")
         self.moveWindLbl = self.getLableMover(self.windPix, self.lblWind, self.lblWindCenter, self.lblWindAngle, offset = -30, scaler = 0)
         self.moveSailLbl = self.getLableMover(self.sailPix, self.lblSail, self.lblSailCenter, self.lblSailAngle, offset=-40, scaler=20)
         
