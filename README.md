@@ -30,7 +30,7 @@ ROS: Noetic.
 [comment]: <> (TODO: Need to tell people to use correct script)
 ## Manual installation
 ### Install and configure ROS
-* Install ROS Noetic and configure your ~/.bashrc file using the oficial ROS tutorial. Make sure to install the `desktop` package or higher depending on the operating system.
+* Click the link below to the official ROS tutorial. Follow the tutorial to install ROS Noetic and configure your ~/.bashrc file. Make sure to **install the `desktop` package** or higher depending on the operating system.
 http://wiki.ros.org/noetic/Installation/Ubuntu  
 
 * Next we'll install extra python3 related dependencies
@@ -63,8 +63,10 @@ http://wiki.ros.org/noetic/Installation/Ubuntu
   $ cd ~/catkin_ws/src
   ```
 
-* Clone the software using git
+* Clone the necessary packages using git
   ```
+  $ git clone -b python3 https://github.com/MarineRobotics/mr_messages.git
+  $ git clone -b python3 https://github.com/MarineRobotics/movement_controls.git
   $ git clone https://github.com/MarineRobotics/remote_controller.git
   ```
 
