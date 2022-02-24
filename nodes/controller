@@ -4,7 +4,7 @@ import rospy
 import rostopic
 import sys
 import os
-from std_msgs.msg import Float64, String, Bool
+from std_msgs.msg import Float64, String, Bool, Int32
 from mr_messages.srv import BondIDRequest, BondIDRequestResponse
 from mr_messages.msg import WIND, Heading, Depth, Speed, GNSSData, ADCReading, RoboclawStatus, TEMP, PRESSURE, HUMIDITY, Declination
 from PyQt5 import QtGui, QtCore, uic, QtWidgets
@@ -209,9 +209,9 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.lblSail.setMinimumSize(self.sailDiag, self.sailDiag)
 
         # Reset label center, becuse resize will move them around
-        self.lblWind.move(self.lblWindCenter.x - self.windDiag/2, self.lblWindCenter.y - self.windDiag/2)
-        self.lblBoat.move(self.lblBoatCenter.x - self.boatDiag/2, self.lblBoatCenter.y - self.boatDiag/2)
-        self.lblSail.move(self.lblSailCenter.x - self.sailDiag/2, self.lblSailCenter.y - self.sailDiag/2)
+        self.lblWind.move(int(self.lblWindCenter.x - self.windDiag/2), int(self.lblWindCenter.y - self.windDiag/2))
+        self.lblBoat.move(int(self.lblBoatCenter.x - self.boatDiag/2), int(self.lblBoatCenter.y - self.boatDiag/2))
+        self.lblSail.move(int(self.lblSailCenter.x - self.sailDiag/2), int(self.lblSailCenter.y - self.sailDiag/2))
 
         #point: namedtuple = namedtuple('point', 'x y')  # namedtuple to save x, y coordinates
         self.lblWindCenter = point(self.lblWind.x() + self.lblWind.width()/2, self.lblWind.y() + self.lblWind.height()/2)
@@ -226,9 +226,9 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         # Move text label to location
         windGeo = self.lblWind.geometry()
-        self.lblWindAngle.move(windGeo.x() + windGeo.width()/2, windGeo.y() + windGeo.height()/4)
+        self.lblWindAngle.move(int(windGeo.x() + windGeo.width()/2), int(windGeo.y() + windGeo.height()/4))
         sailGeo = self.lblSail.geometry()
-        self.lblSailAngle.move(sailGeo.x() + sailGeo.width()/2, sailGeo.y() + sailGeo.height()/4)
+        self.lblSailAngle.move(int(sailGeo.x() + sailGeo.width()/2), int(sailGeo.y() + sailGeo.height()/4))
 
         # Create label moving functions, can be called when a value is received from a ROS subscriber
         self.moveWindLbl = self.getLableMover(self.windPix, self.lblWind, self.lblWindCenter, self.lblWindAngle, offset = -30, scaler = 0)
@@ -256,7 +256,8 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
             pixmap_rotated = imgPixmap.transformed(QTransform().rotate(value),QtCore.Qt.SmoothTransformation)  # Rotate pixmap same as value
             imgLabel.setPixmap(pixmap_rotated) # set rotated pixmap into QLabel
             # Move label displaying text to follow along with rotating picture
-            valueLabel.move(imgLabelCenter.x + ((imgPixmap.width()/2 + scaler) * sin(radians(value))), imgLabelCenter.y - ((imgPixmap.width()/2 + scaler) * cos(radians(value)) + offset))
+            valueLabel.move(int(imgLabelCenter.x + ((imgPixmap.width()/2 + scaler) * sin(radians(value)))), 
+                            int(imgLabelCenter.y - ((imgPixmap.width()/2 + scaler) * cos(radians(value)) + offset)))
             #valueLabel.setText(str(textvalue))
         return moveLabel
 
@@ -830,7 +831,6 @@ class RosThread(QThread):
             return
 
     def run(self):
-        rospy.loginfo("entered run thread")
         s = rospy.Service('share_bond_id',
                           BondIDRequest,
                           self._create_bond)
@@ -865,7 +865,7 @@ class RosThread(QThread):
 
         rospy.Subscriber("wind_avg_interval", Int32, self.handle_wind_interval)
 
-        rospy.spin()
+        #rospy.spin()
 
 
 if __name__ == '__main__':
