@@ -76,6 +76,8 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.btnDesROT.clicked.connect(self.set_rot)
         self.btnStop.clicked.connect(self.stop_all)
         self.connect_signals()
+	self.btnRudderTest.clicked.connect(self.rudder_test)
+	self.btnSailTest.clicked.connect(self.sail_test)
 
         self.timer = QtCore.QTimer(self)
         self.timer.setInterval(1000)
@@ -155,6 +157,9 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.rc.sog_updated.connect(self.update_sog)
         self.rc.bat_level_updated.connect(self.update_bat_lvl)
         self.rc.power_consumption_updated.connect(self.update_power_consumption)
+	self.rc.motor_current_updated.connect(self.update_motor_current)
+        self.rc.rudder_angle_updated.connect(self.update_rudder_angle)
+        self.rc.sail_angle_updated.connect(self.update_sail_angle)
 
     def update_sail_data(self, speed, direction, reference):
         """Update GUI fields with provided data"""
@@ -248,6 +253,15 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     def update_power_consumption(self, power):
         self.txtPower.setText("{0:.2f}".format(round(power, 2)))
 
+    def update_motor_current(self, voltage):
+        self.txtCurrentValue.setText("{0:.2f}".format(round(voltage, 2)))
+
+    def update_rudder_angle(self, voltage):
+        self.txtRudderAngle.setText("{0:.2f}".format(round(voltage, 2)))
+
+    def update_sail_angle(self, voltage):
+        self.txtSailAngle.setText("{0:.2f}".format(round(voltage, 2)))
+
     def set_heading(self):
         des_heading = int(self.txtDesHeading.text())
         self.rc.pub_boat_heading(des_heading)
@@ -323,6 +337,12 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         if sailGroup is not None:
             sailGroup.setEnabled(True)
         self.btnAutoSailDisable.hide()
+
+    def start_rudder_test(self):
+        self.rc.pub_rudder_test_enable(True)
+
+    def start_sail_test(self):
+        self.rc.pub_sail_test_enable(True)
 
     def keyPressEvent(self, event):
         # SPEED EVENTS
@@ -404,6 +424,9 @@ class RosThread(QThread):
     sog_updated = pyqtSignal(float)
     bat_level_updated = pyqtSignal(float)
     power_consumption_updated = pyqtSignal(float)
+    motor_current_updated = pyqtSignal(float)
+    rudder_angle_updated = pyqtSignal(float)
+    sail_angle_updated = pyqtSignal(float)
 
     def __init__(self):
         QThread.__init__(self)
@@ -440,6 +463,12 @@ class RosThread(QThread):
         self.autosail_enable_pub = rospy.Publisher('/enable_sail_autonomy',
                                                    Bool,
                                                    queue_size=1)
+        self.rudder_test_enable_pub = rospy.Publisher('/enable_rudder_test',
+                                                   Bool,
+                                                   queue_size=1)
+        self.sail_test_enable_pub = rospy.Publisher('/enable_sail_test',
+                                                   Bool,
+                                                   queue_size=1)
 
     def pub_rudder_effort(self, effort):
         rospy.loginfo("[REMOTE CTRL] entered pub rudder effort handler")
@@ -470,6 +499,12 @@ class RosThread(QThread):
 
     def pub_auto_sail_enable(self, enable):
         self.autosail_enable_pub.publish(enable)
+
+    def pub_rudder_test_enable(self, enable):
+        self.rudder_test_enable_pub.publish(enable)
+
+    def pub_sail_test_enable(self, enable):
+        self.sail_test_enable_pub.publish(enable)
 
     def pub_rot(self, rot):
         self.boat_rot_pub.publish(rot)
@@ -557,6 +592,18 @@ class RosThread(QThread):
         power = msg.value
         self.power_consumption_updated.emit(power)
 
+    def handle_motor_current(self, msg):
+        current = msg.value
+        self.motor_current_updated.emit(current)
+
+    def handle_rudder_angle(self, msg):
+        angle = msg.value
+        self.rudder_angle_updated.emit(rudder_angle)
+
+    def handle_sail_angle(self, msg):
+        power = msg.value
+        self.sail_angle_updated.emit(sail_angle)
+
     def _create_bond(self, req):
         self.flush_broken()
         id = req.id
@@ -621,6 +668,9 @@ class RosThread(QThread):
 
         rospy.Subscriber("/battery_level", ADCReading, self.handle_bat_level)
         rospy.Subscriber("/power_consumption", ADCReading, self.handle_power_consumption)
+        rospy.Subscriber("/motor_current", ADCReading, self.handle_motor_current)
+        rospy.Subscriber("/rudder_angle", ADCReading, self.handle_rudder_angle)
+        rospy.Subscriber("/sail_angle", ADCReading, self.handle_sail_angle)
 
         rospy.spin()
 
