@@ -5,7 +5,7 @@ import rostopic
 import sys
 from std_msgs.msg import Float64, String, Bool
 from mr_messages.srv import BondIDRequest, BondIDRequestResponse
-from mr_messages.msg import WIND, Heading, Depth, Speed, GNSSData, ADCReading, RoboclawStatus, TEMP, PRESSURE, HUMIDITY, Declination
+from mr_messages.msg import WIND, Heading, Depth, Speed, GNSSData, ADCReading, RoboclawStatus, TEMP, PRESSURE, HUMIDITY, Declination, PID
 from PyQt5 import QtGui, QtCore, uic, QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5.QtCore import QThread, pyqtSignal
