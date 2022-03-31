@@ -75,9 +75,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.btnDesSailAngle.clicked.connect(self.set_sail_angle)
         self.btnDesROT.clicked.connect(self.set_rot)
         self.btnStop.clicked.connect(self.stop_all)
-        self.btnSetProportional.clicked.connect(self.set_pid_p)
-        self.btnSetIntegral.clicked.connect(self.set_pid_i)
-        self.btnSetDerivative.clicked.connect(self.set_pid_d)
+        self.btnSetIntegral.clicked.connect(self.set_pid_gains)
         self.connect_signals()
 	self.btnRudderTest.clicked.connect(self.rudder_test)
 	self.btnSailTest.clicked.connect(self.sail_test)
@@ -405,17 +403,11 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.rc.pub_sail_effort(0)
         self.rc.break_bond()
 
-    def set_pid_p(self):
+    def set_pid_gains(self):
         pid_p = int(self.txtPInput.text())
-        self.rc.pub_pid_p(pid_p)
-
-    def set_pid_i(self):
         pid_i = int(self.txtIInput.text())
-        self.rc.pub_pid_i(pid_i)
-
-    def set_pid_d(self):
         pid_d = int(self.txtDInput.text())
-        self.rc.pub_pid_d(pid_d)
+        self.rc.pub_pid_gains(pid_p, pid_i, pid_d)
 
 class RosThread(QThread):
 
@@ -483,14 +475,8 @@ class RosThread(QThread):
         self.sail_test_enable_pub = rospy.Publisher('/enable_sail_test',
                                                    Bool,
                                                    queue_size=1)
-        self.pid_p_pub = rospy.Publisher('manual/cmd_rudder_pid_p',
-                                                Float64,
-                                                queue_size=1)
-        self.pid_i_pub = rospy.Publisher('manual/cmd_rudder_pid_i',
-                                                Float64,
-                                                queue_size=1)
-        self.pid_d_pub = rospy.Publisher('manual/cmd_rudder_pid_d',
-                                                Float64,
+        self.pid_gains_pub = rospy.Publisher('/rudder/pid_gains',
+                                                PID,
                                                 queue_size=1)
 
     def pub_rudder_effort(self, effort):
@@ -535,14 +521,12 @@ class RosThread(QThread):
     def pub_manual_cmd(self, cmd):
         self.mission_cmd_pub.publish(cmd)
 
-    def pub_pid_p(self, pid_p):
-        self.pid_p_pub.publish(pid_p)
-
-    def pub_pid_i(self, pid_i):
-        self.pid_i_pub.publish(pid_i)
-
-    def pub_pid_d(self, pid_d):
-        self.pid_d_pub.publish(pid_d)
+    def pub_pid_gains(self, pid_p, pid_i, pid_d):
+        msg = PID()
+        msg.kp = pid_p
+        msg.ki = pid_i
+        msg.kd = pid_d
+        self.pid_gains_pub.publish(msg)
 
     def handle_wind_info(self, wind_info):
         self.sail_data_updated.emit(wind_info.speed,
