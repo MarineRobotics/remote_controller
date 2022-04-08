@@ -1957,59 +1957,6 @@ color: rgb(255, 255, 255);</string>
        </property>
       </widget>
      </widget>
-     <widget class="QPushButton" name="btnSetDerivative">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>150</x>
-        <y>360</y>
-        <width>41</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="styleSheet">
-       <string notr="true"/>
-      </property>
-      <property name="text">
-       <string>Set</string>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="txtI">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>50</x>
-        <y>330</y>
-        <width>31</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">border: 1px solid transparent;
-background: transparent;</string>
-      </property>
-      <property name="text">
-       <string>-99</string>
-      </property>
-      <property name="readOnly">
-       <bool>true</bool>
-      </property>
-     </widget>
      <widget class="QLabel" name="lblControl_3">
       <property name="geometry">
        <rect>
@@ -2083,7 +2030,7 @@ background: transparent;</string>
      <widget class="QLineEdit" name="txtIInput">
       <property name="geometry">
        <rect>
-        <x>100</x>
+        <x>60</x>
         <y>330</y>
         <width>41</width>
         <height>20</height>
@@ -2096,38 +2043,10 @@ background: transparent;</string>
        </sizepolicy>
       </property>
      </widget>
-     <widget class="QLineEdit" name="txtP">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>50</x>
-        <y>300</y>
-        <width>31</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">border: 1px solid transparent;
-background: transparent;</string>
-      </property>
-      <property name="text">
-       <string>-99</string>
-      </property>
-      <property name="readOnly">
-       <bool>true</bool>
-      </property>
-     </widget>
      <widget class="QLineEdit" name="txtDInput">
       <property name="geometry">
        <rect>
-        <x>100</x>
+        <x>60</x>
         <y>360</y>
         <width>41</width>
         <height>20</height>
@@ -2195,7 +2114,7 @@ background: transparent;</string>
      <widget class="QLineEdit" name="txtPInput">
       <property name="geometry">
        <rect>
-        <x>100</x>
+        <x>60</x>
         <y>300</y>
         <width>41</width>
         <height>20</height>
@@ -2206,34 +2125,6 @@ background: transparent;</string>
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="txtD">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>50</x>
-        <y>360</y>
-        <width>31</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">border: 1px solid transparent;
-background: transparent;</string>
-      </property>
-      <property name="text">
-       <string>-99</string>
-      </property>
-      <property name="readOnly">
-       <bool>true</bool>
       </property>
      </widget>
      <widget class="QLabel" name="lblI">
@@ -2375,35 +2266,10 @@ background: transparent;</string>
        <string>Error</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="btnSetProportional">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>150</x>
-        <y>299</y>
-        <width>41</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="styleSheet">
-       <string notr="true"/>
-      </property>
-      <property name="text">
-       <string>Set</string>
-      </property>
-     </widget>
      <widget class="QPushButton" name="btnSetIntegral">
       <property name="geometry">
        <rect>
-        <x>150</x>
+        <x>110</x>
         <y>330</y>
         <width>41</width>
         <height>23</height>

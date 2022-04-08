@@ -27,7 +27,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -1786,12 +1786,15 @@ color: rgb(255, 255, 255);</string>
     </widget>
     <widget class="QWidget" name="tab_2">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <attribute name="title">
       <string>Settings</string>
      </attribute>
      <widget class="QLabel" name="lblControl_2">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>20</x>
@@ -1813,6 +1816,9 @@ color: rgb(255, 255, 255);</string>
       </property>
      </widget>
      <widget class="QFrame" name="frame_4">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>20</x>
@@ -1952,6 +1958,9 @@ color: rgb(255, 255, 255);</string>
       </widget>
      </widget>
      <widget class="QPushButton" name="btnSetDerivative">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>150</x>
@@ -2132,6 +2141,9 @@ background: transparent;</string>
       </property>
      </widget>
      <widget class="QLabel" name="lblEffort">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>210</x>
@@ -2246,6 +2258,9 @@ background: transparent;</string>
       </property>
      </widget>
      <widget class="QLabel" name="lblROT">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>210</x>
@@ -2337,6 +2352,9 @@ background: transparent;</string>
       </property>
      </widget>
      <widget class="QLabel" name="lblError">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>210</x>
@@ -2358,6 +2376,9 @@ background: transparent;</string>
       </property>
      </widget>
      <widget class="QPushButton" name="btnSetProportional">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>150</x>
