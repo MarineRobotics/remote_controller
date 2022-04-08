@@ -77,8 +77,8 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.btnStop.clicked.connect(self.stop_all)
         self.btnSetIntegral.clicked.connect(self.set_pid_gains)
         self.connect_signals()
-        # self.btnRudderTest.clicked.connect(self.rudder_test)
-        # self.btnSailTest.clicked.connect(self.sail_test)
+        self.btnRudderTest.clicked.connect(self.rudder_test)
+        self.btnSailTest.clicked.connect(self.sail_test)
 
         self.timer = QtCore.QTimer(self)
         self.timer.setInterval(1000)
@@ -339,13 +339,12 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         if sailGroup is not None:
             sailGroup.setEnabled(True)
         self.btnAutoSailDisable.hide()
-    """
+
     def start_rudder_test(self):
         self.rc.pub_rudder_test_enable(True)
 
     def start_sail_test(self):
         self.rc.pub_sail_test_enable(True)
-    """
 
     def keyPressEvent(self, event):
         # SPEED EVENTS
@@ -472,14 +471,14 @@ class RosThread(QThread):
         self.autosail_enable_pub = rospy.Publisher('/enable_sail_autonomy',
                                                    Bool,
                                                    queue_size=1)
-        """
+
         self.rudder_test_enable_pub = rospy.Publisher('/enable_rudder_test',
                                                    Bool,
                                                    queue_size=1)
         self.sail_test_enable_pub = rospy.Publisher('/enable_sail_test',
                                                    Bool,
                                                    queue_size=1)
-        """
+
         self.pid_gains_pub = rospy.Publisher('/rudder/pid_gains',
                                              PID,
                                              queue_size=1)
@@ -513,13 +512,13 @@ class RosThread(QThread):
 
     def pub_auto_sail_enable(self, enable):
         self.autosail_enable_pub.publish(enable)
-    """
+
     def pub_rudder_test_enable(self, enable):
         self.rudder_test_enable_pub.publish(enable)
 
     def pub_sail_test_enable(self, enable):
         self.sail_test_enable_pub.publish(enable)
-    """
+
 
     def pub_rot(self, rot):
         self.boat_rot_pub.publish(rot)
