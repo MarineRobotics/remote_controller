@@ -65,6 +65,10 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     #bond_signal       = pyqtSignal(bool)  # TODO: connect the bond signl to a slot
     auto_sail_signal = pyqtSignal(bool)
 
+    pid_gains_signal = pyqtSignal(float, float, float)
+    rudder_test_enable_signal = pyqtSignal(bool)
+    sail_test_enable_signal = pyqtSignal(bool)
+
 
     def __init__(self, parent=None, **kwargs):
         super(Window, self).__init__(parent, **kwargs)
@@ -131,9 +135,9 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.btnDesROT.clicked.connect(self.set_rot)
         self.txtDesROT.returnPressed.connect(self.set_rot)
         self.btnStop.clicked.connect(self.stop_all)
+
         #TODO
         self.btnSetIntegral.clicked.connect(self.set_pid_gains)
-        self.connect_signals()
         self.btnRudderTest.clicked.connect(self.start_rudder_test)
         self.btnSailTest.clicked.connect(self.start_sail_test)
 
@@ -370,15 +374,14 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self._rosthread.sog_updated.connect(self.update_sog)
         self._rosthread.bat_level_updated.connect(self.update_bat_lvl)
         self._rosthread.power_consumption_updated.connect(self.update_power_consumption)
-        # TODO
-        self.rc.motor_current_updated.connect(self.update_motor_current)
-        self.rc.rudder_angle_updated.connect(self.update_rudder_angle)
+        # TEST
+        self._rosthread.motor_current_updated.connect(self.update_motor_current)
+        self._rosthread.rudder_angle_updated.connect(self.update_rudder_angle)
         #new
         self._rosthread.sail_angle_updated.connect(self.update_sail_angle)
 
-    def connect_thread_slots(self): #TODO: see if I need to add anything here for Joe + Ken's code
+    def connect_thread_slots(self):
         """Connect slots in rosthread class to signals coming from this main class"""
-        #TODO: check if connect is succesful or not.
         self.heading_signal.connect(self._rosthread.pub_boat_heading)
         self.sail_hdng_signal.connect(self._rosthread.pub_sail_heading)
         self.sail_angle_signal.connect(self._rosthread.pub_sail_angle)
@@ -387,7 +390,10 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.sail_signal.connect(self._rosthread.pub_sail_effort)
         self.prop_signal.connect(self._rosthread.pub_prop_effort)
         self.manual_cmd_signal.connect(self._rosthread.pub_manual_cmd)
-
+        #TODO: test new signals
+        self.pid_gains_signal.connect(self._rosthread.pub_pid_gains)
+        self.rudder_test_enable_signal.connect(self._rosthread.pub_rudder_test_enable)
+        self.sail_test_enable_signal.connect(self._rosthread.pub_sail_test_enable)
         #if connected:
         #    print("cool")
         #else:
@@ -513,12 +519,15 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     def update_power_consumption(self, power):
         self.txtPower.setText("{0:.2f}".format(round(power, 2)))
 
+    @pyqtSlot(float)
     def update_motor_current(self, voltage):
         self.txtCurrentValue.setText("{0:.2f}".format(round(voltage, 2)))
 
+    @pyqtSlot(float)
     def update_rudder_angle(self, voltage):
         self.txtRudderAngle.setText("{0:.2f}".format(round(voltage, 2)))
 
+    @pyqtSlot(float)
     def update_sail_angle(self, voltage):
         self.txtSailAngle.setText("{0:.2f}".format(round(voltage, 2)))
 
@@ -595,11 +604,12 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
             sailGroup.setEnabled(True)
         self.btnAutoSailDisable.hide()
 
+    #TEST: emit signals
     def start_rudder_test(self):
-        self.rc.pub_rudder_test_enable(True)
-
+        self.rudder_test_enable_signal.emit(True)
+    #TEST: emit signals
     def start_sail_test(self):
-        self.rc.pub_sail_test_enable(True)
+        self.sail_test_enable_signal.emit(True)
 
     def keyPressEvent(self, event):
         # SPEED EVENTS
@@ -650,12 +660,13 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.sail_signal.emit(0)
         self.bond_signal.emit(False)
 
-
+    #TEST: emit signals
     def set_pid_gains(self):
         pid_p = int(self.txtPInput.text())
         pid_i = int(self.txtIInput.text())
         pid_d = int(self.txtDInput.text())
-        self.rc.pub_pid_gains(pid_p, pid_i, pid_d)
+        self.pid_gains_signal.emit(pid_p, pid_i, pid_d)
+        #self.rc.pub_pid_gains(pid_p, pid_i, pid_d)
 
 
 class RosThread(QObject):
@@ -803,13 +814,16 @@ class RosThread(QObject):
     def pub_auto_sail_enable(self, enable):
         self.autosail_enable_pub.publish(enable)
 
-    # TODO: turn these into pyqtslots
+    # TEST: turn these into pyqtslots
+    @pyqtSlot(bool)
     def pub_rudder_test_enable(self, enable):
         self.rudder_test_enable_pub.publish(enable)
 
+    @pyqtSlot(bool)
     def pub_sail_test_enable(self, enable):
         self.sail_test_enable_pub.publish(enable)
 
+    @pyqtSlot(float, float, float)
     def pub_pid_gains(self, pid_p, pid_i, pid_d):
         msg = PID()
         msg.kp = pid_p
