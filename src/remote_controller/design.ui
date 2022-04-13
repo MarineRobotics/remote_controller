@@ -21,13 +21,13 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>20</y>
+      <y>0</y>
       <width>1121</width>
       <height>741</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -1803,48 +1803,6 @@ color: rgb(255, 255, 255);</string>
        <string>Motor Test</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="btnRudderTest">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>530</y>
-        <width>171</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Liberation Mono</family>
-        <pointsize>12</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>Rudder Test</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="btnSailTest">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>570</y>
-        <width>171</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Liberation Mono</family>
-        <pointsize>12</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>Sail  Test</string>
-      </property>
-     </widget>
      <widget class="QLabel" name="label_77">
       <property name="geometry">
        <rect>
@@ -1977,6 +1935,69 @@ color: rgb(255, 255, 255);</string>
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
+     <widget class="QPushButton" name="btnDesRudderAngle">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>560</y>
+        <width>80</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string>SET</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_24">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>530</y>
+        <width>171</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Monospace</family>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <italic>false</italic>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Desired rudder angle:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="txtDesRudder">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>560</y>
+        <width>123</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+     </widget>
      <zorder>sailCtrlGroup</zorder>
      <zorder>frame</zorder>
      <zorder>lblActuatorStatus_3</zorder>
@@ -2014,14 +2035,15 @@ color: rgb(255, 255, 255);</string>
      <zorder>label_57</zorder>
      <zorder>txtUTC_2</zorder>
      <zorder>lblActuatorStatus_7</zorder>
-     <zorder>btnRudderTest</zorder>
-     <zorder>btnSailTest</zorder>
      <zorder>label_77</zorder>
      <zorder>label_66</zorder>
      <zorder>txtSailAngle</zorder>
      <zorder>txtRudderAngle</zorder>
      <zorder>txtCurrentValue</zorder>
      <zorder>label_76</zorder>
+     <zorder>btnDesRudderAngle</zorder>
+     <zorder>label_24</zorder>
+     <zorder>txtDesRudder</zorder>
     </widget>
     <widget class="QWidget" name="tab_2">
      <property name="enabled">
@@ -2213,9 +2235,9 @@ color: rgb(255, 255, 255);</string>
     </property>
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>770</y>
-      <width>101</width>
+      <x>0</x>
+      <y>760</y>
+      <width>1111</width>
       <height>31</height>
      </rect>
     </property>
@@ -2248,6 +2270,33 @@ color: rgb(255, 255, 255);</string>
      <enum>Qt::Horizontal</enum>
     </property>
    </widget>
+   <widget class="QScrollArea" name="scrollArea">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>29</y>
+      <width>1131</width>
+      <height>841</height>
+     </rect>
+    </property>
+    <property name="widgetResizable">
+     <bool>true</bool>
+    </property>
+    <widget class="QWidget" name="scrollAreaWidgetContents">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>1129</width>
+       <height>839</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
+   <zorder>scrollArea</zorder>
+   <zorder>tabWidget</zorder>
+   <zorder>btnStop</zorder>
+   <zorder>splitter</zorder>
   </widget>
  </widget>
  <resources/>

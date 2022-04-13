@@ -57,6 +57,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     heading_signal = pyqtSignal(int)
     sail_hdng_signal = pyqtSignal(int)
     sail_angle_signal = pyqtSignal(int)
+    rudder_angle_signal = pyqtSignal(int)
     rot_signal = pyqtSignal(float)
     rudder_signal = pyqtSignal(int)
     sail_signal = pyqtSignal(int)
@@ -89,7 +90,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         self.setupUi(self)
         self.home()
-        
+
 
         self.ERRORS = {
             0x0000: ("ok", "Normal", COLOR_OK),
@@ -138,8 +139,9 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         #TODO
         self.btnSetIntegral.clicked.connect(self.set_pid_gains)
-        self.btnRudderTest.clicked.connect(self.start_rudder_test)
-        self.btnSailTest.clicked.connect(self.start_sail_test)
+        self.btnDesRudder.clicked.connect(self.set_rudder_angle)
+        #self.btnRudderTest.clicked.connect(self.start_rudder_test)
+        #self.btnSailTest.clicked.connect(self.start_sail_test)
 
 
         ####################
@@ -160,7 +162,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         ##################
         self.configure_compass()
 
-        
+
         #####################
         # User clock widget #
         #####################
@@ -205,14 +207,14 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.lblSailAngle.setFont(font)
 
         # Load pixmap from src/assets folder
-        self.windPix = QPixmap(os.path.join(asset_path, 'compass.png'))        
+        self.windPix = QPixmap(os.path.join(asset_path, 'compass.png'))
         self.boatPix = QPixmap(os.path.join(asset_path, 'boat.png'))
         self.sailPix = QPixmap(os.path.join(asset_path, 'sail.png'))
 
         # Scale pixmap to label size determined in design.py file
         self.windPix = self.windPix.scaled(self.lblWind.width(), self.lblWind.height())
-        self.boatPix = self.boatPix.scaled(self.lblBoat.width(), self.lblBoat.height())        
-        self.sailPix = self.sailPix.scaled(self.lblSail.width(), self.lblSail.height())        
+        self.boatPix = self.boatPix.scaled(self.lblBoat.width(), self.lblBoat.height())
+        self.sailPix = self.sailPix.scaled(self.lblSail.width(), self.lblSail.height())
 
         # Calculate pixmap diagonal for sizing (corner to corner of square label, even if pic is circle)
         self.windDiag = int((self.lblWind.width()**2 + self.lblWind.height()**2)**0.5)
@@ -259,7 +261,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.lblWindRadius = self.windDiag/2
         self.lblBoatRadius = self.boatDiag/2
         self.lblSailRadius = self.sailDiag/2
-        
+
 
         # Move text label to location
         windGeo = self.lblWind.geometry()
@@ -270,18 +272,18 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         # Create label moving functions, can be called when a value is received from a ROS subscriber
         self.moveWindLbl = self.getLableMover(self.windPix, self.lblWind, self.lblWindCenter, self.lblWindAngle, offset = -30, scaler = 0)
         self.moveSailLbl = self.getLableMover(self.sailPix, self.lblSail, self.lblSailCenter, self.lblSailAngle, offset=-40, scaler=20)
-        
+
 
     def getLableMover(self, imgPixmap, imgLabel, imgLabelCenter, valueLabel, offset=10, scaler=10):
         """
         Summary:
         Returns function to move a specific label around its axis together with its descriptive label
-        
+
         In depth:
         We need multiple functions with identical calculations, but for different labels/pixmaps for our compass animation.
         To avoid rewriting these functions, this function is a template, and returns a function with the given
         labels and pixmaps "baked in"
-        
+
         imgPixmap: pixmap loaded with png (generally smaller in dimensions than the label)
         imgLabel: QLabel with pixmap loaded into it, needed to apply rotated pixmap
         imgLabelCenter: named tuple (x,y) containing coordinates of label center
@@ -293,7 +295,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
             pixmap_rotated = imgPixmap.transformed(QTransform().rotate(value),QtCore.Qt.SmoothTransformation)  # Rotate pixmap same as value
             imgLabel.setPixmap(pixmap_rotated) # set rotated pixmap into QLabel
             # Move label displaying text to follow along with rotating picture
-            valueLabel.move(int(imgLabelCenter.x + ((imgPixmap.width()/2 + scaler) * sin(radians(value)))), 
+            valueLabel.move(int(imgLabelCenter.x + ((imgPixmap.width()/2 + scaler) * sin(radians(value)))),
                             int(imgLabelCenter.y - ((imgPixmap.width()/2 + scaler) * cos(radians(value)) + offset)))
             #valueLabel.setText(str(textvalue))
         return moveLabel
@@ -385,6 +387,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.heading_signal.connect(self._rosthread.pub_boat_heading)
         self.sail_hdng_signal.connect(self._rosthread.pub_sail_heading)
         self.sail_angle_signal.connect(self._rosthread.pub_sail_angle)
+        self.rudder_angle_signal.connect(self._rosthread.pub_rudder_angle)
         self.rot_signal.connect(self._rosthread.pub_rot)
         self.rudder_signal.connect(self._rosthread.pub_rudder_effort)
         self.sail_signal.connect(self._rosthread.pub_sail_effort)
@@ -576,10 +579,10 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
     def start_prop(self):
         self.prop_signal.emit(PROP_SPEED)
-        
+
         self.btnPropOff.show()
         self.btnPropOn.hide()
-        
+
 
     def stop_prop(self):
         self.prop_signal.emit(0)
@@ -610,6 +613,10 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     #TEST: emit signals
     def start_sail_test(self):
         self.sail_test_enable_signal.emit(True)
+
+    def set_rudder_angle(self):
+        des_rudder = int(self.txtDesRudder.text())
+        self.rudder_angle_signal.emit(des_rudder)
 
     def keyPressEvent(self, event):
         # SPEED EVENTS
@@ -697,7 +704,7 @@ class RosThread(QObject):
     sail_angle_updated = pyqtSignal(float)
 
     # New
-    
+
     def __init__(self, parent=None, **kwargs):
         super().__init__(parent, **kwargs)
 
@@ -709,7 +716,7 @@ class RosThread(QObject):
 
         self.vessel_heading = 0
         self.sail_heading = 0
-        
+
         self.sail_angle = HO(20)
         self.apparent_wind_vessel = HO(20)  # Heading object with 20 value mean
         self.apparent_wind_sail = HO(20)
@@ -734,6 +741,9 @@ class RosThread(QObject):
                                                 Heading,
                                                 queue_size=1)
         self.sail_angle_pub = rospy.Publisher('manual/cmd_sail_angle',
+                                              Heading,
+                                              queue_size=1)
+        self.rudder_angle_pub = rospy.Publisher('manual/cmd_rudder_pos',
                                               Heading,
                                               queue_size=1)
         self.boat_rot_pub = rospy.Publisher('manual/cmd_rot',
@@ -764,10 +774,10 @@ class RosThread(QObject):
 
     def update_sail_angle(self):
         self.sail_angle.degrees = self.hm.diff(self.vessel_heading, self.sail_heading)
-                
+
     def update_apparent_wind_vessel(self, app_wind_sail):
         self.apparent_wind_vessel.degrees = self.hm.add(self.sail_angle.degrees, app_wind_sail)
-        
+
     def update_apparent_wind_north(self, app_wind_sail):
         self.apparent_wind_north.degrees = self.hm.add(self.sail_heading, app_wind_sail)
 
@@ -809,6 +819,12 @@ class RosThread(QObject):
         msg = Heading()
         msg.heading = angle
         self.sail_angle_pub.publish(msg)
+
+    @pyqtSlot(int)
+    def pub_rudder_angle(self, angle):
+        msg = Heading()
+        msg.heading = angle
+        self.rudder_angle_pub.publish(msg)
 
     @pyqtSlot(bool)
     def pub_auto_sail_enable(self, enable):
@@ -944,7 +960,7 @@ class RosThread(QObject):
         self.apparent_wind_vessel = HO(msg.data)  # Heading object with 20 value mean
         self.apparent_wind_sail = HO(msg.data)
         self.apparent_wind_north = HO(msg.data)  # apparent wind north referenced
-        
+
     def handle_motor_current(self, msg):
         current = msg.value
         self.motor_current_updated.emit(current)
