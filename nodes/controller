@@ -139,7 +139,8 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         #TODO
         self.btnSetIntegral.clicked.connect(self.set_pid_gains)
-        self.btnDesRudder.clicked.connect(self.set_rudder_angle)
+        self.btnDesRudderAngle.clicked.connect(self.set_rudder_angle)
+        self.txtDesRudder.returnPressed.connect(self.set_rudder_angle)
         #self.btnRudderTest.clicked.connect(self.start_rudder_test)
         #self.btnSailTest.clicked.connect(self.start_sail_test)
 
@@ -156,6 +157,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.txtDesROT.setValidator(self.onlyInt)
         self.txtDesSail.setValidator(self.onlyInt)
         self.txtDesSailAngle.setValidator(self.onlyInt)
+        self.txtDesRudder.setValidator(self.onlyInt)
 
         ##################
         # Compass widget #
