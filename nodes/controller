@@ -532,10 +532,6 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     def update_rudder_angle(self, voltage):
         self.txtRudderAngle.setText("{0:.2f}".format(round(voltage, 2)))
 
-    @pyqtSlot(float)
-    def update_sail_angle(self, voltage):
-        self.txtSailAngle.setText("{0:.2f}".format(round(voltage, 2)))
-
     def set_heading(self):
         des_heading = int(self.txtDesHeading.text())
         self.heading_signal.emit(des_heading)
@@ -703,7 +699,6 @@ class RosThread(QObject):
     power_consumption_updated = pyqtSignal(float)
     motor_current_updated = pyqtSignal(float)
     rudder_angle_updated = pyqtSignal(float)
-    sail_angle_updated = pyqtSignal(float)
 
     # New
 
@@ -972,8 +967,8 @@ class RosThread(QObject):
         self.rudder_angle_updated.emit(rudder_angle)
 
     def handle_sail_angle(self, msg):
-        power = msg.value
-        self.sail_angle_updated.emit(sail_angle)
+        self.sail_angle = int(msg.value)
+        self.sail_angle_updated.emit(self.sail_angle)
 
     def _create_bond(self, req):
         self.flush_broken()
