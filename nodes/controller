@@ -741,7 +741,7 @@ class RosThread(QObject):
                                               Heading,
                                               queue_size=1)
         self.rudder_angle_pub = rospy.Publisher('manual/cmd_rudder_pos',
-                                              Heading,
+                                              Float64,
                                               queue_size=1)
         self.boat_rot_pub = rospy.Publisher('manual/cmd_rot',
                                             Float64,
@@ -819,9 +819,9 @@ class RosThread(QObject):
 
     @pyqtSlot(int)
     def pub_rudder_angle(self, angle):
-        msg = Heading()
-        msg.heading = angle
-        self.rudder_angle_pub.publish(msg)
+        #msg = Heading()
+        #msg.heading = angle
+        self.rudder_angle_pub.publish(angle)
 
     @pyqtSlot(bool)
     def pub_auto_sail_enable(self, enable):
@@ -964,7 +964,7 @@ class RosThread(QObject):
 
     def handle_rudder_angle(self, msg):
         angle = msg.value
-        self.rudder_angle_updated.emit(rudder_angle)
+        self.rudder_angle_updated.emit(angle)
 
     def handle_sail_angle(self, msg):
         self.sail_angle = int(msg.value)
