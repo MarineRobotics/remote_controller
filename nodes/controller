@@ -391,7 +391,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.sail_angle_signal.connect(self._rosthread.pub_sail_angle)
         self.rudder_angle_signal.connect(self._rosthread.pub_rudder_angle)
         self.rot_signal.connect(self._rosthread.pub_rot)
-        self.rudder_signal.connect(self._rosthread.pub_rudder_effort)
+        self.rudder_signal.connect(self._rosthread.pub_rudder_speed)
         self.sail_signal.connect(self._rosthread.pub_sail_effort)
         self.prop_signal.connect(self._rosthread.pub_prop_effort)
         self.manual_cmd_signal.connect(self._rosthread.pub_manual_cmd)
@@ -722,7 +722,7 @@ class RosThread(QObject):
         self.hm =HM()
 
         self.bond = None
-        self.rudder_effort_pub = rospy.Publisher('manual/cmd_rudder_effort',
+        self.rudder_speed_pub = rospy.Publisher('manual/cmd_rudder_speed',
                                                  Float64,
                                                  queue_size=1)
         self.prop_effort_pub = rospy.Publisher('manual/cmd_prop_effort',
@@ -783,9 +783,9 @@ class RosThread(QObject):
     #############################
 
     @pyqtSlot(int)
-    def pub_rudder_effort(self, effort):
-        rospy.loginfo("[REMOTE CTRL] entered pub rudder effort handler")
-        self.rudder_effort_pub.publish(effort)
+    def pub_rudder_speed(self, speed):
+        rospy.loginfo("[REMOTE CTRL] entered pub rudder speed handler")
+        self.rudder_speed_pub.publish(speed)
 
     @pyqtSlot(int)
     def pub_prop_effort(self, speed):
