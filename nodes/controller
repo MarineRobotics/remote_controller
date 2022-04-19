@@ -46,7 +46,6 @@ class myIntValidator(QtGui.QIntValidator):
             # We assume user tried to manually control boat if input was not an int
             # We then remove focus so their next keypress will register as intended
             QtWidgets.QApplication.focusWidget().clearFocus()
-            rospy.logwarn("Attempted text input in int field. Removed focus")
         self.validationChanged.emit(state)
         return state, input, pos
 
@@ -201,11 +200,11 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         font.setBold(True)
         font.setItalic(False)
         font.setWeight(75)
-        self.lblWindAngle = QLabel(self)
-        self.lblWindAngle.setText("0")
+        self.lblWindAngle = QLabel(self.tabWidget.widget(0))
+        self.lblWindAngle.setText("000")
         self.lblWindAngle.setFont(font)
-        self.lblSailAngle = QLabel(self)
-        self.lblSailAngle.setText("0")
+        self.lblSailAngle = QLabel(self.tabWidget.widget(0))
+        self.lblSailAngle.setText("000")
         self.lblSailAngle.setFont(font)
 
         # Load pixmap from src/assets folder
@@ -267,14 +266,11 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         # Move text label to location
         windGeo = self.lblWind.geometry()
-        self.lblWindAngle.move(int(windGeo.x() + windGeo.width()/2), int(windGeo.y() + windGeo.height()/4))
         sailGeo = self.lblSail.geometry()
-        self.lblSailAngle.move(int(sailGeo.x() + sailGeo.width()/2), int(sailGeo.y() + sailGeo.height()/4))
 
         # Create label moving functions, can be called when a value is received from a ROS subscriber
-        self.moveWindLbl = self.getLableMover(self.windPix, self.lblWind, self.lblWindCenter, self.lblWindAngle, offset = -30, scaler = 0)
-        self.moveSailLbl = self.getLableMover(self.sailPix, self.lblSail, self.lblSailCenter, self.lblSailAngle, offset=-40, scaler=20)
-
+        self.moveWindLbl = self.getLableMover(self.windPix, self.lblWind, self.lblWindCenter, self.lblWindAngle, offset=10, scaler = 0)
+        self.moveSailLbl = self.getLableMover(self.sailPix, self.lblSail, self.lblSailCenter, self.lblSailAngle, offset=10, scaler=20)
 
     def getLableMover(self, imgPixmap, imgLabel, imgLabelCenter, valueLabel, offset=10, scaler=10):
         """
@@ -297,7 +293,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
             pixmap_rotated = imgPixmap.transformed(QTransform().rotate(value),QtCore.Qt.SmoothTransformation)  # Rotate pixmap same as value
             imgLabel.setPixmap(pixmap_rotated) # set rotated pixmap into QLabel
             # Move label displaying text to follow along with rotating picture
-            valueLabel.move(int(imgLabelCenter.x + ((imgPixmap.width()/2 + scaler) * sin(radians(value)))),
+            valueLabel.move(int((imgLabelCenter.x - valueLabel.width()/2) + ((imgPixmap.width()/2 + scaler) * sin(radians(value)))),
                             int(imgLabelCenter.y - ((imgPixmap.width()/2 + scaler) * cos(radians(value)) + offset)))
             #valueLabel.setText(str(textvalue))
         return moveLabel
@@ -418,7 +414,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
             self.txtWindApp.setText("{0:.0f}".format(round(direction)))
             self.txtApptWindSpeed.setText("{0:.2f}".format(round(speed, 2)))
         self.moveWindLbl(apparent_wind_vessel)
-        self.lblWindAngle.setText(str(apparent_wind_north))
+        self.lblWindAngle.setText(str(int(apparent_wind_north)))
 
     @pyqtSlot(int)
     def update_vessel_heading(self, heading):
