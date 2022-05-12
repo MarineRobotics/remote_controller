@@ -53,19 +53,20 @@ class myIntValidator(QtGui.QIntValidator):
 class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
     # Define signals, used to send data to ROS thread
-    heading_signal = pyqtSignal(int)
-    sail_hdng_signal = pyqtSignal(int)
-    sail_angle_signal = pyqtSignal(int)
-    rudder_angle_signal = pyqtSignal(int)
-    rot_signal = pyqtSignal(float)
-    rudder_signal = pyqtSignal(int)
-    sail_signal = pyqtSignal(int)
-    prop_signal = pyqtSignal(int)
-    manual_cmd_signal = pyqtSignal(str)
+    heading_signal        = pyqtSignal(int)
+    sail_hdng_signal      = pyqtSignal(int)
+    sail_angle_signal     = pyqtSignal(int)
+    sail_pos_signal       = pyqtSignal(int)
+    rudder_angle_signal   = pyqtSignal(int)
+    rot_signal            = pyqtSignal(float)
+    rudder_signal         = pyqtSignal(int)
+    sail_signal           = pyqtSignal(int)
+    prop_signal           = pyqtSignal(int)
+    manual_cmd_signal     = pyqtSignal(str)
     #bond_signal       = pyqtSignal(bool)  # TODO: connect the bond signl to a slot
-    auto_sail_signal = pyqtSignal(bool)
+    auto_sail_signal      = pyqtSignal(bool)
 
-    pid_gains_signal = pyqtSignal(float, float, float)
+    pid_gains_signal      = pyqtSignal(float, float, float)
     rudder_test_enable_signal = pyqtSignal(bool)
     sail_test_enable_signal = pyqtSignal(bool)
 
@@ -132,6 +133,11 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.txtDesSail.returnPressed.connect(self.set_sail_heading)
         self.btnDesSailAngle.clicked.connect(self.set_sail_angle)
         self.txtDesSailAngle.returnPressed.connect(self.set_sail_angle)
+
+        #TEST
+        self.btnDesSailPos.clicked.connect(self.set_sail_position)
+        self.txtDesSailPos.returnPressed.connect(self.set_sail_position)
+
         self.btnDesROT.clicked.connect(self.set_rot)
         self.txtDesROT.returnPressed.connect(self.set_rot)
         self.btnStop.clicked.connect(self.stop_all)
@@ -157,6 +163,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.txtDesSail.setValidator(self.onlyInt)
         self.txtDesSailAngle.setValidator(self.onlyInt)
         self.txtDesRudder.setValidator(self.onlyInt)
+        self.txtDesSailPos.setValidator(self.onlyInt)
 
         ##################
         # Compass widget #
@@ -395,6 +402,9 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.pid_gains_signal.connect(self._rosthread.pub_pid_gains)
         self.rudder_test_enable_signal.connect(self._rosthread.pub_rudder_test_enable)
         self.sail_test_enable_signal.connect(self._rosthread.pub_sail_test_enable)
+
+        #TEST
+        self.sail_pos_signal.connect(self._rosthread.pub_sail_position)
         #if connected:
         #    print("cool")
         #else:
@@ -429,6 +439,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     @pyqtSlot(int)
     def update_sail_angle(self, angle):
         self.moveSailLbl(angle)
+        self.txtSailAngle.setText(str(angle))
 
     @pyqtSlot(float)
     def update_declination(self, declination):
@@ -525,8 +536,8 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.txtCurrentValue.setText("{0:.2f}".format(round(voltage, 2)))
 
     @pyqtSlot(float)
-    def update_rudder_angle(self, voltage):
-        self.txtRudderAngle.setText("{0:.2f}".format(round(voltage, 2)))
+    def update_rudder_angle(self, angle):
+        self.txtRudderAngle.setText(str(angle))
 
     def set_heading(self):
         des_heading = int(self.txtDesHeading.text())
@@ -539,6 +550,10 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     def set_sail_angle(self):
         des_angle = int(self.txtDesSailAngle.text())
         self.sail_angle_signal.emit(des_angle)
+
+    def set_sail_position(self):        
+        des_pos = int(self.txtDesSailPos.text())
+        self.sail_pos_signal.emit(des_pos)
 
     def set_rot(self):
         des_rot = float(self.txtDesROT.text())
@@ -736,6 +751,9 @@ class RosThread(QObject):
         self.sail_angle_pub = rospy.Publisher('manual/cmd_sail_angle',
                                               Heading,
                                               queue_size=1)
+        self.sail_pos_pub = rospy.Publisher('manual/cmd_sail_pos',
+                                            Heading,
+                                            queue_size=1)
         self.rudder_angle_pub = rospy.Publisher('manual/cmd_rudder_pos',
                                               Float64,
                                               queue_size=1)
@@ -764,9 +782,6 @@ class RosThread(QObject):
     #############################
     # Post processing functions #
     #############################
-
-    def update_sail_angle(self):
-        self.sail_angle.degrees = self.hm.diff(self.vessel_heading, self.sail_heading)
 
     def update_apparent_wind_vessel(self, app_wind_sail):
         self.apparent_wind_vessel.degrees = self.hm.add(self.sail_angle.degrees, app_wind_sail)
@@ -812,6 +827,12 @@ class RosThread(QObject):
         msg = Heading()
         msg.heading = angle
         self.sail_angle_pub.publish(msg)
+
+    @pyqtSlot(int)
+    def pub_sail_position(self, pos):
+        msg = Float64()
+        msg.data = pos
+        self.sail_pos_pub.publish(msg)
 
     @pyqtSlot(int)
     def pub_rudder_angle(self, angle):
@@ -875,9 +896,7 @@ class RosThread(QObject):
 
     def handle_sail_heading(self, heading):
         self.sail_heading = heading.heading
-        self.update_sail_angle()
         self.sail_heading_updated.emit(heading.heading)
-        self.sail_angle_updated.emit(self.sail_angle.degrees)
 
     def handle_declination(self, decl_msg):
         self.declination_updated.emit(decl_msg.declination)
@@ -963,8 +982,8 @@ class RosThread(QObject):
         self.rudder_angle_updated.emit(angle)
 
     def handle_sail_angle(self, msg):
-        self.sail_angle = int(msg.value)
-        self.sail_angle_updated.emit(self.sail_angle)
+        self.sail_angle.degrees = int(msg.value)
+        self.sail_angle_updated.emit(msg.value)
 
     def _create_bond(self, req):
         self.flush_broken()
@@ -1034,7 +1053,7 @@ class RosThread(QObject):
         rospy.Subscriber("/motor_current", ADCReading,
                          self.handle_motor_current)
         rospy.Subscriber("/rudder_angle", ADCReading, self.handle_rudder_angle)
-        rospy.Subscriber("/sail_angle", ADCReading, self.handle_sail_angle)
+        rospy.Subscriber("/sail/position", ADCReading, self.handle_sail_angle)
 
         rospy.Subscriber("wind_avg_interval", Int32, self.handle_wind_interval)
 
