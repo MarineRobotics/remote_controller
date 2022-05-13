@@ -892,7 +892,6 @@ class RosThread(QObject):
         # Send vessel heading signal, save heading and calculate sail angle
         self.vessel_heading_updated.emit(heading.heading)
         self.vessel_heading = heading.heading
-        self.update_sail_angle()
 
     def handle_sail_heading(self, heading):
         self.sail_heading = heading.heading
