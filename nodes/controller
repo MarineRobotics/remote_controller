@@ -752,7 +752,7 @@ class RosThread(QObject):
                                               Heading,
                                               queue_size=1)
         self.sail_pos_pub = rospy.Publisher('manual/cmd_sail_pos',
-                                            Heading,
+                                            Float64,
                                             queue_size=1)
         self.rudder_angle_pub = rospy.Publisher('manual/cmd_rudder_pos',
                                               Float64,
