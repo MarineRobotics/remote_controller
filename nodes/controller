@@ -4,6 +4,7 @@ import rospy
 import rostopic
 import sys
 import os
+import numpy as np
 from std_msgs.msg import Float64, String, Bool, Int32
 from mr_messages.srv import BondIDRequest, BondIDRequestResponse
 from mr_messages.msg import WIND, Heading, Depth, Speed, GNSSData, ADCReading, RoboclawStatus, TEMP, PRESSURE, HUMIDITY, Declination, PID
@@ -30,7 +31,7 @@ NODE = 'send_key_cmd'
 
 PROP_SPEED = 127
 RUDDER_SPEED = 10
-SAIL_SPEED = 100
+SAIL_SPEED = 10
 COLOR_WARN = "rgb(252, 186, 3)"
 COLOR_ERR = "rgb(186, 7, 7)"
 COLOR_OK = "rgb(0, 150, 0)"
@@ -83,6 +84,12 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.connect_slots()
         self.connect_thread_slots()
         self._thread.start()
+
+        ####################
+        # Status variables #
+        ####################
+        self.rudder_increment = 10
+        self.desired_rudder = 0
 
         #rospy.logerr(self.isSignalConnected(self.manual_cmd_signal, 'self._rosthread.pub_manual_cmd()'))
         # self.rc.start_node()
@@ -138,8 +145,8 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.btnDesSailPos.clicked.connect(self.set_sail_position)
         self.txtDesSailPos.returnPressed.connect(self.set_sail_position)
 
-        self.btnDesROT.clicked.connect(self.set_rot)
-        self.txtDesROT.returnPressed.connect(self.set_rot)
+        #self.btnDesROT.clicked.connect(self.set_rot)
+        #self.txtDesROT.returnPressed.connect(self.set_rot)
         self.btnStop.clicked.connect(self.stop_all)
 
         #TODO
@@ -159,7 +166,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         # Connect validator to input fields
         self.txtDesHeading.setValidator(self.onlyInt)
-        self.txtDesROT.setValidator(self.onlyInt)
+        #self.txtDesROT.setValidator(self.onlyInt)
         self.txtDesSail.setValidator(self.onlyInt)
         self.txtDesSailAngle.setValidator(self.onlyInt)
         self.txtDesRudder.setValidator(self.onlyInt)
@@ -353,6 +360,18 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     def displayTime(self):
         self.txtUTC.setText(
             QtCore.QDateTime.currentDateTime().toUTC().toString())
+
+    def increment_rudder(self, position, increment):
+        """
+        Increment desired rudder position to the next increment value.
+        Example: if current position is 12 and increment is 10, this function will output 10 instead of 12
+
+        As a second feature this function caps the max value between -40 and 40
+        """
+        pos = position + (increment - (position % increment))
+        return np.clip(pos, -40, 40)
+
+        
 
     @pyqtSlot(str)
     def myDebugFunc(self, cmd):
@@ -556,8 +575,9 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.sail_pos_signal.emit(des_pos)
 
     def set_rot(self):
-        des_rot = float(self.txtDesROT.text())
-        self.rot_signal.emit(des_rot)
+        #des_rot = float(self.txtDesROT.text())
+        #self.rot_signal.emit(des_rot)
+        pass
 
     def stop_all(self):
         self.rudder_signal.emit(0)
@@ -573,6 +593,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.btnDisableManual.show()
         self.btnPropOn.show()
         self.btnAutoSail.show()
+        self.controlFrame.setEnabled(True)
 
     def disable_manual(self):
         self.manual_cmd_signal.emit("stop_manual")
@@ -585,6 +606,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.btnPropOff.hide()
         self.btnAutoSail.hide()
         self.btnAutoSailDisable.hide()
+        self.controlFrame.setEnabled(False)
 
     def start_prop(self):
         self.prop_signal.emit(PROP_SPEED)
@@ -635,10 +657,15 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
             self.prop_signal.emit(-PROP_SPEED)
 
         # RUDDER EVENTS
+        # TEST
         elif event.key() == QtCore.Qt.Key_D and not event.isAutoRepeat():
-            self.rudder_signal.emit(RUDDER_SPEED)
+            self.desired_rudder = self.increment_rudder(self.desired_rudder, self.txtRudderIncrement.value())
+            self.rudder_angle_signal.emit(self.desired_rudder)
+            #self.rudder_signal.emit(RUDDER_SPEED)
         elif event.key() == QtCore.Qt.Key_A and not event.isAutoRepeat():
-            self.rudder_signal.emit(-RUDDER_SPEED)
+            self.desired_rudder = self.increment_rudder(self.desired_rudder, (self.txtRudderIncrement.value()*-1))
+            self.rudder_angle_signal.emit(self.desired_rudder)
+            #self.rudder_signal.emit(-RUDDER_SPEED)
 
         # SAIL EVENTS
         elif event.key() == QtCore.Qt.Key_E and not event.isAutoRepeat():
