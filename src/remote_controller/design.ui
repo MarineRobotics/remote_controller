@@ -1268,9 +1268,9 @@ color: rgb(255, 255, 255);</string>
        <widget class="QLabel" name="lblBoat">
         <property name="geometry">
          <rect>
-          <x>450</x>
+          <x>440</x>
           <y>90</y>
-          <width>131</width>
+          <width>151</width>
           <height>171</height>
          </rect>
         </property>
@@ -2089,6 +2089,25 @@ color: rgb(255, 255, 255);</string>
           </layout>
          </widget>
         </widget>
+       </widget>
+       <widget class="QLabel" name="lblRudder">
+        <property name="geometry">
+         <rect>
+          <x>505</x>
+          <y>220</y>
+          <width>21</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap>assets/sail.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
        </widget>
       </widget>
       <widget class="QWidget" name="tab_2">
