@@ -300,7 +300,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
     # Move label proportional to angle with max boat width / 2
 
-    def getLableMover(self, imgPixmap, imgLabel, imgLabelCenter, valueLabel=None, offset=10, scaler=10, lateralMax=0, angleMax=0):
+    def getLableMover(self, imgPixmap, imgLabel, imgLabelCenter, valueLabel=None, offset=10, scaler=10, lateralMax=0, angleMax=1):
         """
         Summary:
         Returns function to move a specific label around its axis together with its descriptive label
@@ -573,7 +573,8 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
     @pyqtSlot(float)
     def update_motor_current(self, voltage):
-        self.txtCurrentValue.setText("{0:.2f}".format(round(voltage, 2)))
+        pass
+        #self.txtCurrentValue.setText("{0:.2f}".format(round(voltage, 2)))
 
     @pyqtSlot(float)
     def update_rudder_angle(self, angle):
@@ -780,7 +781,7 @@ class RosThread(QObject):
         self.sail_heading = 0
 
         self.sail_angle = HO(20)
-        self.apparent_wind_vessel = HO(20)  # Heading object with 20 value mean
+        self.apparent_wind_vessel = HO(4)  # Heading object with 20 value mean
         self.apparent_wind_sail = HO(20)
         self.apparent_wind_north = HO(20)  # apparent wind north referenced
 
