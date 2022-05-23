@@ -225,25 +225,29 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.windPix = QPixmap(os.path.join(asset_path, 'compass.png'))
         self.boatPix = QPixmap(os.path.join(asset_path, 'boat.png'))
         self.sailPix = QPixmap(os.path.join(asset_path, 'sail.png'))
-        self.rudderPix = QPixmap(os.path.join(asset_path, 'sail.png'))
+        self.rudderPix = QPixmap(os.path.join(asset_path, 'rudder.png'))
+        self.desRudderPix = QPixmap(os.path.join(asset_path, 'rudder_desired.png'))
 
         # Scale pixmap to label size determined in design.py file
         self.windPix   = self.windPix.scaled(self.lblWind.width(), self.lblWind.height())
         self.boatPix   = self.boatPix.scaled(self.lblBoat.width(), self.lblBoat.height())
         self.sailPix   = self.sailPix.scaled(self.lblSail.width(), self.lblSail.height())
         self.rudderPix = self.rudderPix.scaled(self.lblRudder.width(), self.lblRudder.height())
+        self.desRudderPix = self.desRudderPix.scaled(self.lblRudderDesired.width(), self.lblRudderDesired.height())
 
         # Calculate pixmap diagonal for sizing (corner to corner of square label, even if pic is circle)
         self.windDiag = int((self.lblWind.width()**2 + self.lblWind.height()**2)**0.5)
         self.boatDiag = int((self.lblBoat.width()**2 + self.lblBoat.height()**2)**0.5)
         self.sailDiag = int((self.lblSail.width()**2 + self.lblSail.height()**2)**0.5)
         self.rudderDiag = int((self.lblRudder.width()**2 + self.lblRudder.height()**2)**0.5)
+        self.desRudderDiag = int((self.lblRudderDesired.width()**2 + self.lblRudderDesired.height()**2)**0.5)
 
         # Don't scale pixmap to label (we want label to be bigger to have enough room for rotation of square pixmap)
         self.lblWind.setScaledContents(False)
         self.lblBoat.setScaledContents(False)
         self.lblSail.setScaledContents(False)
         self.lblRudder.setScaledContents(False)
+        self.lblRudderDesired.setScaledContents(False)
 
         # Save label centers
         point: namedtuple = namedtuple('point', 'x y')  # namedtuple to save x, y coordinates
@@ -251,42 +255,49 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.lblBoatCenter = point(int(self.lblBoat.x() + self.lblBoat.width()/2), int(self.lblBoat.y() + self.lblBoat.height()/2))
         self.lblSailCenter = point(int(self.lblSail.x() + self.lblSail.width()/2), int(self.lblSail.y() + self.lblSail.height()/2))
         self.lblRudderCenter = point(int(self.lblRudder.x() + self.lblRudder.width()/2), int(self.lblRudder.y() + self.lblRudder.height()/2))
+        self.lblRudderDesiredCenter = point(int(self.lblRudderDesired.x() + self.lblRudderDesired.width()/2), int(self.lblRudderDesired.y() + self.lblRudderDesired.height()/2))
 
         # Add pixmaps to labels
         self.lblWind.setPixmap(self.windPix)
         self.lblBoat.setPixmap(self.boatPix)
         self.lblSail.setPixmap(self.sailPix)
         self.lblRudder.setPixmap(self.rudderPix)
+        self.lblRudderDesired.setPixmap(self.desRudderPix)
 
         # Align to center
         self.lblWind.setAlignment(QtCore.Qt.AlignCenter)
         self.lblBoat.setAlignment(QtCore.Qt.AlignCenter)
         self.lblSail.setAlignment(QtCore.Qt.AlignCenter)
         self.lblRudder.setAlignment(QtCore.Qt.AlignCenter)
+        self.lblRudderDesired.setAlignment(QtCore.Qt.AlignCenter)
 
         # Set label size based off diagonal
         self.lblWind.setMinimumSize(self.windDiag, self.windDiag)
         self.lblBoat.setMinimumSize(self.boatDiag, self.boatDiag)
         self.lblSail.setMinimumSize(self.sailDiag, self.sailDiag)
         self.lblRudder.setMinimumSize(self.rudderDiag, self.rudderDiag)
+        self.lblRudderDesired.setMinimumSize(self.desRudderDiag, self.desRudderDiag)
 
         # Reset label center, becuse resize will move them around
         self.lblWind.move(int(self.lblWindCenter.x - self.windDiag/2), int(self.lblWindCenter.y - self.windDiag/2))
         self.lblBoat.move(int(self.lblBoatCenter.x - self.boatDiag/2), int(self.lblBoatCenter.y - self.boatDiag/2))
         self.lblSail.move(int(self.lblSailCenter.x - self.sailDiag/2), int(self.lblSailCenter.y - self.sailDiag/2))
         self.lblRudder.move(int(self.lblRudderCenter.x - self.rudderDiag/2), int(self.lblRudderCenter.y - self.rudderDiag/2))
+        self.lblRudderDesired.move(int(self.lblRudderDesiredCenter.x - self.desRudderDiag/2), int(self.lblRudderDesiredCenter.y - self.desRudderDiag/2))
 
         #point: namedtuple = namedtuple('point', 'x y')  # namedtuple to save x, y coordinates
         self.lblWindCenter = point(self.lblWind.x() + self.lblWind.width()/2, self.lblWind.y() + self.lblWind.height()/2)
         self.lblBoatCenter = point(self.lblBoat.x() + self.lblBoat.width()/2, self.lblBoat.y() + self.lblBoat.height()/2)
         self.lblSailCenter = point(self.lblSail.x() + self.lblSail.width()/2, self.lblSail.y() + self.lblSail.height()/2)
         self.lblRudderCenter = point(self.lblRudder.x() + self.lblRudder.width()/2, self.lblRudder.y() + self.lblRudder.height()/2)
+        self.lblRudderDesiredCenter = point(self.lblRudderDesired.x() + self.lblRudderDesired.width()/2, self.lblRudderDesired.y() + self.lblRudderDesired.height()/2)
 
         # Save label radius
         self.lblWindRadius = self.windDiag/2
         self.lblBoatRadius = self.boatDiag/2
         self.lblSailRadius = self.sailDiag/2
         self.lblRudderRadius = self.rudderDiag/2
+        self.lblRudderDesiredRadius = self.desRudderDiag/2
 
 
         # Move text label to location
@@ -297,6 +308,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.moveWindLbl = self.getLableMover(self.windPix, self.lblWind, self.lblWindCenter, self.lblWindAngle, offset=10, scaler = 0)
         self.moveSailLbl = self.getLableMover(self.sailPix, self.lblSail, self.lblSailCenter, self.lblSailAngle, offset=10, scaler=20)
         self.moveRudderLbl = self.getLableMover(self.rudderPix, self.lblRudder, self.lblRudderCenter, None, offset=10, scaler=20, lateralMax=self.lblBoat.width()/8, angleMax=50)
+        self.moveRudderDesiredLbl = self.getLableMover(self.desRudderPix, self.lblRudderDesired, self.lblRudderDesiredCenter, None, offset=10, scaler=20, lateralMax=self.lblBoat.width()/8, angleMax=50)
 
     # Move label proportional to angle with max boat width / 2
 
@@ -432,7 +444,9 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.heading_signal.connect(self._rosthread.pub_boat_heading)
         self.sail_hdng_signal.connect(self._rosthread.pub_sail_heading)
         self.sail_angle_signal.connect(self._rosthread.pub_sail_angle)
+        # connect rudder signal to 2 slots. One in rosthread, one in current thread just to update label
         self.rudder_angle_signal.connect(self._rosthread.pub_rudder_angle)
+        self.rudder_angle_signal.connect(self.update_rudder_desired)
         self.rot_signal.connect(self._rosthread.pub_rot)
         self.rudder_signal.connect(self._rosthread.pub_rudder_speed)
         self.sail_signal.connect(self._rosthread.pub_sail_effort)
@@ -581,6 +595,11 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.moveRudderLbl(-angle)
         self.txtRudderAngle.setText(str(angle))
 
+    @pyqtSlot(int)
+    def update_rudder_desired(self, angle):
+        # Move desired rudder label when sent to ROS thread
+        self.moveRudderDesiredLbl(-angle)
+
     def set_heading(self):
         des_heading = int(self.txtDesHeading.text())
         self.heading_signal.emit(des_heading)
@@ -667,7 +686,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     #TEST: emit signals
     def start_sail_test(self):
         self.sail_test_enable_signal.emit(True)
-
+        
     def set_rudder_angle(self):
         des_rudder = int(self.txtDesRudder.text())
         self.rudder_angle_signal.emit(des_rudder)
