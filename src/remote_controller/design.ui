@@ -140,7 +140,6 @@
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -165,7 +164,6 @@
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -206,7 +204,6 @@
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -232,7 +229,6 @@
          <font>
           <family>Liberation Mono</family>
           <pointsize>20</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -253,7 +249,6 @@
          <font>
           <family>Liberation Mono</family>
           <pointsize>12</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -274,7 +269,6 @@
          <font>
           <family>Liberation Mono</family>
           <pointsize>20</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -293,7 +287,6 @@
         </property>
         <property name="font">
          <font>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -325,7 +318,6 @@ color: rgb(255, 255, 255);</string>
         </property>
         <property name="font">
          <font>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -359,7 +351,6 @@ color: rgb(255, 255, 255);</string>
          <font>
           <family>Liberation Mono</family>
           <pointsize>20</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -427,7 +418,6 @@ color: rgb(255, 255, 255);</string>
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -452,7 +442,6 @@ color: rgb(255, 255, 255);</string>
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -493,7 +482,6 @@ color: rgb(255, 255, 255);</string>
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -518,7 +506,6 @@ color: rgb(255, 255, 255);</string>
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -562,7 +549,6 @@ color: rgb(255, 255, 255);</string>
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -607,7 +593,6 @@ color: rgb(255, 255, 255);</string>
          <font>
           <family>Liberation Mono</family>
           <pointsize>12</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -694,7 +679,6 @@ color: rgb(255, 255, 255);</string>
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -719,7 +703,6 @@ color: rgb(255, 255, 255);</string>
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -744,7 +727,6 @@ color: rgb(255, 255, 255);</string>
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -769,7 +751,6 @@ color: rgb(255, 255, 255);</string>
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -842,7 +823,6 @@ color: rgb(255, 255, 255);</string>
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -867,7 +847,6 @@ color: rgb(255, 255, 255);</string>
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -892,7 +871,6 @@ color: rgb(255, 255, 255);</string>
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -952,7 +930,6 @@ color: rgb(255, 255, 255);</string>
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -993,7 +970,6 @@ color: rgb(255, 255, 255);</string>
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -1019,7 +995,6 @@ color: rgb(255, 255, 255);</string>
          <font>
           <family>Liberation Mono</family>
           <pointsize>20</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -1040,7 +1015,6 @@ color: rgb(255, 255, 255);</string>
          <font>
           <family>Liberation Mono</family>
           <pointsize>20</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -1059,7 +1033,6 @@ color: rgb(255, 255, 255);</string>
         </property>
         <property name="font">
          <font>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -1091,7 +1064,6 @@ color: rgb(255, 255, 255);</string>
         </property>
         <property name="font">
          <font>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -1125,7 +1097,6 @@ color: rgb(255, 255, 255);</string>
          <font>
           <family>Liberation Mono</family>
           <pointsize>12</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -1146,7 +1117,6 @@ color: rgb(255, 255, 255);</string>
          <font>
           <family>Liberation Mono</family>
           <pointsize>12</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -1167,7 +1137,6 @@ color: rgb(255, 255, 255);</string>
          <font>
           <family>Monospace</family>
           <pointsize>10</pointsize>
-          <weight>75</weight>
           <italic>false</italic>
           <bold>true</bold>
          </font>
@@ -1192,7 +1161,6 @@ color: rgb(255, 255, 255);</string>
          <font>
           <family>Monospace</family>
           <pointsize>10</pointsize>
-          <weight>75</weight>
           <italic>false</italic>
           <bold>true</bold>
          </font>
@@ -1217,7 +1185,6 @@ color: rgb(255, 255, 255);</string>
          <font>
           <family>Liberation Mono</family>
           <pointsize>12</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -1238,7 +1205,6 @@ color: rgb(255, 255, 255);</string>
          <font>
           <family>Liberation Mono</family>
           <pointsize>12</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -1335,7 +1301,6 @@ color: rgb(255, 255, 255);</string>
          <font>
           <family>Monospace</family>
           <pointsize>10</pointsize>
-          <weight>75</weight>
           <italic>false</italic>
           <bold>true</bold>
          </font>
@@ -1360,7 +1325,6 @@ color: rgb(255, 255, 255);</string>
          <font>
           <family>Liberation Mono</family>
           <pointsize>20</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -1374,7 +1338,7 @@ color: rgb(255, 255, 255);</string>
           <x>20</x>
           <y>640</y>
           <width>291</width>
-          <height>58</height>
+          <height>61</height>
          </rect>
         </property>
         <layout class="QGridLayout" name="gridLayout_2">
@@ -1384,7 +1348,6 @@ color: rgb(255, 255, 255);</string>
             <font>
              <family>Monospace</family>
              <pointsize>10</pointsize>
-             <weight>75</weight>
              <italic>false</italic>
              <bold>true</bold>
             </font>
@@ -1422,7 +1385,6 @@ color: rgb(255, 255, 255);</string>
             <font>
              <family>Monospace</family>
              <pointsize>10</pointsize>
-             <weight>75</weight>
              <italic>false</italic>
              <bold>true</bold>
             </font>
@@ -1462,7 +1424,7 @@ color: rgb(255, 255, 255);</string>
           <x>750</x>
           <y>460</y>
           <width>251</width>
-          <height>118</height>
+          <height>145</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout">
@@ -1472,7 +1434,6 @@ color: rgb(255, 255, 255);</string>
             <font>
              <family>DejaVu Sans Mono</family>
              <pointsize>13</pointsize>
-             <weight>75</weight>
              <italic>false</italic>
              <bold>true</bold>
             </font>
@@ -1509,7 +1470,6 @@ color: rgb(255, 255, 255);</string>
             <font>
              <family>DejaVu Sans Mono</family>
              <pointsize>13</pointsize>
-             <weight>75</weight>
              <italic>false</italic>
              <bold>true</bold>
             </font>
@@ -1607,7 +1567,6 @@ color: rgb(255, 255, 255);</string>
              <font>
               <family>DejaVu Sans Mono</family>
               <pointsize>12</pointsize>
-              <weight>75</weight>
               <italic>false</italic>
               <bold>true</bold>
              </font>
@@ -1707,7 +1666,6 @@ color: rgb(255, 255, 255);</string>
              <font>
               <family>DejaVu Sans Mono</family>
               <pointsize>12</pointsize>
-              <weight>75</weight>
               <italic>false</italic>
               <bold>true</bold>
              </font>
@@ -1735,7 +1693,6 @@ color: rgb(255, 255, 255);</string>
           <font>
            <family>Liberation Mono</family>
            <pointsize>20</pointsize>
-           <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
@@ -1748,8 +1705,8 @@ color: rgb(255, 255, 255);</string>
           <rect>
            <x>0</x>
            <y>270</y>
-           <width>301</width>
-           <height>28</height>
+           <width>307</width>
+           <height>31</height>
           </rect>
          </property>
          <layout class="QGridLayout" name="gridLayout_4">
@@ -1765,7 +1722,6 @@ color: rgb(255, 255, 255);</string>
              <font>
               <family>DejaVu Sans Mono</family>
               <pointsize>12</pointsize>
-              <weight>75</weight>
               <italic>false</italic>
               <bold>true</bold>
              </font>
@@ -1839,7 +1795,7 @@ color: rgb(255, 255, 255);</string>
             <x>10</x>
             <y>0</y>
             <width>301</width>
-            <height>101</height>
+            <height>103</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="sailBoxLayout">
@@ -1880,7 +1836,6 @@ color: rgb(255, 255, 255);</string>
               <font>
                <family>DejaVu Sans Mono</family>
                <pointsize>12</pointsize>
-               <weight>75</weight>
                <italic>false</italic>
                <bold>true</bold>
               </font>
@@ -1905,7 +1860,6 @@ color: rgb(255, 255, 255);</string>
               <font>
                <family>DejaVu Sans Mono</family>
                <pointsize>12</pointsize>
-               <weight>75</weight>
                <italic>false</italic>
                <bold>true</bold>
               </font>
@@ -2005,7 +1959,6 @@ color: rgb(255, 255, 255);</string>
               <font>
                <family>DejaVu Sans Mono</family>
                <pointsize>12</pointsize>
-               <weight>75</weight>
                <italic>false</italic>
                <bold>true</bold>
               </font>
@@ -2093,9 +2046,9 @@ color: rgb(255, 255, 255);</string>
        <widget class="QLabel" name="lblRudder">
         <property name="geometry">
          <rect>
-          <x>505</x>
-          <y>220</y>
-          <width>21</width>
+          <x>494</x>
+          <y>224</y>
+          <width>41</width>
           <height>41</height>
          </rect>
         </property>
@@ -2103,7 +2056,26 @@ color: rgb(255, 255, 255);</string>
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap>assets/sail.png</pixmap>
+         <pixmap>assets/Vincent_Tear_Drop_black_50.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLabel" name="lblRudderDesired">
+        <property name="geometry">
+         <rect>
+          <x>500</x>
+          <y>230</y>
+          <width>31</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap>assets/Vincent_Tear_Drop_black_50_transp.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -2130,7 +2102,6 @@ color: rgb(255, 255, 255);</string>
          <font>
           <family>Liberation Mono</family>
           <pointsize>20</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -2198,7 +2169,6 @@ color: rgb(255, 255, 255);</string>
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -2223,7 +2193,6 @@ color: rgb(255, 255, 255);</string>
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -2249,7 +2218,6 @@ color: rgb(255, 255, 255);</string>
          <font>
           <family>Liberation Mono</family>
           <pointsize>20</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -2262,8 +2230,8 @@ color: rgb(255, 255, 255);</string>
          <rect>
           <x>30</x>
           <y>260</y>
-          <width>82</width>
-          <height>143</height>
+          <width>108</width>
+          <height>165</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -2275,7 +2243,6 @@ color: rgb(255, 255, 255);</string>
               <font>
                <family>Liberation Mono</family>
                <pointsize>20</pointsize>
-               <weight>75</weight>
                <bold>true</bold>
               </font>
              </property>
@@ -2300,7 +2267,6 @@ color: rgb(255, 255, 255);</string>
               <font>
                <family>Liberation Mono</family>
                <pointsize>20</pointsize>
-               <weight>75</weight>
                <bold>true</bold>
               </font>
              </property>
@@ -2325,7 +2291,6 @@ color: rgb(255, 255, 255);</string>
               <font>
                <family>Liberation Mono</family>
                <pointsize>20</pointsize>
-               <weight>75</weight>
                <bold>true</bold>
               </font>
              </property>
@@ -2382,7 +2347,6 @@ color: rgb(255, 255, 255);</string>
        <font>
         <family>Liberation Mono</family>
         <pointsize>16</pointsize>
-        <weight>75</weight>
         <bold>true</bold>
        </font>
       </property>
