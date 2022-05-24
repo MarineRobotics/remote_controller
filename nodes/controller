@@ -1041,10 +1041,12 @@ class RosThread(QObject):
         self.power_consumption_updated.emit(power)
 
     def handle_wind_interval(self, msg):
-        self.sail_angle = HO(msg.data)
-        self.apparent_wind_vessel = HO(msg.data)  # Heading object with 20 value mean
-        self.apparent_wind_sail = HO(msg.data)
-        self.apparent_wind_north = HO(msg.data)  # apparent wind north referenced
+        # Wind is output at 5hz, so divide by 5 for seconds
+        interval = msg.data * 5
+        self.sail_angle = HO(interval)
+        self.apparent_wind_vessel = HO(interval)  # Heading object with 20 value mean
+        self.apparent_wind_sail = HO(interval)
+        self.apparent_wind_north = HO(interval)  # apparent wind north referenced
 
     def handle_motor_current(self, msg):
         current = msg.value
