@@ -84,6 +84,8 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.connect_slots()
         self.connect_thread_slots()
         self._thread.start()
+        
+        self.hm = HM()
 
         ####################
         # Status variables #
@@ -481,9 +483,9 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         #self.moveWindLbl(apparent_wind_vessel)
         #self.lblWindAngle.setText(str(int(apparent_wind_north)))
 
-    @pyqtSlot(float)
-    def update_northref_data(self, apparent_wind_north):
-        apparent_wind_vessel = self.hm.diff(self.vessel_heading, apparent_wind_north)
+    @pyqtSlot(float, float)
+    def update_northref_data(self, apparent_wind_north, vessel_heading):
+        apparent_wind_vessel = self.hm.diff(vessel_heading, apparent_wind_north)
         self.moveWindLbl(apparent_wind_vessel)
         self.lblWindAngle.setText(str(int(apparent_wind_north)))
         
@@ -769,7 +771,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 class RosThread(QObject):
 
     sail_data_updated = pyqtSignal(float, float, str)
-    northref_data_updated = pyqtSignal(float)
+    northref_data_updated = pyqtSignal(float, float)
     vessel_heading_updated = pyqtSignal(int)
     sail_heading_updated = pyqtSignal(int)
     sail_angle_updated = pyqtSignal(int)
@@ -965,13 +967,11 @@ class RosThread(QObject):
             # TODO: also update apparent_wind_wc
         self.sail_data_updated.emit(wind_info.speed,
                                     wind_info.direction,
-                                    wind_info.reference,
-                                    self.apparent_wind_vessel.mean(),
-                                    self.apparent_wind_north.mean()
+                                    wind_info.reference
                                     )
                                     
     def handle_northref_info(self, wind_info):
-        self.northref_data_updated.emit(wind_info.wind_direction)
+        self.northref_data_updated.emit(wind_info.direction, self.vessel_heading)
 
     def handle_vessel_heading(self, heading):
         # Send vessel heading signal, save heading and calculate sail angle
