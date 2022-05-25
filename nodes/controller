@@ -800,7 +800,7 @@ class RosThread(QObject):
         self.sail_heading = 0
 
         self.sail_angle = HO(20)
-        self.apparent_wind_vessel = HO(4)  # Heading object with 20 value mean
+        self.apparent_wind_vessel = HO(20)  # Heading object with 20 value mean
         self.apparent_wind_sail = HO(20)
         self.apparent_wind_north = HO(20)  # apparent wind north referenced
 
