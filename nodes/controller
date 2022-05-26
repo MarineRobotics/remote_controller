@@ -88,6 +88,8 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.connect_slots()
         self.connect_thread_slots()
         self._thread.start()
+        
+        self.hm = HM()
 
         ####################
         # Status variables #
@@ -419,6 +421,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         """Connect all signals needed to update the GUI from our ROS thread"""
         # self.connect(self.rc, SIGNAL("sail_data(float, float, str)"), self.update_sail_data)
         self._rosthread.sail_data_updated.connect(self.update_sail_data)
+        self._rosthread.northref_data_updated.connect(self.update_northref_data)
         self._rosthread.vessel_heading_updated.connect(self.update_vessel_heading)
         self._rosthread.sail_heading_updated.connect(self.update_sail_heading)
         self._rosthread.water_depth_updated.connect(self.update_water_depth)
@@ -470,8 +473,8 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         #self.bond_signal.connect(self._rosthread.)
         self.auto_sail_signal.connect(self._rosthread.pub_auto_sail_enable)
 
-    @pyqtSlot(float, float, str, float, float)
-    def update_sail_data(self, speed, direction, reference, apparent_wind_vessel, apparent_wind_north):
+    @pyqtSlot(float, float, str)
+    def update_sail_data(self, speed, direction, reference):#, apparent_wind_vessel, apparent_wind_north):
         """Update GUI fields with provided data"""
         speed = speed*3.6  # convert to km/h
         if reference == "True (ground referenced to North)":
@@ -481,9 +484,15 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         elif reference == "Apparent":
             self.txtWindApp.setText("{0:.0f}".format(round(direction)))
             self.txtApptWindSpeed.setText("{0:.2f}".format(round(speed, 2)))
+        #self.moveWindLbl(apparent_wind_vessel)
+        #self.lblWindAngle.setText(str(int(apparent_wind_north)))
+
+    @pyqtSlot(float, float)
+    def update_northref_data(self, apparent_wind_north, vessel_heading):
+        apparent_wind_vessel = self.hm.diff(vessel_heading, apparent_wind_north)
         self.moveWindLbl(apparent_wind_vessel)
         self.lblWindAngle.setText(str(int(apparent_wind_north)))
-
+        
     @pyqtSlot(int)
     def update_vessel_heading(self, heading):
         """Update GUI field with heading data"""
@@ -765,7 +774,8 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
 class RosThread(QObject):
 
-    sail_data_updated = pyqtSignal(float, float, str, float, float)
+    sail_data_updated = pyqtSignal(float, float, str)
+    northref_data_updated = pyqtSignal(float, float)
     vessel_heading_updated = pyqtSignal(int)
     sail_heading_updated = pyqtSignal(int)
     sail_angle_updated = pyqtSignal(int)
@@ -804,7 +814,7 @@ class RosThread(QObject):
         self.sail_heading = 0
 
         self.sail_angle = HO(20)
-        self.apparent_wind_vessel = HO(4)  # Heading object with 20 value mean
+        self.apparent_wind_vessel = HO(20)  # Heading object with 20 value mean
         self.apparent_wind_sail = HO(20)
         self.apparent_wind_north = HO(20)  # apparent wind north referenced
 
@@ -961,10 +971,11 @@ class RosThread(QObject):
             # TODO: also update apparent_wind_wc
         self.sail_data_updated.emit(wind_info.speed,
                                     wind_info.direction,
-                                    wind_info.reference,
-                                    self.apparent_wind_vessel.mean(),
-                                    self.apparent_wind_north.mean()
+                                    wind_info.reference
                                     )
+                                    
+    def handle_northref_info(self, wind_info):
+        self.northref_data_updated.emit(wind_info.direction, self.vessel_heading)
 
     def handle_vessel_heading(self, heading):
         # Send vessel heading signal, save heading and calculate sail angle
@@ -1102,6 +1113,7 @@ class RosThread(QObject):
                           self._create_bond)
         rospy.loginfo("sent bond service")
         rospy.Subscriber("wind_info", WIND, self.handle_wind_info)
+        rospy.Subscriber("app_wind_northref_avg", WIND, self.handle_northref_info)
         rospy.Subscriber("vessel_hdng_true_cal", Heading,
                          self.handle_vessel_heading)
         rospy.Subscriber("sail_hdng_true_cal", Heading,
