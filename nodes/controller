@@ -46,7 +46,11 @@ class myIntValidator(QtGui.QIntValidator):
         if state == QtGui.QValidator.Invalid:
             # We assume user tried to manually control boat if input was not an int
             # We then remove focus so their next keypress will register as intended
-            QtWidgets.QApplication.focusWidget().clearFocus()
+            try:
+                QtWidgets.QApplication.focusWidget().clearFocus()
+            except AttributeError as e:
+                rospy.logwarn("Could not clear focus: {}".format(e))
+                pass
         self.validationChanged.emit(state)
         return state, input, pos
 
