@@ -47,7 +47,8 @@ class myIntValidator(QtGui.QIntValidator):
             # We assume user tried to manually control boat if input was not an int
             # We then remove focus so their next keypress will register as intended
             try:
-                QtWidgets.QApplication.focusWidget().clearFocus()
+                if QtWidgets.QApplication.focusWidget() is not None:
+                    QtWidgets.QApplication.focusWidget().clearFocus()
             except AttributeError as e:
                 rospy.logwarn("Could not clear focus: {}".format(e))
                 pass
@@ -94,7 +95,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         ####################
         # Status variables #
         ####################
-        self.rudder_increment = 10
+        self.rudder_increment = 5
         self.desired_rudder = 0
 
         #rospy.logerr(self.isSignalConnected(self.manual_cmd_signal, 'self._rosthread.pub_manual_cmd()'))
@@ -161,6 +162,11 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.txtDesRudder.returnPressed.connect(self.set_rudder_angle)
         #self.btnRudderTest.clicked.connect(self.start_rudder_test)
         #self.btnSailTest.clicked.connect(self.start_sail_test)
+
+        #############################
+        # Setup text default values #
+        #############################
+        self.txtRudderIncrement.setValue(self.rudder_increment)
 
 
         ####################
