@@ -67,10 +67,10 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>0</x>
+        <x>-10</x>
         <y>0</y>
-        <width>1101</width>
-        <height>751</height>
+        <width>1236</width>
+        <height>899</height>
        </rect>
       </property>
       <property name="currentIndex">
@@ -140,7 +140,6 @@
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -165,7 +164,6 @@
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -206,7 +204,6 @@
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -232,7 +229,6 @@
          <font>
           <family>Liberation Mono</family>
           <pointsize>20</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -246,14 +242,13 @@
           <x>20</x>
           <y>70</y>
           <width>171</width>
-          <height>31</height>
+          <height>61</height>
          </rect>
         </property>
         <property name="font">
          <font>
           <family>Liberation Mono</family>
           <pointsize>12</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -274,7 +269,6 @@
          <font>
           <family>Liberation Mono</family>
           <pointsize>20</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -293,7 +287,6 @@
         </property>
         <property name="font">
          <font>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -325,7 +318,6 @@ color: rgb(255, 255, 255);</string>
         </property>
         <property name="font">
          <font>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -350,7 +342,7 @@ color: rgb(255, 255, 255);</string>
         <property name="geometry">
          <rect>
           <x>20</x>
-          <y>20</y>
+          <y>10</y>
           <width>221</width>
           <height>41</height>
          </rect>
@@ -359,12 +351,11 @@ color: rgb(255, 255, 255);</string>
          <font>
           <family>Liberation Mono</family>
           <pointsize>20</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
         <property name="text">
-         <string>Control</string>
+         <string>Controls</string>
         </property>
        </widget>
        <widget class="QFrame" name="frame_3">
@@ -427,7 +418,6 @@ color: rgb(255, 255, 255);</string>
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -452,7 +442,6 @@ color: rgb(255, 255, 255);</string>
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -493,7 +482,6 @@ color: rgb(255, 255, 255);</string>
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -518,7 +506,6 @@ color: rgb(255, 255, 255);</string>
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -562,7 +549,6 @@ color: rgb(255, 255, 255);</string>
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -600,14 +586,13 @@ color: rgb(255, 255, 255);</string>
           <x>20</x>
           <y>70</y>
           <width>171</width>
-          <height>31</height>
+          <height>61</height>
          </rect>
         </property>
         <property name="font">
          <font>
           <family>Liberation Mono</family>
           <pointsize>12</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -694,7 +679,6 @@ color: rgb(255, 255, 255);</string>
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -719,7 +703,6 @@ color: rgb(255, 255, 255);</string>
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -744,7 +727,6 @@ color: rgb(255, 255, 255);</string>
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -769,7 +751,6 @@ color: rgb(255, 255, 255);</string>
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -842,7 +823,6 @@ color: rgb(255, 255, 255);</string>
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -867,7 +847,6 @@ color: rgb(255, 255, 255);</string>
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -892,7 +871,6 @@ color: rgb(255, 255, 255);</string>
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -952,7 +930,6 @@ color: rgb(255, 255, 255);</string>
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -993,7 +970,6 @@ color: rgb(255, 255, 255);</string>
           <font>
            <family>Monospace</family>
            <pointsize>10</pointsize>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>
@@ -1019,7 +995,6 @@ color: rgb(255, 255, 255);</string>
          <font>
           <family>Liberation Mono</family>
           <pointsize>20</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -1040,7 +1015,6 @@ color: rgb(255, 255, 255);</string>
          <font>
           <family>Liberation Mono</family>
           <pointsize>20</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -1059,7 +1033,6 @@ color: rgb(255, 255, 255);</string>
         </property>
         <property name="font">
          <font>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -1091,7 +1064,6 @@ color: rgb(255, 255, 255);</string>
         </property>
         <property name="font">
          <font>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -1116,7 +1088,7 @@ color: rgb(255, 255, 255);</string>
         <property name="geometry">
          <rect>
           <x>20</x>
-          <y>110</y>
+          <y>140</y>
           <width>171</width>
           <height>31</height>
          </rect>
@@ -1125,7 +1097,6 @@ color: rgb(255, 255, 255);</string>
          <font>
           <family>Liberation Mono</family>
           <pointsize>12</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -1137,7 +1108,7 @@ color: rgb(255, 255, 255);</string>
         <property name="geometry">
          <rect>
           <x>20</x>
-          <y>110</y>
+          <y>140</y>
           <width>171</width>
           <height>31</height>
          </rect>
@@ -1146,7 +1117,6 @@ color: rgb(255, 255, 255);</string>
          <font>
           <family>Liberation Mono</family>
           <pointsize>12</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -1167,7 +1137,6 @@ color: rgb(255, 255, 255);</string>
          <font>
           <family>Monospace</family>
           <pointsize>10</pointsize>
-          <weight>75</weight>
           <italic>false</italic>
           <bold>true</bold>
          </font>
@@ -1192,7 +1161,6 @@ color: rgb(255, 255, 255);</string>
          <font>
           <family>Monospace</family>
           <pointsize>10</pointsize>
-          <weight>75</weight>
           <italic>false</italic>
           <bold>true</bold>
          </font>
@@ -1204,204 +1172,11 @@ color: rgb(255, 255, 255);</string>
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
-       <widget class="QLineEdit" name="txtUTC">
-        <property name="geometry">
-         <rect>
-          <x>850</x>
-          <y>600</y>
-          <width>221</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>13</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_20">
-        <property name="geometry">
-         <rect>
-          <x>750</x>
-          <y>610</y>
-          <width>91</width>
-          <height>20</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>DejaVu Sans Mono</family>
-          <pointsize>13</pointsize>
-          <weight>75</weight>
-          <italic>false</italic>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>UTC Time</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_21">
-        <property name="geometry">
-         <rect>
-          <x>750</x>
-          <y>640</y>
-          <width>91</width>
-          <height>20</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>DejaVu Sans Mono</family>
-          <pointsize>13</pointsize>
-          <weight>75</weight>
-          <italic>false</italic>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>Comments</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-       <widget class="QFrame" name="frame_5">
-        <property name="geometry">
-         <rect>
-          <x>750</x>
-          <y>490</y>
-          <width>251</width>
-          <height>100</height>
-         </rect>
-        </property>
-        <property name="frameShape">
-         <enum>QFrame::StyledPanel</enum>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Raised</enum>
-        </property>
-        <widget class="QLineEdit" name="txtState">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="geometry">
-          <rect>
-           <x>90</x>
-           <y>20</y>
-           <width>141</width>
-           <height>21</height>
-          </rect>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
-        </widget>
-        <widget class="QLineEdit" name="txtSubstate">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="geometry">
-          <rect>
-           <x>90</x>
-           <y>60</y>
-           <width>141</width>
-           <height>21</height>
-          </rect>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_22">
-         <property name="geometry">
-          <rect>
-           <x>-20</x>
-           <y>20</y>
-           <width>101</width>
-           <height>16</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <family>Monospace</family>
-           <pointsize>10</pointsize>
-           <weight>75</weight>
-           <italic>false</italic>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>State :</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_23">
-         <property name="geometry">
-          <rect>
-           <x>-50</x>
-           <y>60</y>
-           <width>131</width>
-           <height>16</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <family>Monospace</family>
-           <pointsize>10</pointsize>
-           <weight>75</weight>
-           <italic>false</italic>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Substate :</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </widget>
-       <widget class="QLabel" name="lblActuatorStatus_6">
-        <property name="geometry">
-         <rect>
-          <x>750</x>
-          <y>440</y>
-          <width>221</width>
-          <height>41</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Liberation Mono</family>
-          <pointsize>20</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>Boat State</string>
-        </property>
-       </widget>
        <widget class="QPushButton" name="btnAutoSail">
         <property name="geometry">
          <rect>
           <x>20</x>
-          <y>150</y>
+          <y>180</y>
           <width>171</width>
           <height>31</height>
          </rect>
@@ -1410,7 +1185,6 @@ color: rgb(255, 255, 255);</string>
          <font>
           <family>Liberation Mono</family>
           <pointsize>12</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -1422,7 +1196,7 @@ color: rgb(255, 255, 255);</string>
         <property name="geometry">
          <rect>
           <x>20</x>
-          <y>150</y>
+          <y>180</y>
           <width>171</width>
           <height>31</height>
          </rect>
@@ -1431,277 +1205,11 @@ color: rgb(255, 255, 255);</string>
          <font>
           <family>Liberation Mono</family>
           <pointsize>12</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
         <property name="text">
          <string>Disable auto sail</string>
-        </property>
-       </widget>
-       <widget class="QWidget" name="sailCtrlGroup" native="true">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>320</y>
-          <width>321</width>
-          <height>161</height>
-         </rect>
-        </property>
-        <widget class="QLabel" name="label_16">
-         <property name="geometry">
-          <rect>
-           <x>20</x>
-           <y>10</y>
-           <width>171</width>
-           <height>20</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <family>Monospace</family>
-           <pointsize>10</pointsize>
-           <weight>75</weight>
-           <italic>false</italic>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Desired sail heading:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-        <widget class="QWidget" name="layoutWidget_2">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>30</y>
-           <width>211</width>
-           <height>41</height>
-          </rect>
-         </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
-          <item>
-           <widget class="QLineEdit" name="txtDesSail">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btnDesSail">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="styleSheet">
-             <string notr="true"/>
-            </property>
-            <property name="text">
-             <string>SET</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-        <widget class="QLabel" name="label_18">
-         <property name="geometry">
-          <rect>
-           <x>20</x>
-           <y>80</y>
-           <width>151</width>
-           <height>20</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <family>Monospace</family>
-           <pointsize>10</pointsize>
-           <weight>75</weight>
-           <italic>false</italic>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Desired sail angle:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-        <widget class="QWidget" name="layoutWidget_4">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>110</y>
-           <width>211</width>
-           <height>41</height>
-          </rect>
-         </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_4">
-          <item>
-           <widget class="QLineEdit" name="txtDesSailAngle">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btnDesSailAngle">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="styleSheet">
-             <string notr="true"/>
-            </property>
-            <property name="text">
-             <string>SET</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </widget>
-       <widget class="QWidget" name="layoutWidget">
-        <property name="geometry">
-         <rect>
-          <x>20</x>
-          <y>210</y>
-          <width>211</width>
-          <height>41</height>
-         </rect>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QLineEdit" name="txtDesHeading">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btnDesHeading">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-           <property name="text">
-            <string>SET</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QLabel" name="label_15">
-        <property name="geometry">
-         <rect>
-          <x>30</x>
-          <y>190</y>
-          <width>131</width>
-          <height>20</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Monospace</family>
-          <pointsize>10</pointsize>
-          <weight>75</weight>
-          <italic>false</italic>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>Desired heading:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-       <widget class="QWidget" name="layoutWidget_3">
-        <property name="geometry">
-         <rect>
-          <x>20</x>
-          <y>280</y>
-          <width>211</width>
-          <height>41</height>
-         </rect>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <item>
-          <widget class="QLineEdit" name="txtDesROT">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btnDesROT">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-           <property name="text">
-            <string>SET</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QLabel" name="label_17">
-        <property name="geometry">
-         <rect>
-          <x>30</x>
-          <y>260</y>
-          <width>171</width>
-          <height>20</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Monospace</family>
-          <pointsize>10</pointsize>
-          <weight>75</weight>
-          <italic>false</italic>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>Desired Rate of Turn </string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
        <widget class="QLabel" name="lblWind">
@@ -1726,9 +1234,9 @@ color: rgb(255, 255, 255);</string>
        <widget class="QLabel" name="lblBoat">
         <property name="geometry">
          <rect>
-          <x>450</x>
+          <x>440</x>
           <y>90</y>
-          <width>131</width>
+          <width>151</width>
           <height>171</height>
          </rect>
         </property>
@@ -1793,7 +1301,6 @@ color: rgb(255, 255, 255);</string>
          <font>
           <family>Monospace</family>
           <pointsize>10</pointsize>
-          <weight>75</weight>
           <italic>false</italic>
           <bold>true</bold>
          </font>
@@ -1805,36 +1312,12 @@ color: rgb(255, 255, 255);</string>
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
-       <widget class="QLineEdit" name="txtUTC_2">
-        <property name="geometry">
-         <rect>
-          <x>850</x>
-          <y>640</y>
-          <width>221</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>13</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
        <widget class="QLabel" name="lblActuatorStatus_7">
         <property name="geometry">
          <rect>
           <x>20</x>
-          <y>480</y>
-          <width>221</width>
+          <y>590</y>
+          <width>281</width>
           <height>41</height>
          </rect>
         </property>
@@ -1842,262 +1325,769 @@ color: rgb(255, 255, 255);</string>
          <font>
           <family>Liberation Mono</family>
           <pointsize>20</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
         <property name="text">
-         <string>Motor Test</string>
+         <string>Actuator feedback</string>
         </property>
        </widget>
-       <widget class="QLabel" name="label_77">
-        <property name="geometry">
-         <rect>
-          <x>20</x>
-          <y>670</y>
-          <width>141</width>
-          <height>20</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Monospace</family>
-          <pointsize>10</pointsize>
-          <weight>75</weight>
-          <italic>false</italic>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>Sail angle (deg)</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_66">
-        <property name="geometry">
-         <rect>
-          <x>20</x>
-          <y>610</y>
-          <width>141</width>
-          <height>20</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Monospace</family>
-          <pointsize>10</pointsize>
-          <weight>75</weight>
-          <italic>false</italic>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>Current value (A)</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-       <widget class="QLineEdit" name="txtSailAngle">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>170</x>
-          <y>670</y>
-          <width>61</width>
-          <height>20</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-       </widget>
-       <widget class="QLineEdit" name="txtRudderAngle">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>170</x>
-          <y>640</y>
-          <width>61</width>
-          <height>20</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-       </widget>
-       <widget class="QLineEdit" name="txtCurrentValue">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>170</x>
-          <y>610</y>
-          <width>61</width>
-          <height>20</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_76">
+       <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
          <rect>
           <x>20</x>
           <y>640</y>
-          <width>151</width>
-          <height>20</height>
+          <width>291</width>
+          <height>61</height>
          </rect>
         </property>
-        <property name="font">
-         <font>
-          <family>Monospace</family>
-          <pointsize>10</pointsize>
-          <weight>75</weight>
-          <italic>false</italic>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>Rudder angle (deg)</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_76">
+           <property name="font">
+            <font>
+             <family>Monospace</family>
+             <pointsize>10</pointsize>
+             <italic>false</italic>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Rudder angle (deg)</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="txtRudderAngle">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>60</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_77">
+           <property name="font">
+            <font>
+             <family>Monospace</family>
+             <pointsize>10</pointsize>
+             <italic>false</italic>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Sail angle (deg)</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="txtSailAngle">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>60</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
-       <widget class="QPushButton" name="btnDesRudderAngle">
+       <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
          <rect>
-          <x>150</x>
-          <y>560</y>
-          <width>80</width>
-          <height>25</height>
+          <x>750</x>
+          <y>460</y>
+          <width>251</width>
+          <height>145</height>
          </rect>
         </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="styleSheet">
-         <string notr="true"/>
-        </property>
-        <property name="text">
-         <string>SET</string>
-        </property>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QLabel" name="label_20">
+           <property name="font">
+            <font>
+             <family>DejaVu Sans Mono</family>
+             <pointsize>13</pointsize>
+             <italic>false</italic>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>UTC Time</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="txtUTC">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>13</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_21">
+           <property name="font">
+            <font>
+             <family>DejaVu Sans Mono</family>
+             <pointsize>13</pointsize>
+             <italic>false</italic>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Comments</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="txtUTC_2">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>13</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
-       <widget class="QLabel" name="label_24">
+       <widget class="QFrame" name="controlFrame">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>20</x>
-          <y>530</y>
-          <width>171</width>
-          <height>20</height>
+          <y>240</y>
+          <width>321</width>
+          <height>321</height>
          </rect>
         </property>
-        <property name="font">
-         <font>
-          <family>Monospace</family>
-          <pointsize>10</pointsize>
-          <weight>75</weight>
-          <italic>false</italic>
-          <bold>true</bold>
-         </font>
+        <property name="frameShape">
+         <enum>QFrame::NoFrame</enum>
         </property>
-        <property name="text">
-         <string>Desired rudder angle:</string>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
         </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
+        <widget class="QWidget" name="layoutWidget">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>301</width>
+           <height>71</height>
+          </rect>
+         </property>
+         <layout class="QGridLayout" name="gridLayout" rowstretch="0,0">
+          <item row="0" column="2">
+           <widget class="QPushButton" name="btnDesHeading">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>40</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="layoutDirection">
+             <enum>Qt::RightToLeft</enum>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <property name="text">
+             <string>SET</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_24">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <family>DejaVu Sans Mono</family>
+              <pointsize>12</pointsize>
+              <italic>false</italic>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Rudder angle:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QPushButton" name="btnDesRudderAngle">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>40</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="layoutDirection">
+             <enum>Qt::RightToLeft</enum>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <property name="text">
+             <string>SET</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="txtDesRudder">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>40</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="baseSize">
+             <size>
+              <width>40</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="layoutDirection">
+             <enum>Qt::RightToLeft</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="txtDesHeading">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>40</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="baseSize">
+             <size>
+              <width>40</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="layoutDirection">
+             <enum>Qt::RightToLeft</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_15">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <family>DejaVu Sans Mono</family>
+              <pointsize>12</pointsize>
+              <italic>false</italic>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Vessel heading:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QLabel" name="lblControl_2">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>220</y>
+           <width>221</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Liberation Mono</family>
+           <pointsize>20</pointsize>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Keyboard</string>
+         </property>
+        </widget>
+        <widget class="QWidget" name="layoutWidget">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>270</y>
+           <width>307</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_30">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <family>DejaVu Sans Mono</family>
+              <pointsize>12</pointsize>
+              <italic>false</italic>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Tooltips are cool&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="whatsThis">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;What's this you ask?&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="text">
+             <string>Rudder key increments</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QSpinBox" name="txtRudderIncrement">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>40</number>
+            </property>
+            <property name="stepType">
+             <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
+            </property>
+            <property name="value">
+             <number>10</number>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QPushButton" name="pushButton">
+            <property name="maximumSize">
+             <size>
+              <width>30</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>ℹ</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QFrame" name="sailCtrlGroup">
+         <property name="geometry">
+          <rect>
+           <x>-10</x>
+           <y>90</y>
+           <width>331</width>
+           <height>101</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <property name="lineWidth">
+          <number>0</number>
+         </property>
+         <widget class="QWidget" name="layoutWidget_2">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>0</y>
+            <width>301</width>
+            <height>103</height>
+           </rect>
+          </property>
+          <layout class="QGridLayout" name="sailBoxLayout">
+           <item row="1" column="1">
+            <widget class="QLineEdit" name="txtDesSailPos">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>40</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="baseSize">
+              <size>
+               <width>40</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="layoutDirection">
+              <enum>Qt::RightToLeft</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_34">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="font">
+              <font>
+               <family>DejaVu Sans Mono</family>
+               <pointsize>12</pointsize>
+               <italic>false</italic>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Sail heading:</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_31">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="font">
+              <font>
+               <family>DejaVu Sans Mono</family>
+               <pointsize>12</pointsize>
+               <italic>false</italic>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Sail angle:</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="2">
+            <widget class="QPushButton" name="btnDesSailPos">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>40</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="layoutDirection">
+              <enum>Qt::RightToLeft</enum>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="text">
+              <string>SET</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2">
+            <widget class="QPushButton" name="btnDesSail">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>40</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="layoutDirection">
+              <enum>Qt::RightToLeft</enum>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="text">
+              <string>SET</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="txtDesSail">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>40</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="baseSize">
+              <size>
+               <width>40</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="layoutDirection">
+              <enum>Qt::RightToLeft</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_32">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="font">
+              <font>
+               <family>DejaVu Sans Mono</family>
+               <pointsize>12</pointsize>
+               <italic>false</italic>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Tooltips are cool&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="whatsThis">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;What's this you ask?&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="text">
+              <string>Sail angle of attack:</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QLineEdit" name="txtDesSailAngle">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>40</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="baseSize">
+              <size>
+               <width>40</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Tooltips are cool&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="whatsThis">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;What's this you ask?&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="layoutDirection">
+              <enum>Qt::RightToLeft</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="2">
+            <widget class="QPushButton" name="btnDesSailAngle">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>40</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Tooltips are cool&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="whatsThis">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;What's this you ask?&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="layoutDirection">
+              <enum>Qt::RightToLeft</enum>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="text">
+              <string>SET</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
        </widget>
-       <widget class="QLineEdit" name="txtDesRudder">
+       <widget class="QLabel" name="lblRudder">
         <property name="geometry">
          <rect>
-          <x>20</x>
-          <y>560</y>
-          <width>123</width>
-          <height>25</height>
+          <x>494</x>
+          <y>224</y>
+          <width>41</width>
+          <height>41</height>
          </rect>
         </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap>assets/Vincent_Tear_Drop_black_50.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
         </property>
        </widget>
-       <zorder>sailCtrlGroup</zorder>
-       <zorder>frame</zorder>
-       <zorder>lblActuatorStatus_3</zorder>
-       <zorder>btnStartManual</zorder>
-       <zorder>lblActuatorStatus_2</zorder>
-       <zorder>txtConnectionStatus</zorder>
-       <zorder>txtMode</zorder>
-       <zorder>lblControl</zorder>
-       <zorder>frame_3</zorder>
-       <zorder>btnDisableManual</zorder>
-       <zorder>frame_2</zorder>
-       <zorder>lblActuatorStatus_5</zorder>
-       <zorder>lblActuatorStatus_4</zorder>
-       <zorder>txt0x80Status</zorder>
-       <zorder>txt0x81Status</zorder>
-       <zorder>btnPropOn</zorder>
-       <zorder>btnPropOff</zorder>
-       <zorder>label_36</zorder>
-       <zorder>label_19</zorder>
-       <zorder>txtUTC</zorder>
-       <zorder>label_20</zorder>
-       <zorder>label_21</zorder>
-       <zorder>frame_5</zorder>
-       <zorder>lblActuatorStatus_6</zorder>
-       <zorder>btnAutoSail</zorder>
-       <zorder>btnAutoSailDisable</zorder>
-       <zorder>layoutWidget</zorder>
-       <zorder>label_15</zorder>
-       <zorder>layoutWidget_3</zorder>
-       <zorder>label_17</zorder>
-       <zorder>lblWind</zorder>
-       <zorder>lblBoat</zorder>
-       <zorder>lblSail</zorder>
-       <zorder>txtHeading</zorder>
-       <zorder>label_57</zorder>
-       <zorder>txtUTC_2</zorder>
-       <zorder>lblActuatorStatus_7</zorder>
-       <zorder>label_77</zorder>
-       <zorder>label_66</zorder>
-       <zorder>txtSailAngle</zorder>
-       <zorder>txtRudderAngle</zorder>
-       <zorder>txtCurrentValue</zorder>
-       <zorder>label_76</zorder>
-       <zorder>btnDesRudderAngle</zorder>
-       <zorder>label_24</zorder>
-       <zorder>txtDesRudder</zorder>
+       <widget class="QLabel" name="lblRudderDesired">
+        <property name="geometry">
+         <rect>
+          <x>500</x>
+          <y>230</y>
+          <width>31</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap>assets/Vincent_Tear_Drop_black_50_transp.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
       </widget>
       <widget class="QWidget" name="tab_2">
        <property name="enabled">
         <bool>true</bool>
        </property>
        <attribute name="title">
-        <string>Settings</string>
+        <string>Developer</string>
        </attribute>
        <widget class="QLabel" name="lblControl_3">
         <property name="geometry">
@@ -2112,7 +2102,6 @@ color: rgb(255, 255, 255);</string>
          <font>
           <family>Liberation Mono</family>
           <pointsize>20</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
@@ -2120,159 +2109,225 @@ color: rgb(255, 255, 255);</string>
          <string>PID tuning</string>
         </property>
        </widget>
-       <widget class="QPushButton" name="btnEnablePIDTuning">
+       <widget class="QFrame" name="frame_5">
         <property name="geometry">
          <rect>
           <x>30</x>
-          <y>250</y>
-          <width>71</width>
-          <height>31</height>
+          <y>90</y>
+          <width>251</width>
+          <height>100</height>
          </rect>
         </property>
-        <property name="font">
-         <font>
-          <family>Liberation Mono</family>
-          <pointsize>12</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
         </property>
-        <property name="text">
-         <string>Enable</string>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
         </property>
+        <widget class="QLineEdit" name="txtState">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>90</x>
+           <y>20</y>
+           <width>141</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="txtSubstate">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>90</x>
+           <y>60</y>
+           <width>141</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_22">
+         <property name="geometry">
+          <rect>
+           <x>-20</x>
+           <y>20</y>
+           <width>101</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Monospace</family>
+           <pointsize>10</pointsize>
+           <italic>false</italic>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>State :</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_23">
+         <property name="geometry">
+          <rect>
+           <x>-50</x>
+           <y>60</y>
+           <width>131</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Monospace</family>
+           <pointsize>10</pointsize>
+           <italic>false</italic>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Substate :</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
        </widget>
-       <widget class="QLineEdit" name="txtIInput">
-        <property name="geometry">
-         <rect>
-          <x>60</x>
-          <y>330</y>
-          <width>41</width>
-          <height>20</height>
-         </rect>
-        </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-       </widget>
-       <widget class="QLineEdit" name="txtDInput">
-        <property name="geometry">
-         <rect>
-          <x>60</x>
-          <y>360</y>
-          <width>41</width>
-          <height>20</height>
-         </rect>
-        </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-       </widget>
-       <widget class="QLineEdit" name="txtPInput">
-        <property name="geometry">
-         <rect>
-          <x>60</x>
-          <y>300</y>
-          <width>41</width>
-          <height>20</height>
-         </rect>
-        </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-       </widget>
-       <widget class="QLabel" name="lblI">
-        <property name="geometry">
-         <rect>
-          <x>30</x>
-          <y>330</y>
-          <width>16</width>
-          <height>21</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Liberation Mono</family>
-          <pointsize>20</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>I</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="lblD">
-        <property name="geometry">
-         <rect>
-          <x>30</x>
-          <y>360</y>
-          <width>16</width>
-          <height>21</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Liberation Mono</family>
-          <pointsize>20</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>D</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="lblP">
+       <widget class="QLabel" name="lblActuatorStatus_6">
         <property name="geometry">
          <rect>
           <x>30</x>
-          <y>300</y>
-          <width>16</width>
-          <height>21</height>
+          <y>40</y>
+          <width>221</width>
+          <height>41</height>
          </rect>
         </property>
         <property name="font">
          <font>
           <family>Liberation Mono</family>
           <pointsize>20</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
         <property name="text">
-         <string>P</string>
+         <string>Boat State</string>
         </property>
        </widget>
-       <widget class="QPushButton" name="btnSetIntegral">
+       <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
          <rect>
-          <x>110</x>
-          <y>330</y>
-          <width>41</width>
-          <height>23</height>
+          <x>30</x>
+          <y>260</y>
+          <width>108</width>
+          <height>165</height>
          </rect>
         </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="styleSheet">
-         <string notr="true"/>
-        </property>
-        <property name="text">
-         <string>Set</string>
-        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <layout class="QGridLayout" name="gridLayout_3">
+           <item row="0" column="0">
+            <widget class="QLabel" name="lblP">
+             <property name="font">
+              <font>
+               <family>Liberation Mono</family>
+               <pointsize>20</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>P</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="txtPInput">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="lblI">
+             <property name="font">
+              <font>
+               <family>Liberation Mono</family>
+               <pointsize>20</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>I</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLineEdit" name="txtIInput">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="lblD">
+             <property name="font">
+              <font>
+               <family>Liberation Mono</family>
+               <pointsize>20</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>D</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QLineEdit" name="txtDInput">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnSetIntegral">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <property name="text">
+            <string>Set</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </widget>
      </widget>
@@ -2292,7 +2347,6 @@ color: rgb(255, 255, 255);</string>
        <font>
         <family>Liberation Mono</family>
         <pointsize>16</pointsize>
-        <weight>75</weight>
         <bold>true</bold>
        </font>
       </property>
