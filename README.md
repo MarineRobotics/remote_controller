@@ -20,7 +20,6 @@ Flowchart:
 
 # Operating system requirements
 Operating System: Ubuntu 20.04 LTS is required.  
-:information_source: If you are running an older version, please go to the [Python 2 branch of the software](https://github.com/MarineRobotics/remote_controller/tree/developer)
 
 ROS: Noetic.
 
