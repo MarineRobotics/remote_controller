@@ -66,7 +66,6 @@ http://wiki.ros.org/noetic/Installation/Ubuntu
 * Clone the necessary packages using git
   ```
   $ git clone -b python3 https://github.com/MarineRobotics/mr_messages.git
-  $ git clone -b python3 https://github.com/MarineRobotics/movement_controls.git
   $ git clone https://github.com/MarineRobotics/remote_controller.git
   ```
 
