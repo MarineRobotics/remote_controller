@@ -15,8 +15,9 @@ from PyQt5.QtGui import QPixmap, QTransform
 from bondpy import bondpy
 from remote_controller import design
 
-from movement_controls.heading_manipulations import HeadingManipulations as HM
-from movement_controls.heading_manipulations import HeadingObj as HO
+from remote_controller.heading_manipulations import HeadingManipulations as HM
+from remote_controller.heading_manipulations import HeadingObj as HO
+
 
 from collections import namedtuple
 from math import cos, sin, radians
