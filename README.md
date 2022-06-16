@@ -5,18 +5,20 @@ This is a work in progress...
 
 # Contents
 
-- [Software Overview](#software-overview)
-- [Operating System requirements](#operating-system-requirements)
+- [Contents](#contents)
+- [Operating system requirements](#operating-system-requirements)
 - [Local Machine Setup](#local-machine-setup)
-- [Run The Software](#run-the-software)
-- [Control Interface](#control-interface)
+  - [Automatic installation](#automatic-installation)
+  - [Manual installation](#manual-installation)
+    - [Install and configure ROS](#install-and-configure-ros)
+    - [Download and build remote controller](#download-and-build-remote-controller)
+- [Run the software](#run-the-software)
+  - [Start the frontseat on the sailboat](#start-the-frontseat-on-the-sailboat)
+  - [Start the remote controller](#start-the-remote-controller)
+  - [Run MOOS](#run-moos)
+- [Control Interface overview](#control-interface-overview)
+- [Software structure overview](#software-structure-overview)
 
-# Software Overview
-
-A combination of MOOS-IvP and ROS is used for the boat system. MOOS-IvP is the backseat driver and handles all the user and mission related logic. ROS is used for the front seat. This contains all the low level logic communicating with the boat’s actuators and sensors.
-
-Flowchart:
-<p align="center"><img src="https://user-images.githubusercontent.com/3636101/173442644-0efb1272-4638-4f26-963b-9246db97c59b.png"></p>
 
 # Operating system requirements
 Operating System: Ubuntu 20.04 LTS is required.  
@@ -43,9 +45,9 @@ http://wiki.ros.org/noetic/Installation/Ubuntu
   $ cd ~/catkin_ws/
   $ catkin build
   ```
-  If you look in your current directory you should now have a 'build' and 'devel' folder. Inside the 'devel' folder you can see that there are now several setup.*sh files. Sourcing any of these files will overlay this workspace on top of your environment. 
+  If you look in your current directory you should now have a 'build' and 'devel' folder. Inside the 'devel' folder you can see that there are now several setup.sh files. Sourcing any of these files will overlay this workspace on top of your environment. 
   
-* Before continuing source your new setup.*sh file:
+* Before continuing source your new setup.sh file:
   ```
   $ source devel/setup.bash
   ```
@@ -69,7 +71,7 @@ http://wiki.ros.org/noetic/Installation/Ubuntu
   ```
 
   To run correctly, our ROS node requires external libraries like pyqt to be installed. Each of these required packages is defined in that ROS node’s “package.xml”. By using rosdep we can automatically find and install these dependencies.  
-  `Rosdep should have been initialized during the install part of this tutorial. If you didn't already dot it now:`
+  `Rosdep should have been initialized during the install part of this tutorial. If you didn't already do so, do it now:`
   ```
   $ rosdep init
   $ rosdep update
@@ -100,6 +102,10 @@ SSH connect to the front-seat RPi (IP address may change depending on your setup
 ```
 ssh pi@192.168.1.160
 ```
+Password:
+```
+hovergroup123
+```
 Run front seat on the Pi:
 ```
 cd robocat_frontseat/snap_ws
@@ -108,9 +114,15 @@ roslaunch fs_control start_frontseat.launch
 ```
 
 ## Start the remote controller
+**Make sure the software is up to date**
+```
+$ cd ~/catkin_ws \
+  && git -C src/remote_controller/ pull \
+  && git -C src/mr_messages/ pull
+```
 Run controller from your laptop:
 ```
-$ cd catkin_ws/src/remote_controller
+$ cd ~/catkin_ws/src/remote_controller
 $ ./run.sh
 ```
 ## Run MOOS
@@ -131,9 +143,32 @@ pAntler mission_shore.moos
 ```
 
 # Control Interface overview
-Manual control is using keys on keyboard as controller:
-WS for propeller, QE for sail and AD for rudder
+Manual control allows you to use keyboard keys to control the boat.
+Rudder is moved in 5 degree increments per keypress. The amount of degrees can be modified using the "key increments" setting (field 5)
+ **TODO: insert picture**
 
-In Boat State section the status will show as payload during MOOS missions
+When running the remote controller, the interface will look like the screenshot below.
+We describe some of the most immportant features:
 <p align="center"><img src="https://user-images.githubusercontent.com/47678311/134934203-96bc625d-c441-46ac-a2cf-9d8e144e75be.png"></p>
-![ROS architecture](https://user-images.githubusercontent.com/3636101/138930940-ef8233cf-61be-4b09-9d52-0d364ddd69f7.png)
+
+1. Enabling manual mode is necessary to use the remote controller. This will put control into your hands and results in the boat ignoring any payload messages even if a MOOS mission was running.
+2. Turns propeller on/off
+3. Works best in combination with "Vessel Heading" setting. When enabled, the boat will choose the best sail angle for the current/desired heading. If you go into the wind, or slow down too much during a tack it will automatically turn on the prop to help out. 
+4. 
+   - Sail heading: ask the sail to hold a specific compass heading, independent of vessel
+   - Sail angle: ask the sail to set a specific angle relative to the boat
+   - Sail angle of attack : ask the sail to set a specific angle relative to the apparent wind
+5. Change the amount of degrees with which the rudder moves for each A/D keypress. For your information: the rudder range is -40 to 40 degrees
+6. The current rudder position
+7. The desired rudder position, this shows you what you are asking the rudder to do.
+8. Motor controller status. In this example 1 is connected (green) and one is not connected. You need both controllers to be green to operate the boat.
+9. Stop all actuators from moving.
+
+
+
+# Software structure overview
+
+A combination of MOOS-IvP and ROS is used for the boat system. MOOS-IvP is the backseat driver and handles all the user and mission related logic. ROS is used for the front seat. This contains all the low level logic communicating with the boat’s actuators and sensors.
+
+Flowchart:
+<p align="center"><img src="https://user-images.githubusercontent.com/3636101/173442644-0efb1272-4638-4f26-963b-9246db97c59b.png"></p>
