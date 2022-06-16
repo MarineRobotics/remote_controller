@@ -145,11 +145,12 @@ pAntler mission_shore.moos
 # Control Interface overview
 Manual control allows you to use keyboard keys to control the boat.
 Rudder is moved in 5 degree increments per keypress. The amount of degrees can be modified using the "key increments" setting (field 5)
- **TODO: insert picture**
+<p align="center"><img src="https://user-images.githubusercontent.com/3636101/174156119-557d7ade-e87b-4f40-932a-00a36c643b8e.png" height="50%"/></p>
 
 When running the remote controller, the interface will look like the screenshot below.
 We describe some of the most immportant features:
-<p align="center"><img src="https://user-images.githubusercontent.com/47678311/134934203-96bc625d-c441-46ac-a2cf-9d8e144e75be.png"></p>
+![GUI screenshot v2](https://user-images.githubusercontent.com/3636101/174156105-16fea390-25a8-4a45-9d97-0c1d29a99d18.png)
+
 
 1. Enabling manual mode is necessary to use the remote controller. This will put control into your hands and results in the boat ignoring any payload messages even if a MOOS mission was running.
 2. Turns propeller on/off
