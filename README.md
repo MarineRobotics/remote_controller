@@ -36,8 +36,8 @@ http://wiki.ros.org/noetic/Installation/Ubuntu
 
 * Next we'll install extra python3 related dependencies
    ```
-   $ apt-get update
-   $ apt-get install python3-catkin-tools python3-osrf-pycommon python3-pip
+   $ sudo apt update
+   $ sudo apt install python3-catkin-tools python3-osrf-pycommon python3-pip
    ```
 * Let's create and build a catkin workspace:
   ```
@@ -73,7 +73,7 @@ http://wiki.ros.org/noetic/Installation/Ubuntu
   To run correctly, our ROS node requires external libraries like pyqt to be installed. Each of these required packages is defined in that ROS node’s “package.xml”. By using rosdep we can automatically find and install these dependencies.  
   `Rosdep should have been initialized during the install part of this tutorial. If you didn't already do so, do it now:`
   ```
-  $ rosdep init
+  $ sudo rosdep init
   $ rosdep update
   ```
 
@@ -108,11 +108,11 @@ hovergroup123
 ```
 Run front seat on the Pi:
 ```
-cd robocat_frontseat/snap_ws
-source devel/setup.bash
-roslaunch fs_control start_frontseat.launch
+$ launch_frontseat.sh
 ```
-
+:information_source: **important shutdown note**  
+  press ctrl + <c> once and wait for the sequence to finish automatically. This can take up to around a minute.
+  
 ## Start the remote controller
 **Make sure the software is up to date**
 ```
@@ -130,7 +130,7 @@ $ ./run.sh
 **On the Pi:**
 
 :information_source: **Manual control must be disabled before executing the pAntler command**  
-This is a bug that will be fixed soon, but right now a moos mission can only be started if manual control was not enabled. It is ok for the remote control software to be running, just not for it to be enabled using the "enable manual" button.
+A moos mission can only be started if manual control was not enabled. It is ok for the remote control software to be running, just not for it to be enabled using the "enable manual" button.
 
 ```
 cd moos-ivp-mr/missions/mission_folder
