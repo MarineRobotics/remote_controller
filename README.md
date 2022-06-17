@@ -30,11 +30,11 @@ ROS: Noetic.
 ## Automatic installation
 [comment]: <> (TODO: Need to tell people to use correct script)
 ## Manual installation
-### Install and configure ROS
+### Install ROS
 * Click the link below to the official ROS tutorial. Follow the tutorial to install ROS Noetic and configure your ~/.bashrc file. Make sure to **install the `desktop` package** or higher depending on the operating system.
 http://wiki.ros.org/noetic/Installation/Ubuntu  
-
-* Next we'll install extra python3 related dependencies
+### Install dependencies and configure workspace
+* First we'll install extra python3 related dependencies
    ```
    $ sudo apt update
    $ sudo apt install python3-catkin-tools python3-osrf-pycommon python3-pip
