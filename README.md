@@ -110,8 +110,8 @@ Run front seat on the Pi:
 ```
 $ launch_frontseat.sh
 ```
-:information_source: **important shutdown note**  
-  press ctrl + <c> once and wait for the sequence to finish automatically. This can take up to around a minute.
+:information_source: **important: shutting down**  
+  press ctrl + c once and wait for the sequence to finish automatically. This can take up to around a minute.
   
 ## Start the remote controller
 **Make sure the software is up to date**
