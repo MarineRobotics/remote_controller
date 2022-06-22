@@ -8,10 +8,6 @@ This is a work in progress...
 - [Contents](#contents)
 - [Operating system requirements](#operating-system-requirements)
 - [Local Machine Setup](#local-machine-setup)
-  - [Automatic installation](#automatic-installation)
-  - [Manual installation](#manual-installation)
-    - [Install and configure ROS](#install-and-configure-ros)
-    - [Download and build remote controller](#download-and-build-remote-controller)
 - [Run the software](#run-the-software)
   - [Start the frontseat on the sailboat](#start-the-frontseat-on-the-sailboat)
   - [Start the remote controller](#start-the-remote-controller)
@@ -118,7 +114,8 @@ $ launch_frontseat.sh
 ```
 $ cd ~/catkin_ws \
   && git -C src/remote_controller/ pull \
-  && git -C src/mr_messages/ pull
+  && git -C src/mr_messages/ pull \
+  && catkin build
 ```
 Run controller from your laptop:
 ```
