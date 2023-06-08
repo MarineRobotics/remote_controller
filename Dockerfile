@@ -9,18 +9,19 @@ WORKDIR $WORKSPACE/src
 RUN apt-get update && apt-get install -y git
 
 # Move all files from the current directory to a new /remote_controller directory
-COPY . .
+COPY . ./remote_controller
 
 # Clone the repositories and checkout the correct branches
 RUN git clone -b python2 https://github.com/MarineRobotics/mr_messages.git
+
+RUN ls -la
 
 # Navigate back to the workspace drectory
 WORKDIR $WORKSPACE
 
 # Install ROS dependencies and bild the workspace
-RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; rosdep update; rosdep install --from-paths src --ignore-src -r -y'
-RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; catkin_make'
-
+RUN /bin/bash -c 'cd ${WORKSPACE} && pwd && . /opt/ros/noetic/setup.bash && rosdep update && rosdep install --from-paths src --ignore-src -r -y'
+RUN /bin/bash -c 'cd ${WORKSPACE} && . /opt/ros/noetic/setup.bash && catkin_make'
 # Entrypoint to launch remote controller launch file on launch
 
 # Source workspace and launch remote controller launch file
