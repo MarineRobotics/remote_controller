@@ -45,7 +45,7 @@ To start the application and connect to the boat, run the script from the comman
 
 The script accepts the following command-line arguments:
 
-- `--host-ip <ip>` or `-ip <ip>`: Use this to specify the **IP address of your laptop**. If you do not specify one, the script will attempt to automatically retrieve it.
+- `--host-ip <ip>` or `-i <ip>`: Use this to specify the **IP address of your laptop**. If you do not specify one, the script will attempt to automatically retrieve it.
 - `--hostname <hostname>` or `-h <hostname>`: Use this to specify the **hostname of your laptop**. This is the name that the boat will use to connect to your laptop. If you do not specify one, the script will attempt to automatically retrieve it, and is an alternative to `--host-ip`.
 - `--master <ip>` or `-m <uri>`: Use this to specify the IP of the ROS Master, normally the **boat IP**. This sets the `ROS_MASTER_URI` environment variable to `<uri>`. If not provided, it defaults to `http://192.168.1.160:11311`.
 
@@ -54,7 +54,7 @@ The script accepts the following command-line arguments:
 Here is an example of running the script with command-line arguments:
 
 ```bash
-./runcontainer.sh --hostname mrdev --master http://192.168.1.160:11311
+./runcontainer.sh -h mrdev -m http://192.168.1.160:11311
 ```
 
 In this example, `192.168.1.100` is the IP address of the boat. The script will echo out the values of `ROS_IP`, `ROS_HOSTNAME`, and `ROS_MASTER_URI` for verification before starting the Docker service and connecting to the boat.
