@@ -2,7 +2,7 @@
 
 # Default values
 ROS_MASTER_URI=http://192.168.1.160:11311
-
+export UID_GID="$(id -u):$(id -g)"
 # Parse command line arguments
 OPTS=`getopt -o i:m:h: --long host-ip:,master:,hostname: -n 'parse-options' -- "$@"`
 
