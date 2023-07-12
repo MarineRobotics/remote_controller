@@ -18,50 +18,30 @@ This is a work in progress. There is now a script available to run the Remote Co
 - [Software Structure Overview](#software-structure-overview)
 
 
-# Operating System Requirements
-Operating System: Any recent version of Ubuntu.
 
-# Running the Remote Controller
-
+# Introduction
 This user manual provides instructions on how to connect to and control a boat using a Docker-based ROS application. The application is started using a script, and you provide information about the boat as command-line arguments.
 
-## Prerequisites
 
-1. [Docker engine](https://docs.docker.com/engine/install/ubuntu/)
-2. Download this softare from GitHub
+
+
+# Launching the System
+
+This section provides instructions on how to start the boat, launch the remote controller and run MOOS.
+
+## Prerequisites
+### Windows
+1. Install [Docker Desktop](https://docs.docker.com/docker-for-windows/install/)
+2. [Follow the VcXsrv installation instructions](#enable-docker-gui-support-on-windows)
+### Ubuntu
+1. Install [Docker engine](https://docs.docker.com/engine/install/ubuntu/)
+### Finally
+1. Download this softare from GitHub
     ```bash
     git clone -b python3 https://github.com/MarineRobotics/remote_controller.git
     ```
 
 Make sure these are installed and properly configured on your system before proceeding.
-
-## Running the Application
-
-To start the application and connect to the boat, run the script from the command line:
-
-```bash
-./runcontainer.sh
-```
-
-The script accepts the following command-line arguments:
-
-- `--host-ip <ip>` or `-i <ip>`: Use this to specify the **IP address of your laptop**. If you do not specify one, the script will attempt to automatically retrieve it.
-- `--hostname <hostname>` or `-h <hostname>`: Use this to specify the **hostname of your laptop**. This is the name that the boat will use to connect to your laptop. If you do not specify one, the script will attempt to automatically retrieve it, and is an alternative to `--host-ip`.
-- `--master <ip>` or `-m <uri>`: Use this to specify the IP of the ROS Master, normally the **boat IP**. This sets the `ROS_MASTER_URI` environment variable to `<uri>`. If not provided, it defaults to `http://192.168.1.160:11311`.
-
-**Note**: You only need to provide one of `--host-ip` or `--hostname`, not both. In most cases, the `--master` URI will be the IP address of the boat.
-
-Here is an example of running the script with command-line arguments:
-
-```bash
-./runcontainer.sh -h mrdev -m http://192.168.1.160:11311
-```
-
-In this example, `192.168.1.100` is the IP address of the boat. The script will echo out the values of `ROS_IP`, `ROS_HOSTNAME`, and `ROS_MASTER_URI` for verification before starting the Docker service and connecting to the boat.
-
-# Launching the System
-
-This section provides instructions on how to start the boat and run MOOS. These steps are only necessary if you're not using the script to run the application.
 
 ## Start the frontseat on the sailboat
 
@@ -87,13 +67,40 @@ $ launch_frontseat.sh
   press ctrl + c once and wait for the sequence to finish automatically. This can take up to around a minute.
 
 ## Start the Remote Controller
-
-**Run controller from your laptop:**
-
+**On your laptop**, navigate to the `remote_controller` directory and run the script:
+### Ubuntu
 ```bash
-$ cd ~/remote_controller
-$ ./runcontainer.sh
+./runcontainer.sh
 ```
+### Windows
+:information_source: Make sure XLaunch is running before executing the script.  
+Launch the script from Powershell, not from "cmd".
+```powershell
+.\runwindows.ps1
+```
+
+
+The script accepts the following command-line arguments:
+
+- `--host-ip <ip>` or `-i <ip>`: Use this to specify the **IP address of your laptop**. If you do not specify one, the script will attempt to automatically retrieve it.
+- `--hostname <hostname>` or `-h <hostname>`: Use this to specify the **hostname of your laptop**. This is the name that the boat will use to connect to your laptop. If you do not specify one, the script will attempt to automatically retrieve it, and is an alternative to `--host-ip`.
+- `--master <ip>` or `-m <uri>`: Use this to specify the IP of the ROS Master, normally the **boat IP**. This sets the `ROS_MASTER_URI` environment variable to `<uri>`. If not provided, it defaults to `http://192.168.1.160:11311`.
+
+**Note**: You only need to provide one of `--host-ip` or `--hostname`, not both. In most cases, the `--master` URI will be the IP address of the boat.
+
+Here is an example of running the script with command-line arguments:
+
+Ubuntu:
+```bash {id="python-print" class="blue large" data-filename="test.py"}
+./runcontainer.sh -h mrdev -m http://192.168.1.160:11311
+```
+Windows:
+```powershell
+.\runwindows.ps1 -h mrdev -m http://192.168.1.160:11311
+```
+
+In this example, `192.168.1.100` is the IP address of the boat. The script will echo out the values of `ROS_IP`, `ROS_HOSTNAME`, and `ROS_MASTER_URI` for verification before starting the Docker service and connecting to the boat.
+
 
 ## Run MOOS
 
@@ -113,6 +120,34 @@ pAntler mission_robocat.moos
 cd moos-ivp-mr/missions/mission_folder
 pAntler mission_shore.moos
 ```
+
+# Enable docker GUI support on Windows
+
+**Install VcXsrv Windows X Server** to enable the GUI to be displayed on Windows.
+## Installation
+
+1. Download the installer from the official VcXsrv Windows X Server website. Here is the link: https://sourceforge.net/projects/vcxsrv/
+
+2. Run the installer. It is a straightforward process: just accept the license, select the install location, and then install.
+
+## Configuration
+
+1. After installing, launch the XLaunch application.
+
+2. A series of windows will appear for configuration options. In the `Display settings`, you can leave the default settings (Multiple windows) and click `Next`.
+
+3. In the `Client startup` screen, select `Start no client` and click `Next`.
+
+4. In the `Extra settings` window, check `Disable access control`. This is necessary to allow Docker containers to connect to the X server. Note: this does reduce the security of the X server, so be sure you understand the implications of this, especially if you are on a shared network.
+
+## Saving XLaunch Configuration
+
+1. Before you click `Finish` in the final step of the configuration process, you can save your configuration by clicking on `Save configuration`. 
+2. Save the configuration file (which has an `.xlaunch` extension) somewhere convenient.
+3. In the future, **you can start VcXsrv with the same settings by simply double-clicking this `.xlaunch` file.**
+4. Finally, click `Next` and then `Finish` to launch the X server.
+
+[Click here](#prerequisites) To navigate back to the remote controller launch instructions
 
 # Control Interface Overview
 

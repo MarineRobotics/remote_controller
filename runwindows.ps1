@@ -43,4 +43,4 @@ if ($answer -ne '') { exit }
 Write-Output "Starting Remote Controller..."
 
 # Start docker compose
-#docker-compose up
+docker-compose -f .\docker-compose-windows.yml up
