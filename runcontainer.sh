@@ -24,8 +24,6 @@ while true; do
     esac
 done
 
-echo "ROS_IP: $ROS_IP"
-
 if [ -z "$ROS_HOSTNAME" ] && [ -z "$ROS_IP" ]; then
     export ROS_HOSTNAME=$(hostname)
 fi
