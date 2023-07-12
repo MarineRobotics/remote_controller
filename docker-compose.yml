@@ -11,4 +11,4 @@ services:
       XAUTHORITY: ${XAUTHORITY}
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
-    user: "$(id -u):$(id -g)"
+    user: ${UID_GID}
