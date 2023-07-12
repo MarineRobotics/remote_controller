@@ -35,6 +35,10 @@ This section provides instructions on how to start the boat, launch the remote c
 2. [Follow the VcXsrv installation instructions](#enable-docker-gui-support-on-windows)
 ### Ubuntu
 1. Install [Docker engine](https://docs.docker.com/engine/install/ubuntu/)
+2. Install Docker Compose
+    ```
+    sudo apt install docker-compose
+    ```
 ### Finally
 1. Download this softare from GitHub
     ```bash
