@@ -48,4 +48,4 @@ read -p "Press enter to continue, or any other key to exit" -n 1 -r
 echo "Starting Remote Controller..."
 
 
-docker-compuse up
+docker-compose up
