@@ -4,6 +4,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        USER_UID: ${UID}
     network_mode: host
     environment:
       HOST_IP: ${HOST_IP}

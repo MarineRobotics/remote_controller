@@ -19,6 +19,20 @@ RUN ls -la
 # Navigate back to the workspace drectory
 WORKDIR $WORKSPACE
 
+# Create the user
+ARG USERNAME=mrdev
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+RUN groupadd --gid $USER_GID $USERNAME \
+    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
+    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
+    && chmod 0440 /etc/sudoers.d/$USERNAME
+
+# Give the user ownership of the workspace
+RUN chown -R $USERNAME:$USERNAME $WORKSPACE
+
+USER $USERNAME
+
 # Install ROS dependencies and bild the workspace
 RUN /bin/bash -c 'cd ${WORKSPACE} && pwd && . /opt/ros/noetic/setup.bash && rosdep update && rosdep install --from-paths src --ignore-src -r -y'
 RUN /bin/bash -c 'cd ${WORKSPACE} && . /opt/ros/noetic/setup.bash && catkin_make'
