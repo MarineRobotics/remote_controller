@@ -8,7 +8,9 @@ services:
         USER_UID: ${UID}
     network_mode: host
     environment:
-      HOST_IP: ${HOST_IP}
+      ROS_IP: ${ROS_IP}
+      ROS_MASTER_URI: ${ROS_MASTER_URI}
+      ROS_HOSTNAME: ${ROS_HOSTNAME}
       DISPLAY: ${DISPLAY}
       XAUTHORITY: ${XAUTHORITY}
     volumes:
