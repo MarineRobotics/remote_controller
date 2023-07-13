@@ -3,8 +3,11 @@
 # Default values
 ROS_MASTER_URI=http://192.168.1.160:11311
 export UID_GID="$(id -u):$(id -g)"
+export UID="$(id -u)"
 # Parse command line arguments
-OPTS=`getopt -o i:m:h: --long host-ip:,master:,hostname: -n 'parse-options' -- "$@"`
+OPTS=`getopt -o i:m:h:b --long host-ip:,master:,hostname:,rebuild -n 'parse-options' -- "$@"`
+
+REBUILD=false
 
 if [ $? != 0 ] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
 
@@ -19,10 +22,14 @@ while true; do
         -i | --host-ip ) ROS_IP="$2"; shift; shift ;;
         -m | --master ) ROS_MASTER_URI="$2"; shift; shift ;;
         -h | --hostname ) ROS_HOSTNAME="$2"; shift; shift ;;
+        -b | --rebuild ) REBUILD=true; shift ;;
         -- ) shift; break ;;
         * ) break ;;
     esac
 done
+
+# Print rebuild flag in purple
+echo -e "\e[35mRebuild: $REBUILD\e[0m"
 
 if [ -z "$ROS_HOSTNAME" ] && [ -z "$ROS_IP" ]; then
     export ROS_HOSTNAME=$(hostname)
@@ -45,7 +52,17 @@ echo "ROS_MASTER_URI: $ROS_MASTER_URI"
 
 # Ask enter to continue, or any other key to exit
 read -p "Press enter to continue, or any other key to exit" -n 1 -r
-echo "Starting Remote Controller..."
 
+project=$(basename $(pwd))
+xhost +local:${project}_app_1
 
+# Rebuild container if required
+if [ "$REBUILD" = true ] ; then
+    echo -e "\e[35mRebuilding container...\e[0m"
+    docker-compose build
+    echo -e "\e[35mCompleted!\e[0m"
+fi
+echo -e "\e[35mLaunching remote controller GUI...\e[0m"
 docker-compose up
+
+xhost -local:${project}_app_1
