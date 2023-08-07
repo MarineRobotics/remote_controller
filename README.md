@@ -74,7 +74,7 @@ $ launch_frontseat.sh
 **On your laptop**, navigate to the `remote_controller` directory and run the script:
 ### Ubuntu
 ```bash
-./runcontainer.sh
+./runcontainer.sh -h ${HOST}.local -m http://192.168.1.160:11311
 ```
 ### Windows
 :information_source: Make sure XLaunch is running before executing the script.  
@@ -96,7 +96,7 @@ Here is an example of running the script with command-line arguments:
 
 Ubuntu:
 ```bash {id="python-print" class="blue large" data-filename="test.py"}
-./runcontainer.sh -h mrdev -m http://192.168.1.160:11311
+./runcontainer.sh -h mrdev.local -m http://192.168.1.160:11311
 ```
 Windows:
 ```powershell
