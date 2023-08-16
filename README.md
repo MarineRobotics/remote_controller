@@ -40,7 +40,7 @@ This section provides instructions on how to start the boat, launch the remote c
     sudo apt install docker-compose
     ```
 ### Finally
-1. Download this softare from GitHub
+1. Download the current repository from GitHub
     ```bash
     git clone -b python3 https://github.com/MarineRobotics/remote_controller.git
     ```
