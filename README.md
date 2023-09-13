@@ -73,9 +73,16 @@ $ launch_frontseat.sh
 ## Start the Remote Controller
 **On your laptop**, navigate to the `remote_controller` directory and run the script:
 ### Ubuntu
+**Using Bash:**
 ```bash
-./runcontainer.sh -h ${HOST}.local -m http://192.168.1.160:11311
+./runcontainer.sh -h ${HOSTNAME}.local -m http://192.168.1.160:11311
 ```
+
+**Using ZSH:**
+```zsh
+./runcontainer.sh -h ${HOSTNAME}.local -m http://192.168.1.160:11311
+```
+
 ### Windows
 :information_source: Make sure XLaunch is running before executing the script.  
 Launch the script from Powershell, not from "cmd".
