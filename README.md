@@ -80,7 +80,7 @@ $ launch_frontseat.sh
 
 **Using ZSH:**
 ```zsh
-./runcontainer.sh -h ${HOSTNAME}.local -m http://192.168.1.160:11311
+./runcontainer.sh -h ${HOST}.local -m http://192.168.1.160:11311
 ```
 
 ### Windows
