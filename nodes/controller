@@ -6,6 +6,7 @@ import sys
 import os
 import numpy as np
 from std_msgs.msg import Float64, String, Bool, Int32
+from sensor_msgs.msg import BatteryState
 from mr_messages.srv import BondIDRequest, BondIDRequestResponse
 from mr_messages.msg import WIND, Heading, Depth, Speed, GNSSData, ADCReading, RoboclawStatus, TEMP, PRESSURE, HUMIDITY, Declination, PID
 from PyQt5 import QtGui, QtCore, uic, QtWidgets
@@ -1058,6 +1059,13 @@ class RosThread(QObject):
     def handle_bat_level(self, msg):
         level = msg.value
         self.bat_level_updated.emit(level)
+        
+    def handle_bat_state(self, msg):
+        level = msg.percentage
+        voltage = msg.voltage
+        self.bat_level_updated.emit(level)
+        self.volt_data_updated.emit(voltage)
+        
 
     def handle_power_consumption(self, msg):
         power = msg.value
@@ -1136,8 +1144,8 @@ class RosThread(QObject):
         rospy.Subscriber("water_speed", Speed, self.handle_water_speed)
         rospy.Subscriber("gnss_position", GNSSData, self.handle_gnss)
         rospy.Subscriber("current_ave", ADCReading, self.handle_current_draw)
-        rospy.Subscriber("voltage_ave", ADCReading,
-                         self.handle_battery_voltage)
+        # rospy.Subscriber("voltage_ave", ADCReading,
+                        #  self.handle_battery_voltage)
         rospy.Subscriber("roboclaw_status", RoboclawStatus,
                          self.handle_roboclaw_status)
         rospy.Subscriber("state_change", String, self.handle_state_change)
@@ -1146,7 +1154,8 @@ class RosThread(QObject):
         rospy.Subscriber("declination", Declination, self.handle_declination)
         rospy.Subscriber("/sog", Speed, self.handle_sog)
 
-        rospy.Subscriber("/battery_level", ADCReading, self.handle_bat_level)
+        # rospy.Subscriber("/battery_level", ADCReading, self.handle_bat_level)
+        rospy.Subscriber("/battery_state", BatteryState, self.handle_bat_state)
         rospy.Subscriber("/power_consumption", ADCReading,
                          self.handle_power_consumption)
         rospy.Subscriber("/rudder_current", ADCReading,
