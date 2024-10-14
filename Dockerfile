@@ -30,6 +30,8 @@ RUN groupadd --gid $USER_GID $USERNAME \
 
 # Give the user ownership of the workspace
 RUN chown -R $USERNAME:$USERNAME $WORKSPACE
+# Create /.ros directory and give user ownership
+RUN mkdir /.ros && chown -R $USERNAME:$USERNAME /.ros
 
 USER $USERNAME
 
