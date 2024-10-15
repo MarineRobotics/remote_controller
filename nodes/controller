@@ -1063,9 +1063,10 @@ class RosThread(QObject):
     def handle_bat_state(self, msg):
         level = msg.percentage
         voltage = msg.voltage
+        current = msg.current
         self.bat_level_updated.emit(level)
         self.volt_data_updated.emit(voltage)
-        
+        self.current_data_updated.emit(current)
 
     def handle_power_consumption(self, msg):
         power = msg.value
@@ -1143,7 +1144,7 @@ class RosThread(QObject):
         rospy.Subscriber("pressure", PRESSURE, self.handle_air_pressure)
         rospy.Subscriber("water_speed", Speed, self.handle_water_speed)
         rospy.Subscriber("gnss_position", GNSSData, self.handle_gnss)
-        rospy.Subscriber("current_ave", ADCReading, self.handle_current_draw)
+        # rospy.Subscriber("current_ave", ADCReading, self.handle_current_draw)
         # rospy.Subscriber("voltage_ave", ADCReading,
                         #  self.handle_battery_voltage)
         rospy.Subscriber("roboclaw_status", RoboclawStatus,
