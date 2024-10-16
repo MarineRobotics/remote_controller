@@ -1064,9 +1064,12 @@ class RosThread(QObject):
         level = msg.percentage
         voltage = msg.voltage
         current = msg.current
+        # calculate power
+        power = voltage * current
         self.bat_level_updated.emit(level)
         self.volt_data_updated.emit(voltage)
         self.current_data_updated.emit(current)
+        self.power_consumption_updated.emit(power)
 
     def handle_power_consumption(self, msg):
         power = msg.value
@@ -1157,8 +1160,8 @@ class RosThread(QObject):
 
         # rospy.Subscriber("/battery_level", ADCReading, self.handle_bat_level)
         rospy.Subscriber("/battery_state", BatteryState, self.handle_bat_state)
-        rospy.Subscriber("/power_consumption", ADCReading,
-                         self.handle_power_consumption)
+        # rospy.Subscriber("/power_consumption", ADCReading,
+        #                  self.handle_power_consumption)
         rospy.Subscriber("/rudder_current", ADCReading,
                          self.handle_motor_current)
         rospy.Subscriber("/rudder_angle", ADCReading, self.handle_rudder_angle)
