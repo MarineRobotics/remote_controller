@@ -99,6 +99,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         ####################
         self.rudder_increment = 5
         self.desired_rudder = 0
+        self.desired_sail = 0
 
         #rospy.logerr(self.isSignalConnected(self.manual_cmd_signal, 'self._rosthread.pub_manual_cmd()'))
         # self.rc.start_node()
@@ -239,6 +240,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.windPix = QPixmap(os.path.join(asset_path, 'compass.png'))
         self.boatPix = QPixmap(os.path.join(asset_path, 'boat.png'))
         self.sailPix = QPixmap(os.path.join(asset_path, 'sail.png'))
+        self.desSailPix = QPixmap(os.path.join(asset_path, 'sail_desired.png'))
         self.rudderPix = QPixmap(os.path.join(asset_path, 'rudder.png'))
         self.desRudderPix = QPixmap(os.path.join(asset_path, 'rudder_desired.png'))
 
@@ -246,6 +248,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.windPix   = self.windPix.scaled(self.lblWind.width(), self.lblWind.height())
         self.boatPix   = self.boatPix.scaled(self.lblBoat.width(), self.lblBoat.height())
         self.sailPix   = self.sailPix.scaled(self.lblSail.width(), self.lblSail.height())
+        self.desSailPix = self.desSailPix.scaled(self.lblSailDesired.width(), self.lblSailDesired.height())
         self.rudderPix = self.rudderPix.scaled(self.lblRudder.width(), self.lblRudder.height())
         self.desRudderPix = self.desRudderPix.scaled(self.lblRudderDesired.width(), self.lblRudderDesired.height())
 
@@ -253,6 +256,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.windDiag = int((self.lblWind.width()**2 + self.lblWind.height()**2)**0.5)
         self.boatDiag = int((self.lblBoat.width()**2 + self.lblBoat.height()**2)**0.5)
         self.sailDiag = int((self.lblSail.width()**2 + self.lblSail.height()**2)**0.5)
+        self.desSailDiag = int((self.lblSailDesired.width()**2 + self.lblSailDesired.height()**2)**0.5)
         self.rudderDiag = int((self.lblRudder.width()**2 + self.lblRudder.height()**2)**0.5)
         self.desRudderDiag = int((self.lblRudderDesired.width()**2 + self.lblRudderDesired.height()**2)**0.5)
 
@@ -260,6 +264,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.lblWind.setScaledContents(False)
         self.lblBoat.setScaledContents(False)
         self.lblSail.setScaledContents(False)
+        self.lblSailDesired.setScaledContents(False)
         self.lblRudder.setScaledContents(False)
         self.lblRudderDesired.setScaledContents(False)
 
@@ -268,6 +273,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.lblWindCenter = point(int(self.lblWind.x() + self.lblWind.width()/2), int(self.lblWind.y() + self.lblWind.height()/2))
         self.lblBoatCenter = point(int(self.lblBoat.x() + self.lblBoat.width()/2), int(self.lblBoat.y() + self.lblBoat.height()/2))
         self.lblSailCenter = point(int(self.lblSail.x() + self.lblSail.width()/2), int(self.lblSail.y() + self.lblSail.height()/2))
+        self.lblSailDesiredCenter = point(int(self.lblSailDesired.x() + self.lblSailDesired.width()/2), int(self.lblSailDesired.y() + self.lblSailDesired.height()/2))
         self.lblRudderCenter = point(int(self.lblRudder.x() + self.lblRudder.width()/2), int(self.lblRudder.y() + self.lblRudder.height()/2))
         self.lblRudderDesiredCenter = point(int(self.lblRudderDesired.x() + self.lblRudderDesired.width()/2), int(self.lblRudderDesired.y() + self.lblRudderDesired.height()/2))
 
@@ -275,6 +281,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.lblWind.setPixmap(self.windPix)
         self.lblBoat.setPixmap(self.boatPix)
         self.lblSail.setPixmap(self.sailPix)
+        self.lblSailDesired.setPixmap(self.desSailPix)
         self.lblRudder.setPixmap(self.rudderPix)
         self.lblRudderDesired.setPixmap(self.desRudderPix)
 
@@ -282,6 +289,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.lblWind.setAlignment(QtCore.Qt.AlignCenter)
         self.lblBoat.setAlignment(QtCore.Qt.AlignCenter)
         self.lblSail.setAlignment(QtCore.Qt.AlignCenter)
+        self.lblSailDesired.setAlignment(QtCore.Qt.AlignCenter)
         self.lblRudder.setAlignment(QtCore.Qt.AlignCenter)
         self.lblRudderDesired.setAlignment(QtCore.Qt.AlignCenter)
 
@@ -289,6 +297,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.lblWind.setMinimumSize(self.windDiag, self.windDiag)
         self.lblBoat.setMinimumSize(self.boatDiag, self.boatDiag)
         self.lblSail.setMinimumSize(self.sailDiag, self.sailDiag)
+        self.lblSailDesired.setMinimumSize(self.desSailDiag, self.desSailDiag)
         self.lblRudder.setMinimumSize(self.rudderDiag, self.rudderDiag)
         self.lblRudderDesired.setMinimumSize(self.desRudderDiag, self.desRudderDiag)
 
@@ -296,6 +305,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.lblWind.move(int(self.lblWindCenter.x - self.windDiag/2), int(self.lblWindCenter.y - self.windDiag/2))
         self.lblBoat.move(int(self.lblBoatCenter.x - self.boatDiag/2), int(self.lblBoatCenter.y - self.boatDiag/2))
         self.lblSail.move(int(self.lblSailCenter.x - self.sailDiag/2), int(self.lblSailCenter.y - self.sailDiag/2))
+        self.lblSailDesired.move(int(self.lblSailDesiredCenter.x - self.desSailDiag/2), int(self.lblSailDesiredCenter.y - self.desSailDiag/2))
         self.lblRudder.move(int(self.lblRudderCenter.x - self.rudderDiag/2), int(self.lblRudderCenter.y - self.rudderDiag/2))
         self.lblRudderDesired.move(int(self.lblRudderDesiredCenter.x - self.desRudderDiag/2), int(self.lblRudderDesiredCenter.y - self.desRudderDiag/2))
 
@@ -303,6 +313,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.lblWindCenter = point(self.lblWind.x() + self.lblWind.width()/2, self.lblWind.y() + self.lblWind.height()/2)
         self.lblBoatCenter = point(self.lblBoat.x() + self.lblBoat.width()/2, self.lblBoat.y() + self.lblBoat.height()/2)
         self.lblSailCenter = point(self.lblSail.x() + self.lblSail.width()/2, self.lblSail.y() + self.lblSail.height()/2)
+        self.lblSailDesiredCenter = point(self.lblSailDesired.x() + self.lblSailDesired.width()/2, self.lblSailDesired.y() + self.lblSailDesired.height()/2)
         self.lblRudderCenter = point(self.lblRudder.x() + self.lblRudder.width()/2, self.lblRudder.y() + self.lblRudder.height()/2)
         self.lblRudderDesiredCenter = point(self.lblRudderDesired.x() + self.lblRudderDesired.width()/2, self.lblRudderDesired.y() + self.lblRudderDesired.height()/2)
 
@@ -310,6 +321,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.lblWindRadius = self.windDiag/2
         self.lblBoatRadius = self.boatDiag/2
         self.lblSailRadius = self.sailDiag/2
+        self.lblSailDesiredRadius = self.desSailDiag/2
         self.lblRudderRadius = self.rudderDiag/2
         self.lblRudderDesiredRadius = self.desRudderDiag/2
 
@@ -321,6 +333,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         # Create label moving functions, can be called when a value is received from a ROS subscriber
         self.moveWindLbl = self.getLableMover(self.windPix, self.lblWind, self.lblWindCenter, self.lblWindAngle, offset=10, scaler = 0)
         self.moveSailLbl = self.getLableMover(self.sailPix, self.lblSail, self.lblSailCenter, self.lblSailAngle, offset=10, scaler=20)
+        self.moveSailDesiredLbl = self.getLableMover(self.desSailPix, self.lblSailDesired, self.lblSailDesiredCenter, None, offset=10, scaler=20)
         self.moveRudderLbl = self.getLableMover(self.rudderPix, self.lblRudder, self.lblRudderCenter, None, offset=10, scaler=20, lateralMax=self.lblBoat.width()/8, angleMax=50)
         self.moveRudderDesiredLbl = self.getLableMover(self.desRudderPix, self.lblRudderDesired, self.lblRudderDesiredCenter, None, offset=10, scaler=20, lateralMax=self.lblBoat.width()/8, angleMax=50)
 
@@ -417,8 +430,16 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         """
         pos = position + (increment - (position % increment))
         return np.clip(pos, -40, 40)
+    
+    def increment_sail(self, position, increment):
+        """
+        Increment desired sail position to the next increment value.
+        Example: if current position is 12 and increment is 10, this function will output 10 instead of 12
 
-        
+        As a second feature this function caps the max value between -160 and 160
+        """
+        pos = position + (increment - (position % increment))
+        return np.clip(pos, -160, 160)
 
     @pyqtSlot(str)
     def myDebugFunc(self, cmd):
@@ -474,6 +495,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         #TEST
         self.sail_pos_signal.connect(self._rosthread.pub_sail_position)
+        self.sail_pos_signal.connect(self.update_sail_desired)
         #if connected:
         #    print("cool")
         #else:
@@ -620,6 +642,11 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     def update_rudder_desired(self, angle):
         # Move desired rudder label when sent to ROS thread
         self.moveRudderDesiredLbl(-angle)
+        
+    @pyqtSlot(int)
+    def update_sail_desired(self, angle):
+        # Move desired sail label when sent to ROS thread
+        self.moveSailDesiredLbl(angle)
 
     def set_heading(self):
         des_heading = int(self.txtDesHeading.text())
@@ -733,9 +760,13 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         # SAIL EVENTS
         elif event.key() == QtCore.Qt.Key_E and not event.isAutoRepeat():
-            self.sail_signal.emit(SAIL_SPEED)
+            self.desired_sail = self.increment_sail(self.desired_sail, self.txtSailIncrement.value())
+            self.sail_pos_signal.emit(self.desired_sail)
+            # self.sail_signal.emit(SAIL_SPEED)
         elif event.key() == QtCore.Qt.Key_Q and not event.isAutoRepeat():
-            self.sail_signal.emit(-SAIL_SPEED)
+            self.desired_sail = self.increment_sail(self.desired_sail, (self.txtSailIncrement.value()*-1))
+            self.sail_pos_signal.emit(self.desired_sail)
+            # self.sail_signal.emit(-SAIL_SPEED)
 
         event.accept()
 
@@ -756,9 +787,11 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         # SAIL EVENTS
         elif event.key() == QtCore.Qt.Key_E and not event.isAutoRepeat():
-            self.sail_signal.emit(0)
+            # self.sail_signal.emit(0)
+            pass
         elif event.key() == QtCore.Qt.Key_Q and not event.isAutoRepeat():
-            self.sail_signal.emit(0)
+            # self.sail_signal.emit(0)
+            pass
         event.accept()
 
     def closeEvent(self, event):
