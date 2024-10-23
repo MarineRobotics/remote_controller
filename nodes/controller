@@ -494,6 +494,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         #TEST
         self.sail_pos_signal.connect(self._rosthread.pub_sail_position)
+        self.sail_pos_signal.connect(self.update_sail_desired)
         #if connected:
         #    print("cool")
         #else:
@@ -640,6 +641,11 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     def update_rudder_desired(self, angle):
         # Move desired rudder label when sent to ROS thread
         self.moveRudderDesiredLbl(-angle)
+        
+    @pyqtSlot(int)
+    def update_sail_desired(self, angle):
+        # Move desired sail label when sent to ROS thread
+        self.moveSailDesiredLbl(angle)
 
     def set_heading(self):
         des_heading = int(self.txtDesHeading.text())
