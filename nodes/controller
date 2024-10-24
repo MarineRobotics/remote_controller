@@ -1046,7 +1046,7 @@ class RosThread(QObject):
             self.peripheral_pub.publish("estop_set,false")
             rospy.logwarn("ESTOP ENABLED")
         else:
-            self.peripheral_pub.publish("estop_set,true")
+            self.peripheral_pub.publish("estop_reset,true")
             rospy.logwarn("ESTOP DISABLED")
 
 
