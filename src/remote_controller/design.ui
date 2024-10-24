@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1186</width>
-    <height>811</height>
+    <height>946</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -2421,64 +2421,66 @@ color: rgb(255, 255, 255);</string>
        </widget>
       </widget>
      </widget>
-     <widget class="QPushButton" name="btnEStop">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>750</y>
-        <width>1111</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Liberation Mono</family>
-        <pointsize>16</pointsize>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QPushButton {color: red;}
-</string>
-      </property>
-      <property name="text">
-       <string>STOP</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="btnResetEStop">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>750</y>
-        <width>1111</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Liberation Mono</family>
-        <pointsize>16</pointsize>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QPushButton {color: green;}
-</string>
-      </property>
-      <property name="text">
-       <string>RESET E-STOP</string>
-      </property>
-     </widget>
     </widget>
+   </widget>
+   <widget class="QPushButton" name="btnResetEStop">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>870</y>
+      <width>1111</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Liberation Mono</family>
+      <pointsize>16</pointsize>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {color: green;}
+</string>
+    </property>
+    <property name="text">
+     <string>RESET E-STOP</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnEStop">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>900</y>
+      <width>1111</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Liberation Mono</family>
+      <pointsize>16</pointsize>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {color: red;}
+</string>
+    </property>
+    <property name="text">
+     <string>STOP</string>
+    </property>
    </widget>
    <zorder>scrollArea</zorder>
    <zorder>splitter</zorder>
+   <zorder>btnResetEStop</zorder>
+   <zorder>btnEStop</zorder>
   </widget>
  </widget>
  <resources/>
