@@ -481,7 +481,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         #new
         self._rosthread.sail_angle_updated.connect(self.update_sail_angle)
         # estop
-        self._rosthread.estop_updated.connect(self.update_estop_state)
+        self._rosthread.estop_state_updated.connect(self.update_estop_state)
 
     def connect_thread_slots(self):
         """Connect slots in rosthread class to signals coming from this main class"""
