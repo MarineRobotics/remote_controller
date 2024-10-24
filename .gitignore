@@ -167,3 +167,4 @@ venv.bak/
 # nVS Code
 ############
 *.vscode
+src/remote_controller/design.ui.autosave

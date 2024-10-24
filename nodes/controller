@@ -71,6 +71,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     sail_signal           = pyqtSignal(int)
     prop_signal           = pyqtSignal(int)
     manual_cmd_signal     = pyqtSignal(str)
+    set_estop_signal      = pyqtSignal(bool)
     #bond_signal       = pyqtSignal(bool)  # TODO: connect the bond signl to a slot
     auto_sail_signal      = pyqtSignal(bool)
 
@@ -137,6 +138,11 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         # Setup prop on/off buttons
         self.btnPropOn.hide()
         self.btnPropOff.hide()
+        # Setup ESTOP buttons
+        self.btnResetEstop.hide()
+        self.btnResetEstop.clicked.connect(self.reset_estop)
+        self.btnESTop.hide()
+        self.btnEstop.clicked.connect(self.set_estop)
         # Setup auto sail buttons
         self.btnAutoSail.hide()
         self.btnAutoSailDisable.hide()
@@ -474,6 +480,8 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self._rosthread.rudder_angle_updated.connect(self.update_rudder_angle)
         #new
         self._rosthread.sail_angle_updated.connect(self.update_sail_angle)
+        # estop
+        self._rosthread.estop_updated.connect(self.update_estop_state)
 
     def connect_thread_slots(self):
         """Connect slots in rosthread class to signals coming from this main class"""
@@ -492,6 +500,9 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.pid_gains_signal.connect(self._rosthread.pub_pid_gains)
         self.rudder_test_enable_signal.connect(self._rosthread.pub_rudder_test_enable)
         self.sail_test_enable_signal.connect(self._rosthread.pub_sail_test_enable)
+        
+        # estop signal
+        self.set_estop_signal.connect(self._rosthread.pub_estop)
 
         #TEST
         self.sail_pos_signal.connect(self._rosthread.pub_sail_position)
@@ -537,6 +548,23 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     def update_sail_angle(self, angle):
         self.moveSailLbl(angle)
         self.txtSailAngle.setText(str(angle))
+        
+    @pyqtSlot(bool)
+    def update_estop_state(self, estop):
+        if estop:
+            self.update_ui_estop_enabled()
+        else:
+            self.update_ui_estop_disabled()
+            
+    def update_ui_estop_enabled(self):
+        # Disable all controls and make estop rest button visible
+        self.btnESTOP.hide()
+        self.btnESTOPReset.show()
+    
+    def update_ui_estop_disabled(self):
+        self.btnESTOP.show()
+        self.btnESTOPReset.hide()
+
 
     @pyqtSlot(float)
     def update_declination(self, declination):
@@ -698,6 +726,12 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.btnAutoSailDisable.hide()
         self.controlFrame.setEnabled(False)
         self.auto_sail_signal.emit(False)
+        
+    def reset_estop(self):
+        self.set_estop_signal.emit(False)
+        
+    def set_estop(self):
+        self.set_estop_signal.emit(True)
 
     def start_prop(self):
         self.prop_signal.emit(-PROP_SPEED)
@@ -841,7 +875,7 @@ class RosThread(QObject):
     motor_current_updated = pyqtSignal(float)
     rudder_angle_updated = pyqtSignal(float)
 
-    # New
+    estop_state_updated = pyqtSignal(bool)
 
     def __init__(self, parent=None, **kwargs):
         super().__init__(parent, **kwargs)
@@ -907,7 +941,10 @@ class RosThread(QObject):
         self.pid_gains_pub = rospy.Publisher('/rudder/pid_gains',
                                                 PID,
                                                 queue_size=1)
-
+        
+        self.peripheral_pub = rospy.Publisher('/set_peripheral',
+                                                String,
+                                                queue_size=1)
 
     #############################
     # Post processing functions #
@@ -999,6 +1036,17 @@ class RosThread(QObject):
     def pub_manual_cmd(self, cmd):
         rospy.logwarn("entered pub manual cmd")
         self.mission_cmd_pub.publish(cmd)
+        
+    @pyqtSlot(bool)
+    def pub_estop(self, enable):
+        if enable:
+            # We need to send false to estop because of how peripheral manager works
+            self.peripheral_pub.publish("estop_set,false")
+            rospy.logwarn("ESTOP ENABLED")
+        else:
+            self.peripheral_pub.publish("estop_set,true")
+            rospy.logwarn("ESTOP DISABLED")
+        self.estop_pub.publish(enable)
 
 
     #############################
@@ -1127,6 +1175,10 @@ class RosThread(QObject):
     def handle_sail_angle(self, msg):
         self.sail_angle.degrees = int(msg.value)
         self.sail_angle_updated.emit(msg.value)
+        
+    def handle_estop_state(self, msg):
+        self.estop_state_updated.emit(msg.data)
+
 
     def _create_bond(self, req):
         self.flush_broken()
@@ -1201,6 +1253,9 @@ class RosThread(QObject):
         rospy.Subscriber("/sail/position", ADCReading, self.handle_sail_angle)
 
         rospy.Subscriber("wind_avg_interval", Int32, self.handle_wind_interval)
+        
+        # E-stop state
+        rospy.Subscriber("estop_state", Bool, self.handle_estop_state)
 
         rospy.logwarn("ROSThread started")
 

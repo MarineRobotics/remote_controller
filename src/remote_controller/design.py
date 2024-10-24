@@ -1019,7 +1019,7 @@ class Ui_MainWindow(object):
         self.tabWidget.addTab(self.tab_2, "")
         self.btnStop = QtWidgets.QPushButton(self.scrollAreaWidgetContents)
         self.btnStop.setEnabled(True)
-        self.btnStop.setGeometry(QtCore.QRect(-10, 750, 1111, 31))
+        self.btnStop.setGeometry(QtCore.QRect(10, 750, 1111, 31))
         font = QtGui.QFont()
         font.setFamily("Liberation Mono")
         font.setPointSize(16)
@@ -1028,6 +1028,17 @@ class Ui_MainWindow(object):
         self.btnStop.setStyleSheet("QPushButton {color: red;}\n"
 "")
         self.btnStop.setObjectName("btnStop")
+        self.btnReset = QtWidgets.QPushButton(self.scrollAreaWidgetContents)
+        self.btnReset.setEnabled(True)
+        self.btnReset.setGeometry(QtCore.QRect(10, 750, 1111, 31))
+        font = QtGui.QFont()
+        font.setFamily("Liberation Mono")
+        font.setPointSize(16)
+        font.setBold(True)
+        self.btnReset.setFont(font)
+        self.btnReset.setStyleSheet("QPushButton {color: green;}\n"
+"")
+        self.btnReset.setObjectName("btnReset")
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
         self.scrollArea.raise_()
         self.splitter.raise_()
@@ -1116,6 +1127,7 @@ class Ui_MainWindow(object):
         self.btnSetIntegral.setText(_translate("MainWindow", "Set"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Developer"))
         self.btnStop.setText(_translate("MainWindow", "STOP"))
+        self.btnReset.setText(_translate("MainWindow", "RESET E-STOP"))
 
 
 if __name__ == "__main__":
