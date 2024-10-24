@@ -139,9 +139,9 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.btnPropOn.hide()
         self.btnPropOff.hide()
         # Setup ESTOP buttons
-        self.btnResetEstop.hide()
-        self.btnResetEstop.clicked.connect(self.reset_estop)
-        self.btnESTop.hide()
+        self.btnResetEStop.hide()
+        self.btnResetEStop.clicked.connect(self.reset_estop)
+        self.btnEStop.hide()
         self.btnEstop.clicked.connect(self.set_estop)
         # Setup auto sail buttons
         self.btnAutoSail.hide()
@@ -558,12 +558,12 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
             
     def update_ui_estop_enabled(self):
         # Disable all controls and make estop rest button visible
-        self.btnESTOP.hide()
-        self.btnESTOPReset.show()
+        self.btnEStop.hide()
+        self.btnResetEStop.show()
     
     def update_ui_estop_disabled(self):
-        self.btnESTOP.show()
-        self.btnESTOPReset.hide()
+        self.btnEStop.show()
+        self.btnResetEStop.hide()
 
 
     @pyqtSlot(float)

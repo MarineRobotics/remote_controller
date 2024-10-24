@@ -2448,7 +2448,7 @@ color: rgb(255, 255, 255);</string>
        <string>STOP</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="btnResetEstop">
+     <widget class="QPushButton" name="btnResetEStop">
       <property name="enabled">
        <bool>true</bool>
       </property>
