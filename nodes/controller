@@ -163,7 +163,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         #self.btnDesROT.clicked.connect(self.set_rot)
         #self.txtDesROT.returnPressed.connect(self.set_rot)
-        self.btnStop.clicked.connect(self.stop_all)
+        # self.btnStop.clicked.connect(self.stop_all)
 
         #TODO
         self.btnSetIntegral.clicked.connect(self.set_pid_gains)
