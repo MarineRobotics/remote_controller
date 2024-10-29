@@ -480,8 +480,14 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self._rosthread.rudder_angle_updated.connect(self.update_rudder_angle)
         #new
         self._rosthread.sail_angle_updated.connect(self.update_sail_angle)
-        # estop
+        # peripheral signals
         self._rosthread.estop_state_updated.connect(self.update_estop_state)
+        self._rosthread.mc_state_updated.connect(self.update_mc_state)
+        self._rosthread.poe_state_updated.connect(self.update_poe_state)
+        self._rosthread.ethernet_state_updated.connect(self.update_ethernet_state)
+        self._rosthread.lte_state_updated.connect(self.update_lte_state)
+        self._rosthread.pixhawk_state_updated.connect(self.update_pixhawk_state)
+        self._rosthread.rc_state_updated.connect(self.update_rc_state)
 
     def connect_thread_slots(self):
         """Connect slots in rosthread class to signals coming from this main class"""
@@ -555,9 +561,67 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         # For now, estop signal is reversed (annoying!)
         if not estop:
             self.update_ui_estop_enabled()
+            self.txtEStopState.setText("E-Stop enabled")
+            self.txtEStopState.setStyleSheet("background-color: rgb(150, 0, 0);color: rgb(255, 255, 255)")
         else:
             self.update_ui_estop_disabled()
+            self.txtEStopState.setText("E-Stop disabled")
+            self.txtEStopState.setStyleSheet("background-color: rgb(0, 150, 0);color: rgb(255, 255, 255)")
             
+    @pyqtSlot(bool)
+    def update_mc_state(self, mc):
+        if mc:
+            self.txtMCState.setText("Motor Controller on")
+            self.txtMCState.setStyleSheet("background-color: rgb(0, 150, 0);color: rgb(255, 255, 255)")
+        else:
+            self.txtMCState.setText("Motor Controller off")
+            self.txtMCState.setStyleSheet("background-color: rgb(150, 0, 0);color: rgb(255, 255, 255)")
+    
+    @pyqtSlot(bool)
+    def update_poe_state(self, poe):
+        if poe:
+            self.txtPOEState.setText("POE on")
+            self.txtPOEState.setStyleSheet("background-color: rgb(0, 150, 0);color: rgb(255, 255, 255)")
+        else:
+            self.txtPOEState.setText("POE off")
+            self.txtPOEState.setStyleSheet("background-color: rgb(150, 0, 0);color: rgb(255, 255, 255)")
+            
+    @pyqtSlot(bool)
+    def update_ethernet_state(self, eth):
+        if eth:
+            self.txtEthernetState.setText("Ethernet on")
+            self.txtEthernetState.setStyleSheet("background-color: rgb(0, 150, 0);color: rgb(255, 255, 255)")
+        else:
+            self.txtEthernetState.setText("Ethernet off")
+            self.txtEthernetState.setStyleSheet("background-color: rgb(150, 0, 0);color: rgb(255, 255, 255)")
+    
+    @pyqtSlot(bool)         
+    def update_lte_state(self, lte):
+        if lte:
+            self.txtLTEState.setText("LTE on")
+            self.txtLTEState.setStyleSheet("background-color: rgb(0, 150, 0);color: rgb(255, 255, 255)")
+        else:
+            self.txtLTEState.setText("LTE off")
+            self.txtLTEState.setStyleSheet("background-color: rgb(150, 0, 0);color: rgb(255, 255, 255)")
+            
+    @pyqtSlot(bool)
+    def update_pixhawk_state(self, pixhawk):
+        if pixhawk:
+            self.txtPixhawkState.setText("Pixhawk on")
+            self.txtPixhawkState.setStyleSheet("background-color: rgb(0, 150, 0);color: rgb(255, 255, 255)")
+        else:
+            self.txtPixhawkState.setText("Pixhawk off")
+            self.txtPixhawkState.setStyleSheet("background-color: rgb(150, 0, 0);color: rgb(255, 255, 255)")
+            
+    @pyqtSlot(bool)
+    def update_rc_state(self, rc):
+        if rc:
+            self.txtRCState.setText("RC on")
+            self.txtRCState.setStyleSheet("background-color: rgb(0, 150, 0);color: rgb(255, 255, 255)")
+        else:
+            self.txtRCState.setText("RC off")
+            self.txtRCState.setStyleSheet("background-color: rgb(150, 0, 0);color: rgb(255, 255, 255)")  
+ 
     def update_ui_estop_enabled(self):
         # Disable all controls and make estop rest button visible
         self.btnEStop.hide()
@@ -878,6 +942,13 @@ class RosThread(QObject):
     rudder_angle_updated = pyqtSignal(float)
 
     estop_state_updated = pyqtSignal(bool)
+    mc_state_updated = pyqtSignal(bool)
+    poe_state_updated = pyqtSignal(bool)
+    ethernet_state_updated = pyqtSignal(bool)
+    lte_state_updated = pyqtSignal(bool)
+    pixhawk_state_updated = pyqtSignal(bool)
+    rc_state_updated = pyqtSignal(bool)
+    
 
     def __init__(self, parent=None, **kwargs):
         super().__init__(parent, **kwargs)
@@ -1179,6 +1250,24 @@ class RosThread(QObject):
         
     def handle_estop_state(self, msg):
         self.estop_state_updated.emit(msg.data)
+        
+    def handle_mc_feedback(self, msg):
+        self.mc_state_updated.emit(msg.data)
+        
+    def handle_poe_feedback(self, msg):
+        self.poe_state_updated.emit(msg.data)
+        
+    def handle_ethernet_feedback(self, msg):
+        self.ethernet_state_updated.emit(msg.data)
+        
+    def handle_lte_feedback(self, msg):
+        self.lte_state_updated.emit(msg.data)
+        
+    def handle_pixhawk_feedback(self, msg):
+        self.pixhawk_state_updated.emit(msg.data)
+        
+    def handle_rc_feedback(self, msg):
+        self.rc_state_updated.emit(msg.data)
 
 
     def _create_bond(self, req):
@@ -1255,8 +1344,22 @@ class RosThread(QObject):
 
         rospy.Subscriber("wind_avg_interval", Int32, self.handle_wind_interval)
         
+        ###### PERIPHERALS ######
         # E-stop state
         rospy.Subscriber("estop_state", Bool, self.handle_estop_state)
+        # roboteq on/off
+        rospy.Subscriber("mc_relay_feedback", Bool, self.handle_mc_feedback)
+        # POE Injector on/off
+        rospy.Subscriber("poe_injector_relay_feedback", Bool, self.handle_poe_feedback)
+        # Ethernet switch on/off
+        rospy.Subscriber("ethernet_switch_relay_feedback", Bool, self.handle_ethernet_feedback)
+        # LTE on/off
+        rospy.Subscriber("lte_modem_relay_feedback", Bool, self.handle_lte_feedback) 
+        # Pixhawk on/off
+        rospy.Subscriber("pixhawk_relay_feedback", Bool, self.handle_pixhawk_feedback)
+        # R/C control active
+        rospy.Subscriber("rc_control_active", Bool, self.handle_rc_feedback)
+                
 
         rospy.logwarn("ROSThread started")
 

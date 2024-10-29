@@ -276,7 +276,7 @@
          <string>NAV</string>
         </property>
        </widget>
-       <widget class="QLineEdit" name="txtConnectionStatus">
+       <widget class="QLineEdit" name="txtConnectionState">
         <property name="geometry">
          <rect>
           <x>750</x>
@@ -1022,7 +1022,7 @@ color: rgb(255, 255, 255);</string>
          <string>Stats</string>
         </property>
        </widget>
-       <widget class="QLineEdit" name="txt0x80Status">
+       <widget class="QLineEdit" name="txtEStopState">
         <property name="geometry">
          <rect>
           <x>750</x>
@@ -1044,7 +1044,7 @@ color: rgb(255, 255, 255);</string>
 color: rgb(255, 255, 255);</string>
         </property>
         <property name="text">
-         <string>0x80 No status received</string>
+         <string>E-Stop no status</string>
         </property>
         <property name="frame">
          <bool>false</bool>
@@ -1053,7 +1053,7 @@ color: rgb(255, 255, 255);</string>
          <bool>true</bool>
         </property>
        </widget>
-       <widget class="QLineEdit" name="txt0x81Status">
+       <widget class="QLineEdit" name="txtMCState">
         <property name="geometry">
          <rect>
           <x>750</x>
@@ -1075,7 +1075,7 @@ color: rgb(255, 255, 255);</string>
 color: rgb(255, 255, 255);</string>
         </property>
         <property name="text">
-         <string>0x81 No status received</string>
+         <string>Roboteq no status</string>
         </property>
         <property name="frame">
          <bool>false</bool>
@@ -1122,30 +1122,6 @@ color: rgb(255, 255, 255);</string>
         </property>
         <property name="text">
          <string>Prop OFF</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_36">
-        <property name="geometry">
-         <rect>
-          <x>750</x>
-          <y>360</y>
-          <width>121</width>
-          <height>20</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Monospace</family>
-          <pointsize>10</pointsize>
-          <italic>false</italic>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>Roboclaws</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
         </property>
        </widget>
        <widget class="QLabel" name="label_19">
@@ -1422,7 +1398,7 @@ color: rgb(255, 255, 255);</string>
         <property name="geometry">
          <rect>
           <x>750</x>
-          <y>460</y>
+          <y>600</y>
           <width>251</width>
           <height>145</height>
          </rect>
@@ -2168,6 +2144,161 @@ color: rgb(255, 255, 255);</string>
          <pixmap>assets/sail.png</pixmap>
         </property>
         <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="txtPOEState">
+        <property name="geometry">
+         <rect>
+          <x>750</x>
+          <y>440</y>
+          <width>201</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(150, 0, 0);
+color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="text">
+         <string>POE injector no status</string>
+        </property>
+        <property name="frame">
+         <bool>false</bool>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="txtEthernetState">
+        <property name="geometry">
+         <rect>
+          <x>750</x>
+          <y>470</y>
+          <width>201</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(150, 0, 0);
+color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="text">
+         <string>Ethernet no status</string>
+        </property>
+        <property name="frame">
+         <bool>false</bool>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="txtLTEState">
+        <property name="geometry">
+         <rect>
+          <x>750</x>
+          <y>500</y>
+          <width>201</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(150, 0, 0);
+color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="text">
+         <string>LTE modem no status</string>
+        </property>
+        <property name="frame">
+         <bool>false</bool>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="txtPixhawkState">
+        <property name="geometry">
+         <rect>
+          <x>750</x>
+          <y>530</y>
+          <width>201</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(150, 0, 0);
+color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="text">
+         <string>Pixhawk no status</string>
+        </property>
+        <property name="frame">
+         <bool>false</bool>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="txtRCState">
+        <property name="geometry">
+         <rect>
+          <x>750</x>
+          <y>560</y>
+          <width>201</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(150, 0, 0);
+color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="text">
+         <string>RC state no status</string>
+        </property>
+        <property name="frame">
+         <bool>false</bool>
+        </property>
+        <property name="readOnly">
          <bool>true</bool>
         </property>
        </widget>
