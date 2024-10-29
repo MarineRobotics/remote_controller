@@ -1242,6 +1242,8 @@ class RosThread(QObject):
 
     def handle_rudder_angle(self, msg):
         angle = msg.value
+        # Round angle to nearest degree
+        angle = round(angle)
         self.rudder_angle_updated.emit(angle)
 
     def handle_sail_angle(self, msg):
