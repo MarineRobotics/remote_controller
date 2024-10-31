@@ -78,6 +78,8 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     pid_gains_signal      = pyqtSignal(float, float, float)
     rudder_test_enable_signal = pyqtSignal(bool)
     sail_test_enable_signal = pyqtSignal(bool)
+    
+    toggle_peripheral_signal = pyqtSignal(str)
 
 
     def __init__(self, parent=None, **kwargs):
@@ -156,6 +158,14 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.txtDesSail.returnPressed.connect(self.set_sail_heading)
         self.btnDesSailAngle.clicked.connect(self.set_sail_angle)
         self.txtDesSailAngle.returnPressed.connect(self.set_sail_angle)
+        # Setup peripheral toggle buttons
+        self.btnToggleMC.clicked.connect(self.toggle_mc)
+        self.btnTogglePOE.clicked.connect(self.toggle_poe)
+        self.btnToggleEthernet.clicked.connect(self.toggle_ethernet)
+        self.btnToggleLTE.clicked.connect(self.toggle_lte)
+        self.btnTogglePixhawk.clicked.connect(self.toggle_pixhawk)
+        self.btnToggleRC.clicked.connect(self.toggle_rc)
+        
 
         #TEST
         self.btnDesSailPos.clicked.connect(self.set_sail_position)
@@ -509,6 +519,9 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         
         # estop signal
         self.set_estop_signal.connect(self._rosthread.pub_estop)
+        
+        # peripheral signal
+        self.toggle_peripheral_signal.connect(self._rosthread.pub_peripheral_toggle)
 
         #TEST
         self.sail_pos_signal.connect(self._rosthread.pub_sail_position)
@@ -828,6 +841,26 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         if sailGroup is not None:
             sailGroup.setEnabled(True)
         self.btnAutoSailDisable.hide()
+        
+    def toggle_mc(self):
+        self._rosthread.get_logger().info("Toggling mc_relay_control")
+        self.toggle_peripheral_signal.emit("mc_relay_control")
+        
+    def toggle_poe(self):
+        self._rosthread.get_logger().info("Toggling poe_relay_control")
+        self.toggle_peripheral_signal.emit("poe_injector_relay_control")
+        
+    def toggle_ethernet(self):
+        self._rosthread.get_logger().info("Toggling ethernet_relay_control")
+        self.toggle_peripheral_signal.emit("ethernet_switch_relay_control")
+    
+    def toggle_lte(self):
+        self._rosthread.get_logger().info("Toggling lte_relay_control")
+        self.toggle_peripheral_signal.emit("lte_modem_relay_control")
+        
+    def toggle_pixhawk(self):
+        self._rosthread.get_logger().info("Toggling pixhawk_relay_control")
+        self.toggle_peripheral_signal.emit("pixhawk_relay_control")
 
     #TEST: emit signals
     def start_rudder_test(self):
@@ -1018,6 +1051,10 @@ class RosThread(QObject):
         self.peripheral_pub = rospy.Publisher('/set_peripheral',
                                                 String,
                                                 queue_size=1)
+        
+        self.peripheral_toggle_pub = rospy.Publisher('/toggle_peripheral',
+                                                String,
+                                                queue_size=1)
 
     #############################
     # Post processing functions #
@@ -1119,6 +1156,11 @@ class RosThread(QObject):
         else:
             self.peripheral_pub.publish("estop_reset,true")
             rospy.logwarn("ESTOP DISABLED")
+            
+    @pyqtSlot(str)
+    def pub_peripheral_toggle(self, peripheral):
+        self.peripheral_toggle_pub.publish(peripheral)
+        rospy.logwarn(f"toggling {peripheral}")
 
 
     #############################
