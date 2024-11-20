@@ -843,27 +843,23 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.btnAutoSailDisable.hide()
         
     def toggle_mc(self):
-        self._rosthread.get_logger().info("Toggling mc_relay_control")
         self.toggle_peripheral_signal.emit("mc_relay_control")
         
     def toggle_poe(self):
-        self._rosthread.get_logger().info("Toggling poe_relay_control")
         self.toggle_peripheral_signal.emit("poe_injector_relay_control")
         
     def toggle_ethernet(self):
-        self._rosthread.get_logger().info("Toggling ethernet_relay_control")
         self.toggle_peripheral_signal.emit("ethernet_switch_relay_control")
     
     def toggle_lte(self):
-        self._rosthread.get_logger().info("Toggling lte_relay_control")
         self.toggle_peripheral_signal.emit("lte_modem_relay_control")
         
     def toggle_pixhawk(self):
-        self._rosthread.get_logger().info("Toggling pixhawk_relay_control")
         self.toggle_peripheral_signal.emit("pixhawk_relay_control")
         
     def toggle_rc(self):
-        self._rosthread.get_logger().warn("Can't toggle rc relay control at this time")
+        pass
+        # self._rosthread.get_logger().warn("Can't toggle rc relay control at this time")
 
     #TEST: emit signals
     def start_rudder_test(self):
@@ -1162,8 +1158,8 @@ class RosThread(QObject):
             
     @pyqtSlot(str)
     def pub_peripheral_toggle(self, peripheral):
-        self.peripheral_toggle_pub.publish(peripheral)
         rospy.logwarn(f"toggling {peripheral}")
+        self.peripheral_toggle_pub.publish(peripheral)
 
 
     #############################
