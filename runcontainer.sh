@@ -32,6 +32,8 @@ done
 echo -e "\e[35mRebuild: $REBUILD\e[0m"
 
 if [ -z "$ROS_HOSTNAME" ] && [ -z "$ROS_IP" ]; then
+    # TODO: resolve hostname into ip here and below as well!!!
+    !!!!
     export ROS_HOSTNAME=$(hostname)
 fi
 
