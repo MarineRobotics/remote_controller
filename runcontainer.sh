@@ -13,6 +13,14 @@ if [ $? != 0 ] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
 
 eval set -- "$OPTS"
 
+# Create simple function to resolve hostname to ip
+resolve_hostname_to_ip() {
+    # Resolve hostname to ip
+    hostname=$1
+    ip=$(getent hosts $hostname | awk '{ print $1 }')
+    echo $ip
+}
+
 while true; do
 # The case statement inside the loop checks the current argument ($1). 
 # If the argument matches one of the option patterns (-ip, --host-ip, -m, --master, -h, --hostname), 
@@ -20,7 +28,8 @@ while true; do
 # then it uses shift; shift; to remove these two arguments (option and its value) from the list and move on to the next pair.
     case "$1" in
         -i | --host-ip ) ROS_IP="$2"; shift; shift ;;
-        -m | --master ) ROS_MASTER_URI="$2"; shift; shift ;;
+        -u | --master ) ROS_MASTER_URI="$2"; shift; shift ;;
+        -m | --master-host ) ROS_MASTER_URI="http://$(resolve_hostname_to_ip "$2"):11311"; shift; shift ;;
         -h | --hostname ) ROS_HOSTNAME="$2"; shift; shift ;;
         -b | --rebuild ) REBUILD=true; shift ;;
         -- ) shift; break ;;
@@ -31,9 +40,8 @@ done
 # Print rebuild flag in purple
 echo -e "\e[35mRebuild: $REBUILD\e[0m"
 
+
 if [ -z "$ROS_HOSTNAME" ] && [ -z "$ROS_IP" ]; then
-    # TODO: resolve hostname into ip here and below as well!!!
-    !!!!
     export ROS_HOSTNAME=$(hostname)
 fi
 
