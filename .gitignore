@@ -162,9 +162,3 @@ venv.bak/
 
 # mypy
 .mypy_cache/
-
-#############
-# nVS Code
-############
-*.vscode
-src/remote_controller/design.ui.autosave
