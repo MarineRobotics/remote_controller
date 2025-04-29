@@ -15,19 +15,22 @@ from rclpy.executors import MultiThreadedExecutor
 from std_msgs.msg import Float64, String, Bool, Int32
 from sensor_msgs.msg import BatteryState
 # Assuming these message definitions were migrated to ROS2
-from mr_messages.srv import BondIDRequest
-from mr_messages.msg import WIND, Heading, Depth, Speed, GNSSData, ADCReading, RoboclawStatus
-from mr_messages.msg import TEMP, PRESSURE, HUMIDITY, Declination, PID
+from mr_interfaces.msg import Wind, Heading, Depth, Speed, GNSSData, ADCReading, RoboclawStatus
+from mr_interfaces.msg import Temp, Pressure, Humidity, Declination, PID
 
 # PyQt5 imports
 from PyQt5 import QtGui, QtCore, uic, QtWidgets
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import QPixmap, QTransform
+
 from remote_controller import design
 
-from remote_controller.heading_manipulations import HeadingManipulations as HM
-from remote_controller.heading_manipulations import HeadingObj as HO
+# from remote_controller.heading_manipulations import HeadingManipulations as HM
+# from remote_controller.heading_manipulations import HeadingObj as HO
+
+from movement_controls.heading_manipulations import HeadingManipulations as HM
+from movement_controls.heading_manipulations import HeadingObj as HO
 
 from collections import namedtuple
 from math import cos, sin, radians
@@ -80,7 +83,6 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     prop_signal           = pyqtSignal(int)
     manual_cmd_signal     = pyqtSignal(str)
     set_estop_signal      = pyqtSignal(bool)
-    #bond_signal       = pyqtSignal(bool)  # TODO: connect the bond signl to a slot
     auto_sail_signal      = pyqtSignal(bool)
 
     pid_gains_signal      = pyqtSignal(float, float, float)
@@ -854,6 +856,12 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.prop_signal.emit(0)
         self.rudder_signal.emit(0)
         self.sail_signal.emit(0)
+        
+        #Clean shutdown of the node
+        self._rosthread.stop()
+        
+        # Allow the base class to handle the rest
+        super().closeEvent(event)
 
     def set_pid_gains(self):
         pid_p = int(self.txtPInput.text())
@@ -861,46 +869,25 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         pid_d = int(self.txtDInput.text())
         self.pid_gains_signal.emit(pid_p, pid_i, pid_d)
 
-
-class RosThread(QObject, Node):
-    # QT Signals for UI updates
-    sail_data_updated = pyqtSignal(float, float, str)
-    northref_data_updated = pyqtSignal(float, float)
-    vessel_heading_updated = pyqtSignal(int)
-    sail_heading_updated = pyqtSignal(int)
-    sail_angle_updated = pyqtSignal(int)
-    declination_updated = pyqtSignal(float)
-    water_depth_updated = pyqtSignal(float)
-    air_temp_updated = pyqtSignal(float)
-    water_temp_updated = pyqtSignal(float)
-    humidity_updated = pyqtSignal(float)
-    air_pressure_updated = pyqtSignal(float)
-    water_speed_updated = pyqtSignal(float)
-    state_change_updated = pyqtSignal(str)
-    substate_change_updated = pyqtSignal(str)
-    gnss_data_updated = pyqtSignal(int)
-    sog_updated = pyqtSignal(float)
-    current_data_updated = pyqtSignal(float)
-    volt_data_updated = pyqtSignal(float)
-    robo_status_updated = pyqtSignal(int, int, str)
-    bat_level_updated = pyqtSignal(float)
-    power_consumption_updated = pyqtSignal(float)
-    motor_current_updated = pyqtSignal(float)
-    rudder_angle_updated = pyqtSignal(float)
-    estop_state_updated = pyqtSignal(bool)
-    mc_state_updated = pyqtSignal(bool)
-    poe_state_updated = pyqtSignal(bool)
-    ethernet_state_updated = pyqtSignal(bool)
-    lte_state_updated = pyqtSignal(bool)
-    pixhawk_state_updated = pyqtSignal(bool)
-    rc_state_updated = pyqtSignal(bool)
-
-    def __init__(self, parent=None, **kwargs):
-        QObject.__init__(self, parent, **kwargs)
-        Node.__init__(self, NODE)
+class RemoteControlNode(Node):
+    """
+    A dedicated ROS2 Node class that handles all ROS2 specific functionality.
+    """
+    
+    def __init__(self, callback_manager=None, **kwargs):
+        """
+        Initialize the ROS2 Node.
         
-        # Initialize ROS2 node in a separate thread
-        self.get_logger().info("Initializing ROS2 Thread")
+        Args:
+            callback_manager: Reference to the RosThread object to emit signals back to Qt
+            **kwargs: Additional arguments to pass to Node constructor
+        """
+        Node.__init__(self, "manual_control_node", **kwargs)
+        
+        self.get_logger().info("Initializing ROS2 Node")
+        
+        # Store callback_manager to emit signals back to Qt
+        self.callback_manager = callback_manager
         
         # Initialize data variables
         self.last_current_update = self.get_clock().now().to_msg().sec
@@ -930,6 +917,13 @@ class RosThread(QObject, Node):
         self.callback_group_publishers = MutuallyExclusiveCallbackGroup()
         
         # Initialize publishers
+        self._init_publishers()
+            
+        # Create timer for periodic tasks
+        self.timer = self.create_timer(1.0, self.timer_callback)
+    
+    def _init_publishers(self):
+        """Initialize all ROS2 publishers"""
         self.rudder_speed_pub = self.create_publisher(
             Float64, 'manual/cmd_rudder_speed', 10)
         self.prop_effort_pub = self.create_publisher(
@@ -962,165 +956,18 @@ class RosThread(QObject, Node):
             String, '/set_peripheral', 10)
         self.peripheral_toggle_pub = self.create_publisher(
             String, '/toggle_peripheral', 10)
-            
-        # Setup ROS2 service client (replacing bond mechanism)
-        self.bond_client = self.create_client(
-            BondIDRequest, 'share_bond_id')
-            
-        # Create timer for periodic tasks
-        self.timer = self.create_timer(1.0, self.timer_callback)
-        
-    def timer_callback(self):
-        """Periodic checks and updates"""
-        # Replace with ROS2 equivalent of checking connection status
-        # For now, just assume connected
-        pass
-
-    #############################
-    # Post processing functions #
-    #############################
-
-    def update_apparent_wind_vessel(self, app_wind_sail):
-        self.apparent_wind_vessel.degrees = self.hm.add(self.sail_angle.degrees, app_wind_sail)
-
-    def update_apparent_wind_north(self, app_wind_sail):
-        self.apparent_wind_north.degrees = self.hm.add(self.sail_heading, app_wind_sail)
-
-    #############################
-    # Publisher methods         #
-    #############################
-
-    @pyqtSlot(int)
-    def pub_rudder_speed(self, speed):
-        msg = Float64()
-        msg.data = float(speed)
-        self.rudder_speed_pub.publish(msg)
-        self.get_logger().info(f"Published rudder speed: {speed}")
-
-    @pyqtSlot(int)
-    def pub_prop_effort(self, speed):
-        msg = Float64()
-        msg.data = float(speed)
-        self.prop_effort_pub.publish(msg)
-        self.get_logger().info(f"Published prop effort: {speed}")
-
-    @pyqtSlot(int)
-    def pub_sail_effort(self, effort):
-        msg = Float64()
-        msg.data = float(effort)
-        self.sail_effort_pub.publish(msg)
-        self.get_logger().info(f"Published sail effort: {effort}")
-
-    @pyqtSlot(int)
-    def pub_boat_heading(self, heading):
-        msg = Heading()
-        msg.heading = heading
-        self.boat_heading_pub.publish(msg)
-        self.get_logger().info(f"Published boat heading: {heading}")
-
-    @pyqtSlot(int)
-    def pub_sail_heading(self, heading):
-        msg = Heading()
-        msg.heading = heading
-        self.sail_heading_pub.publish(msg)
-        self.get_logger().info(f"Published sail heading: {heading}")
-
-    @pyqtSlot(int)
-    def pub_sail_angle(self, angle):
-        msg = Heading()
-        msg.heading = angle
-        self.sail_angle_pub.publish(msg)
-        self.get_logger().info(f"Published sail angle: {angle}")
-
-    @pyqtSlot(int)
-    def pub_sail_position(self, pos):
-        msg = Float64()
-        msg.data = float(pos)
-        self.sail_pos_pub.publish(msg)
-        self.get_logger().info(f"Published sail position: {pos}")
-
-    @pyqtSlot(int)
-    def pub_rudder_angle(self, angle):
-        msg = Float64()
-        msg.data = float(angle)
-        self.rudder_angle_pub.publish(msg)
-        self.get_logger().info(f"Published rudder angle: {angle}")
-
-    @pyqtSlot(bool)
-    def pub_auto_sail_enable(self, enable):
-        msg = Bool()
-        msg.data = enable
-        self.autosail_enable_pub.publish(msg)
-        self.get_logger().info(f"Published auto sail enable: {enable}")
-
-    @pyqtSlot(bool)
-    def pub_rudder_test_enable(self, enable):
-        msg = Bool()
-        msg.data = enable
-        self.rudder_test_enable_pub.publish(msg)
-        self.get_logger().info(f"Published rudder test enable: {enable}")
-
-    @pyqtSlot(bool)
-    def pub_sail_test_enable(self, enable):
-        msg = Bool()
-        msg.data = enable
-        self.sail_test_enable_pub.publish(msg)
-        self.get_logger().info(f"Published sail test enable: {enable}")
-
-    @pyqtSlot(float, float, float)
-    def pub_pid_gains(self, p, i, d):
-        msg = PID()
-        msg.p = float(p)
-        msg.i = float(i)
-        msg.d = float(d)
-        self.pid_gains_pub.publish(msg)
-        self.get_logger().info(f"Published PID gains: P={p}, I={i}, D={d}")
-
-    @pyqtSlot(float)
-    def pub_rot(self, rot):
-        msg = Float64()
-        msg.data = float(rot)
-        self.boat_rot_pub.publish(msg)
-        self.get_logger().info(f"Published rotation: {rot}")
-
-    @pyqtSlot(str)
-    def pub_manual_cmd(self, cmd):
-        msg = String()
-        msg.data = cmd
-        self.mission_cmd_pub.publish(msg)
-        self.get_logger().info(f"Published manual command: {cmd}")
-        
-    @pyqtSlot(bool)
-    def pub_estop(self, enable):
-        msg = String()
-        if enable:
-            # We need to send false to estop because of how peripheral manager works
-            msg.data = "estop_set,false"
-            self.get_logger().warn("ESTOP ENABLED")
-        else:
-            msg.data = "estop_reset,true"
-            self.get_logger().warn("ESTOP DISABLED")
-        self.peripheral_pub.publish(msg)
-            
-    @pyqtSlot(str)
-    def pub_peripheral_toggle(self, peripheral):
-        msg = String()
-        msg.data = peripheral
-        self.peripheral_toggle_pub.publish(msg)
-        self.get_logger().info(f"Toggling {peripheral}")
-
-    @pyqtSlot()
-    def start(self):
-        """Initialize ROS2 subscribers"""
-        self.get_logger().info("Starting ROS2 thread and subscriptions")
+    
+    def init_subscribers(self):
+        """Initialize all ROS2 subscribers"""
+        self.get_logger().info("Initializing ROS2 subscriptions")
         
         # Create all subscribers with callbacks
         self.wind_sub = self.create_subscription(
-            WIND, 'wind_info', self.handle_wind_info, 10, 
+            Wind, 'wind_info', self.handle_wind_info, 10, 
             callback_group=self.callback_group_subscribers)
             
         self.northref_sub = self.create_subscription(
-            WIND, 'app_wind_northref_avg', self.handle_northref_info, 10,
+            Wind, 'app_wind_northref_avg', self.handle_northref_info, 10,
             callback_group=self.callback_group_subscribers)
             
         self.vessel_heading_sub = self.create_subscription(
@@ -1136,19 +983,19 @@ class RosThread(QObject, Node):
             callback_group=self.callback_group_subscribers)
             
         self.air_temp_sub = self.create_subscription(
-            TEMP, '/air_temperature', self.handle_air_temp, 10,
+            Temp, '/air_temperature', self.handle_air_temp, 10,
             callback_group=self.callback_group_subscribers)
             
         self.water_temp_sub = self.create_subscription(
-            TEMP, '/water_temperature', self.handle_water_temp, 10,
+            Temp, '/water_temperature', self.handle_water_temp, 10,
             callback_group=self.callback_group_subscribers)
             
         self.humidity_sub = self.create_subscription(
-            HUMIDITY, 'humidity', self.handle_humidity, 10,
+            Humidity, 'humidity', self.handle_humidity, 10,
             callback_group=self.callback_group_subscribers)
             
         self.pressure_sub = self.create_subscription(
-            PRESSURE, 'pressure', self.handle_air_pressure, 10,
+            Pressure, 'pressure', self.handle_air_pressure, 10,
             callback_group=self.callback_group_subscribers)
             
         self.water_speed_sub = self.create_subscription(
@@ -1229,7 +1076,130 @@ class RosThread(QObject, Node):
             callback_group=self.callback_group_subscribers)
             
         self.get_logger().info('All subscriptions created')
+    
+    def timer_callback(self):
+        """Periodic checks and updates"""
+        # Replace with ROS2 equivalent of checking connection status
+        # For now, just assume connected
+        pass
+    
+    #############################
+    # Post processing functions #
+    #############################
 
+    def update_apparent_wind_vessel(self, app_wind_sail):
+        self.apparent_wind_vessel.degrees = self.hm.add(self.sail_angle.degrees, app_wind_sail)
+
+    def update_apparent_wind_north(self, app_wind_sail):
+        self.apparent_wind_north.degrees = self.hm.add(self.sail_heading, app_wind_sail)
+    
+    #############################
+    # Publisher methods         #
+    #############################
+    
+    def publish_rudder_speed(self, speed):
+        msg = Float64()
+        msg.data = float(speed)
+        self.rudder_speed_pub.publish(msg)
+        self.get_logger().info(f"Published rudder speed: {speed}")
+
+    def publish_prop_effort(self, speed):
+        msg = Float64()
+        msg.data = float(speed)
+        self.prop_effort_pub.publish(msg)
+        self.get_logger().info(f"Published prop effort: {speed}")
+
+    def publish_sail_effort(self, effort):
+        msg = Float64()
+        msg.data = float(effort)
+        self.sail_effort_pub.publish(msg)
+        self.get_logger().info(f"Published sail effort: {effort}")
+
+    def publish_boat_heading(self, heading):
+        msg = Heading()
+        msg.heading = heading
+        self.boat_heading_pub.publish(msg)
+        self.get_logger().info(f"Published boat heading: {heading}")
+
+    def publish_sail_heading(self, heading):
+        msg = Heading()
+        msg.heading = heading
+        self.sail_heading_pub.publish(msg)
+        self.get_logger().info(f"Published sail heading: {heading}")
+
+    def publish_sail_angle(self, angle):
+        msg = Heading()
+        msg.heading = angle
+        self.sail_angle_pub.publish(msg)
+        self.get_logger().info(f"Published sail angle: {angle}")
+
+    def publish_sail_position(self, pos):
+        msg = Float64()
+        msg.data = float(pos)
+        self.sail_pos_pub.publish(msg)
+        self.get_logger().info(f"Published sail position: {pos}")
+
+    def publish_rudder_angle(self, angle):
+        msg = Float64()
+        msg.data = float(angle)
+        self.rudder_angle_pub.publish(msg)
+        self.get_logger().info(f"Published rudder angle: {angle}")
+
+    def publish_auto_sail_enable(self, enable):
+        msg = Bool()
+        msg.data = enable
+        self.autosail_enable_pub.publish(msg)
+        self.get_logger().info(f"Published auto sail enable: {enable}")
+
+    def publish_rudder_test_enable(self, enable):
+        msg = Bool()
+        msg.data = enable
+        self.rudder_test_enable_pub.publish(msg)
+        self.get_logger().info(f"Published rudder test enable: {enable}")
+
+    def publish_sail_test_enable(self, enable):
+        msg = Bool()
+        msg.data = enable
+        self.sail_test_enable_pub.publish(msg)
+        self.get_logger().info(f"Published sail test enable: {enable}")
+
+    def publish_pid_gains(self, p, i, d):
+        msg = PID()
+        msg.p = float(p)
+        msg.i = float(i)
+        msg.d = float(d)
+        self.pid_gains_pub.publish(msg)
+        self.get_logger().info(f"Published PID gains: P={p}, I={i}, D={d}")
+
+    def publish_rot(self, rot):
+        msg = Float64()
+        msg.data = float(rot)
+        self.boat_rot_pub.publish(msg)
+        self.get_logger().info(f"Published rotation: {rot}")
+
+    def publish_manual_cmd(self, cmd):
+        msg = String()
+        msg.data = cmd
+        self.mission_cmd_pub.publish(msg)
+        self.get_logger().info(f"Published manual command: {cmd}")
+        
+    def publish_estop(self, enable):
+        msg = String()
+        if enable:
+            # We need to send false to estop because of how peripheral manager works
+            msg.data = "estop_set,false"
+            self.get_logger().warn("ESTOP ENABLED")
+        else:
+            msg.data = "estop_reset,true"
+            self.get_logger().warn("ESTOP DISABLED")
+        self.peripheral_pub.publish(msg)
+            
+    def publish_peripheral_toggle(self, peripheral):
+        msg = String()
+        msg.data = peripheral
+        self.peripheral_toggle_pub.publish(msg)
+        self.get_logger().info(f"Toggling {peripheral}")
+    
     #############################
     #         Handlers          #
     #############################
@@ -1239,54 +1209,75 @@ class RosThread(QObject, Node):
         if wind_info.reference == "Apparent":
             self.update_apparent_wind_vessel(wind_info.direction)
             self.update_apparent_wind_north(wind_info.direction)
-        self.sail_data_updated.emit(wind_info.speed,
-                                    wind_info.direction,
-                                    wind_info.reference)
+        
+        # Emit signal via callback manager to update Qt UI
+        if self.callback_manager:
+            self.callback_manager.sail_data_updated.emit(
+                wind_info.speed, wind_info.direction, wind_info.reference)
                                     
     def handle_northref_info(self, wind_info):
-        self.northref_data_updated.emit(wind_info.direction, self.vessel_heading)
+        if self.callback_manager:
+            self.callback_manager.northref_data_updated.emit(
+                wind_info.direction, self.vessel_heading)
 
     def handle_vessel_heading(self, heading):
-        # Send vessel heading signal, save heading and calculate sail angle
-        self.vessel_heading_updated.emit(heading.heading)
+        # Save heading and calculate sail angle
         self.vessel_heading = heading.heading
+        # log heading to console
+        # self.get_logger().info(f"Vessel heading: {heading.heading}")
+        
+        if self.callback_manager:
+            self.callback_manager.vessel_heading_updated.emit(heading.heading)
 
     def handle_sail_heading(self, heading):
         self.sail_heading = heading.heading
-        self.sail_heading_updated.emit(heading.heading)
+        
+        if self.callback_manager:
+            self.callback_manager.sail_heading_updated.emit(heading.heading)
 
     def handle_declination(self, decl_msg):
-        self.declination_updated.emit(decl_msg.declination)
+        if self.callback_manager:
+            self.callback_manager.declination_updated.emit(decl_msg.declination)
 
     def handle_water_depth(self, depth):
-        self.water_depth_updated.emit(depth.depth)
+        if self.callback_manager:
+            self.callback_manager.water_depth_updated.emit(depth.depth)
 
     def handle_air_temp(self, temp):
-        self.air_temp_updated.emit(temp.temp)
+        if self.callback_manager:
+            self.callback_manager.air_temp_updated.emit(temp.temp)
 
     def handle_water_temp(self, temp):
-        self.water_temp_updated.emit(temp.temp)
+        if self.callback_manager:
+            self.callback_manager.water_temp_updated.emit(temp.temp)
 
     def handle_humidity(self, humid):
-        self.humidity_updated.emit(humid.humid)
+        if self.callback_manager:
+            self.callback_manager.humidity_updated.emit(humid.humid)
 
     def handle_air_pressure(self, pressure):
-        self.air_pressure_updated.emit(pressure.pressure)
+        if self.callback_manager:
+            self.callback_manager.air_pressure_updated.emit(pressure.pressure)
 
     def handle_water_speed(self, speed):
-        self.water_speed_updated.emit(speed.speed)
+        if self.callback_manager:
+            self.callback_manager.water_speed_updated.emit(speed.speed)
 
     def handle_state_change(self, state):
-        self.state_change_updated.emit(state.data)
+        if self.callback_manager:
+            self.callback_manager.state_change_updated.emit(state.data)
 
     def handle_substate_change(self, substate):
-        self.substate_change_updated.emit(substate.data)
+        if self.callback_manager:
+            self.callback_manager.substate_change_updated.emit(substate.data)
 
     def handle_gnss(self, gnss):
-        self.gnss_data_updated.emit(gnss.num_sats)
+        if self.callback_manager:
+            self.callback_manager.gnss_data_updated.emit(gnss.num_sats)
 
     def handle_sog(self, sog_msg):
-        self.sog_updated.emit(sog_msg.speed)
+        if self.callback_manager:
+            self.callback_manager.sog_updated.emit(sog_msg.speed)
 
     def handle_current_draw(self, msg):
         self.current_readings.append(msg.value)
@@ -1294,7 +1285,8 @@ class RosThread(QObject, Node):
         current_time = self.get_clock().now().to_msg().sec
         if (current_time - self.last_current_update) > 1:
             curr_average = sum(self.current_readings) / len(self.current_readings)
-            self.current_data_updated.emit(curr_average)
+            if self.callback_manager:
+                self.callback_manager.current_data_updated.emit(curr_average)
             # clear list
             self.current_readings.clear()
             self.last_current_update = current_time
@@ -1305,20 +1297,20 @@ class RosThread(QObject, Node):
         current_time = self.get_clock().now().to_msg().sec
         if (current_time - self.last_volt_update) > 1:
             volt_average = sum(self.volt_readings)/len(self.volt_readings)
-            self.volt_data_updated.emit(volt_average)
+            if self.callback_manager:
+                self.callback_manager.volt_data_updated.emit(volt_average)
             # clear list
             self.volt_readings.clear()
             self.last_volt_update = current_time
 
     def handle_roboclaw_status(self, msg):
-        address = msg.address
-        status_id = msg.status_id
-        status = msg.status_message
-        self.robo_status_updated.emit(address, status_id, status)
+        if self.callback_manager:
+            self.callback_manager.robo_status_updated.emit(
+                msg.address, msg.status_id, msg.status_message)
 
     def handle_bat_level(self, msg):
-        level = msg.value
-        self.bat_level_updated.emit(level)
+        if self.callback_manager:
+            self.callback_manager.bat_level_updated.emit(msg.value)
         
     def handle_bat_state(self, msg):
         level = msg.percentage
@@ -1326,79 +1318,256 @@ class RosThread(QObject, Node):
         current = msg.current
         # calculate power
         power = voltage * current
-        self.bat_level_updated.emit(level)
-        self.volt_data_updated.emit(voltage)
-        self.current_data_updated.emit(current)
-        self.power_consumption_updated.emit(power)
+        
+        if self.callback_manager:
+            self.callback_manager.bat_level_updated.emit(level)
+            self.callback_manager.volt_data_updated.emit(voltage)
+            self.callback_manager.current_data_updated.emit(current)
+            self.callback_manager.power_consumption_updated.emit(power)
 
     def handle_power_consumption(self, msg):
-        power = msg.value
-        self.power_consumption_updated.emit(power)
+        if self.callback_manager:
+            self.callback_manager.power_consumption_updated.emit(msg.value)
 
     def handle_wind_interval(self, msg):
         # Wind is output at 5hz, so divide by 5 for seconds
         interval = msg.data * 5
         self.sail_angle = HO(interval)
-        self.apparent_wind_vessel = HO(interval)  # Heading object with 20 value mean
+        self.apparent_wind_vessel = HO(interval)  # Heading object with interval value mean
         self.apparent_wind_sail = HO(interval)
         self.apparent_wind_north = HO(interval)  # apparent wind north referenced
 
     def handle_motor_current(self, msg):
-        current = msg.value
-        self.motor_current_updated.emit(current)
+        if self.callback_manager:
+            self.callback_manager.motor_current_updated.emit(msg.value)
 
     def handle_rudder_angle(self, msg):
         angle = msg.value
         # Round angle to nearest degree
         angle = round(angle)
-        self.rudder_angle_updated.emit(angle)
+        if self.callback_manager:
+            self.callback_manager.rudder_angle_updated.emit(angle)
 
     def handle_sail_angle(self, msg):
         self.sail_angle.degrees = int(msg.value)
-        self.sail_angle_updated.emit(msg.value)
+        if self.callback_manager:
+            self.callback_manager.sail_angle_updated.emit(msg.value)
         
     def handle_estop_state(self, msg):
-        self.estop_state_updated.emit(msg.data)
+        if self.callback_manager:
+            self.callback_manager.estop_state_updated.emit(msg.data)
         
     def handle_mc_feedback(self, msg):
-        self.mc_state_updated.emit(msg.data)
+        if self.callback_manager:
+            self.callback_manager.mc_state_updated.emit(msg.data)
         
     def handle_poe_feedback(self, msg):
-        self.poe_state_updated.emit(msg.data)
+        if self.callback_manager:
+            self.callback_manager.poe_state_updated.emit(msg.data)
         
     def handle_ethernet_feedback(self, msg):
-        self.ethernet_state_updated.emit(msg.data)
+        if self.callback_manager:
+            self.callback_manager.ethernet_state_updated.emit(msg.data)
         
     def handle_lte_feedback(self, msg):
-        self.lte_state_updated.emit(msg.data)
+        if self.callback_manager:
+            self.callback_manager.lte_state_updated.emit(msg.data)
         
     def handle_pixhawk_feedback(self, msg):
-        self.pixhawk_state_updated.emit(msg.data)
+        if self.callback_manager:
+            self.callback_manager.pixhawk_state_updated.emit(msg.data)
         
     def handle_rc_feedback(self, msg):
-        self.rc_state_updated.emit(msg.data)
+        if self.callback_manager:
+            self.callback_manager.rc_state_updated.emit(msg.data)
 
-    # ROS2 doesn't have bond mechanism - implement alternative
-    async def send_bond_request(self, id, topic):
-        """Send bond request to service"""
-        if not self.bond_client.wait_for_service(timeout_sec=1.0):
-            self.get_logger().error('Bond service not available')
-            return False
-            
-        request = BondIDRequest.Request()
-        request.id = id
-        request.topic = topic
+
+class RosThread(QObject):
+    """
+    A QThread wrapper for ROS2 functionality.
+    This class handles the QT signals and communicates with the ROS2 node.
+    """
+    
+    # QT Signals for UI updates
+    sail_data_updated = pyqtSignal(float, float, str)
+    northref_data_updated = pyqtSignal(float, float)
+    vessel_heading_updated = pyqtSignal(int)
+    sail_heading_updated = pyqtSignal(int)
+    sail_angle_updated = pyqtSignal(int)
+    declination_updated = pyqtSignal(float)
+    water_depth_updated = pyqtSignal(float)
+    air_temp_updated = pyqtSignal(float)
+    water_temp_updated = pyqtSignal(float)
+    humidity_updated = pyqtSignal(float)
+    air_pressure_updated = pyqtSignal(float)
+    water_speed_updated = pyqtSignal(float)
+    state_change_updated = pyqtSignal(str)
+    substate_change_updated = pyqtSignal(str)
+    gnss_data_updated = pyqtSignal(int)
+    sog_updated = pyqtSignal(float)
+    current_data_updated = pyqtSignal(float)
+    volt_data_updated = pyqtSignal(float)
+    robo_status_updated = pyqtSignal(int, int, str)
+    bat_level_updated = pyqtSignal(float)
+    power_consumption_updated = pyqtSignal(float)
+    motor_current_updated = pyqtSignal(float)
+    rudder_angle_updated = pyqtSignal(float)
+    estop_state_updated = pyqtSignal(bool)
+    mc_state_updated = pyqtSignal(bool)
+    poe_state_updated = pyqtSignal(bool)
+    ethernet_state_updated = pyqtSignal(bool)
+    lte_state_updated = pyqtSignal(bool)
+    pixhawk_state_updated = pyqtSignal(bool)
+    rc_state_updated = pyqtSignal(bool)
+
+    def __init__(self, parent=None, **kwargs):
+        """
+        Initialize RosThread.
         
-        future = self.bond_client.call_async(request)
-        await future
+        Args:
+            parent: Parent QObject
+            **kwargs: Additional arguments to pass to ROS2 Node constructor
+        """
+        QObject.__init__(self, parent)
         
+        print("\033[95mInitializing ROS2 Thread\033[0m")
+        
+        # Store kwargs to pass to Node later
+        self.kwargs = kwargs
+        
+        # Initialize ROS node but don't start it yet
+        self.node = None
+        self.timer = None
+        
+        self.vessel_heading = 0
+        self.sail_heading = 0
+
+    @pyqtSlot()
+    def start(self):
+        """Initialize ROS2 Node and start timer for spinning"""
         try:
-            response = future.result()
-            return response.success
+            # Initialize ROS2 if not already done
+            if not rclpy.ok():
+                rclpy.init(args=None)
+            
+            # Create the node with a reference to self for callbacks
+            self.node = RemoteControlNode(callback_manager=self, **self.kwargs)
+            self.node.init_subscribers()
+            
+            print("\033[95mROS2 Node initialized, starting spin timer\033[0m")
+            
+            # Create QTimer to periodically process ROS callbacks
+            self.timer = QTimer(self)
+            self.timer.timeout.connect(self.spin_once)
+            self.timer.start(10)  # 10ms interval, adjust as needed
+            
         except Exception as e:
-            self.get_logger().error(f'Service call failed: {e}')
-            return False
+            print(f"\033[91mError in ROS thread initialization: {e}\033[0m")
+    
+    def spin_once(self):
+        """Process pending ROS callbacks"""
+        if self.node and rclpy.ok():
+            rclpy.spin_once(self.node, timeout_sec=0.001)
+    
+    def stop(self):
+        """Stop the ROS2 node spinning"""
+        if self.timer:
+            self.timer.stop()
+        
+        if self.node:
+            self.node.destroy_node()
+            self.node = None
+            
+        # Only call shutdown if we're the last node
+        if rclpy.ok():
+            try:
+                rclpy.shutdown()
+            except Exception as e:
+                print(f"\033[91mError shutting down rclpy: {e}\033[0m")
 
+    #############################
+    # Publisher methods - These are slots connected to signals from the Window class
+    #############################
+
+    @pyqtSlot(int)
+    def pub_rudder_speed(self, speed):
+        if self.node:
+            self.node.publish_rudder_speed(speed)
+
+    @pyqtSlot(int)
+    def pub_prop_effort(self, speed):
+        if self.node:
+            self.node.publish_prop_effort(speed)
+
+    @pyqtSlot(int)
+    def pub_sail_effort(self, effort):
+        if self.node:
+            self.node.publish_sail_effort(effort)
+
+    @pyqtSlot(int)
+    def pub_boat_heading(self, heading):
+        if self.node:
+            self.node.publish_boat_heading(heading)
+
+    @pyqtSlot(int)
+    def pub_sail_heading(self, heading):
+        if self.node:
+            self.node.publish_sail_heading(heading)
+
+    @pyqtSlot(int)
+    def pub_sail_angle(self, angle):
+        if self.node:
+            self.node.publish_sail_angle(angle)
+
+    @pyqtSlot(int)
+    def pub_sail_position(self, pos):
+        if self.node:
+            self.node.publish_sail_position(pos)
+
+    @pyqtSlot(int)
+    def pub_rudder_angle(self, angle):
+        if self.node:
+            self.node.publish_rudder_angle(angle)
+
+    @pyqtSlot(bool)
+    def pub_auto_sail_enable(self, enable):
+        if self.node:
+            self.node.publish_auto_sail_enable(enable)
+
+    @pyqtSlot(bool)
+    def pub_rudder_test_enable(self, enable):
+        if self.node:
+            self.node.publish_rudder_test_enable(enable)
+
+    @pyqtSlot(bool)
+    def pub_sail_test_enable(self, enable):
+        if self.node:
+            self.node.publish_sail_test_enable(enable)
+
+    @pyqtSlot(float, float, float)
+    def pub_pid_gains(self, p, i, d):
+        if self.node:
+            self.node.publish_pid_gains(p, i, d)
+
+    @pyqtSlot(float)
+    def pub_rot(self, rot):
+        if self.node:
+            self.node.publish_rot(rot)
+
+    @pyqtSlot(str)
+    def pub_manual_cmd(self, cmd):
+        if self.node:
+            self.node.publish_manual_cmd(cmd)
+        
+    @pyqtSlot(bool)
+    def pub_estop(self, enable):
+        if self.node:
+            self.node.publish_estop(enable)
+            
+    @pyqtSlot(str)
+    def pub_peripheral_toggle(self, peripheral):
+        if self.node:
+            self.node.publish_peripheral_toggle(peripheral)
 
 def main(args=None):
     rclpy.init(args=args)
@@ -1410,10 +1579,10 @@ def main(args=None):
     # Initialize window
     GUI = Window()
     
-    # Spin ROS2 node in separate thread
-    ros_spin_thread = threading.Thread(target=executor.spin)
-    ros_spin_thread.daemon = True
-    ros_spin_thread.start()
+    # # Spin ROS2 node in separate thread
+    # ros_spin_thread = threading.Thread(target=executor.spin)
+    # ros_spin_thread.daemon = True
+    # ros_spin_thread.start()
     
     # Run Qt application
     sys.exit(app.exec_())
