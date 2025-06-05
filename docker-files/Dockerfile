@@ -1,5 +1,8 @@
-# Use ROS noetic full desktop version as base image
-FROM osrf/ros:noetic-desktop-full
+# Use ROS2 Humble as the base image
+ARG VARIANT="humble"
+FROM osrf/ros:${VARIANT}-desktop-full
+
+LABEL maintainer "Vincent Vandyck <vvandyck@robonautics.com>"
 
 # Create workspace variable and set directory
 ENV WORKSPACE=/home/app/workspace

@@ -11,6 +11,9 @@ from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy, DurabilityPo
 from rclpy.callback_groups import MutuallyExclusiveCallbackGroup
 from rclpy.executors import MultiThreadedExecutor
 
+# Python imports
+from ament_index_python.packages import get_package_share_directory
+
 # ROS2 messages
 from std_msgs.msg import Float64, String, Bool, Int32
 from sensor_msgs.msg import BatteryState
@@ -168,6 +171,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.btnToggleLTE.clicked.connect(self.toggle_lte)
         self.btnTogglePixhawk.clicked.connect(self.toggle_pixhawk)
         self.btnToggleRC.clicked.connect(self.toggle_rc)
+        self.btnToggleN2K.clicked.connect(self.toggle_n2k)
         
         #TEST
         self.btnDesSailPos.clicked.connect(self.set_sail_position)
@@ -224,8 +228,13 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         - Resize the label so rotation happens correctly (cirlce image with square label can be weird otherwise)
         - Save important dimensions necessary for drawing moving labels
         """
-        design_path = os.path.dirname(os.path.abspath(design.__file__))
-        asset_path = os.path.join(design_path, 'assets/')
+        # Get the package share directory using ROS2's resource index
+        package_share_dir = get_package_share_directory('remote_controller')  # Replace with your actual package name
+        asset_path = os.path.join(package_share_dir, 'assets')
+        
+        # Print paths for debugging
+        print(f"\033[95mPackage share directory: {package_share_dir}\033[0m")
+        print(f"\033[95mAsset path: {asset_path}\033[0m")
 
         # Create text labels showing degrees
         font = QtGui.QFont()
@@ -446,6 +455,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self._rosthread.lte_state_updated.connect(self.update_lte_state)
         self._rosthread.pixhawk_state_updated.connect(self.update_pixhawk_state)
         self._rosthread.rc_state_updated.connect(self.update_rc_state)
+        self._rosthread.n2k_state_updated.connect(self.update_n2k_state)
 
     def connect_thread_slots(self):
         """Connect slots in rosthread class to signals coming from this main class"""
@@ -575,6 +585,15 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         else:
             self.txtRCState.setText("RC off")
             self.txtRCState.setStyleSheet("background-color: rgb(150, 0, 0);color: rgb(255, 255, 255)")  
+            
+    @pyqtSlot(bool)
+    def update_n2k_state(self, n2k):
+        if n2k:
+            self.txtN2KState.setText("N2K on")
+            self.txtN2KState.setStyleSheet("background-color: rgb(0, 150, 0);color: rgb(255, 255, 255)")
+        else:
+            self.txtN2KState.setText("N2K off")
+            self.txtN2KState.setStyleSheet("background-color: rgb(150, 0, 0);color: rgb(255, 255, 255)")
  
     def update_ui_estop_enabled(self):
         # Disable all controls and make estop rest button visible
@@ -794,6 +813,9 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         
     def toggle_rc(self):
         pass
+    
+    def toggle_n2k(self):
+        self.toggle_peripheral_signal.emit("n2k_network_relay_control")
 
     def start_rudder_test(self):
         self.rudder_test_enable_signal.emit(True)
@@ -955,7 +977,7 @@ class RemoteControlNode(Node):
         self.peripheral_pub = self.create_publisher(
             String, '/set_peripheral', 10)
         self.peripheral_toggle_pub = self.create_publisher(
-            String, '/toggle_peripheral', 10)
+            String, '/toggle_peripheral_cmd', 10)
     
     def init_subscribers(self):
         """Initialize all ROS2 subscribers"""
@@ -1073,6 +1095,10 @@ class RemoteControlNode(Node):
             
         self.rc_feedback_sub = self.create_subscription(
             Bool, 'rc_control_active', self.handle_rc_feedback, 10,
+            callback_group=self.callback_group_subscribers)
+        
+        self.n2k_feedback_sub = self.create_subscription(
+            Bool, 'n2k_network_relay_feedback', self.handle_n2k_feedback, 10,
             callback_group=self.callback_group_subscribers)
             
         self.get_logger().info('All subscriptions created')
@@ -1380,6 +1406,10 @@ class RemoteControlNode(Node):
     def handle_rc_feedback(self, msg):
         if self.callback_manager:
             self.callback_manager.rc_state_updated.emit(msg.data)
+    
+    def handle_n2k_feedback(self, msg):
+        if self.callback_manager:
+            self.callback_manager.n2k_state_updated.emit(msg.data)
 
 
 class RosThread(QObject):
@@ -1419,6 +1449,7 @@ class RosThread(QObject):
     lte_state_updated = pyqtSignal(bool)
     pixhawk_state_updated = pyqtSignal(bool)
     rc_state_updated = pyqtSignal(bool)
+    n2k_state_updated = pyqtSignal(bool)
 
     def __init__(self, parent=None, **kwargs):
         """
