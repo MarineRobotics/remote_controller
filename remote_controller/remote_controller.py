@@ -84,7 +84,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     rudder_signal         = pyqtSignal(int)
     sail_signal           = pyqtSignal(int)
     prop_signal           = pyqtSignal(int)
-    manual_cmd_signal     = pyqtSignal(str)
+    gui_enable_signal     = pyqtSignal(str)
     set_estop_signal      = pyqtSignal(bool)
     auto_sail_signal      = pyqtSignal(bool)
 
@@ -464,10 +464,8 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.rudder_angle_signal.connect(self._rosthread.pub_rudder_angle)
         self.rudder_angle_signal.connect(self.update_rudder_desired)
         self.rot_signal.connect(self._rosthread.pub_rot)
-        self.rudder_signal.connect(self._rosthread.pub_rudder_speed)
-        self.sail_signal.connect(self._rosthread.pub_sail_effort)
         self.prop_signal.connect(self._rosthread.pub_prop_effort)
-        self.manual_cmd_signal.connect(self._rosthread.pub_manual_cmd)
+        self.gui_enable_signal.connect(self._rosthread.pub_gui_enable)
         #TODO: test new signals
         self.pid_gains_signal.connect(self._rosthread.pub_pid_gains)
         
@@ -734,7 +732,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.prop_signal.emit(0)
 
     def enable_manual(self):
-        self.manual_cmd_signal.emit("start_manual")
+        self.gui_enable_signal.emit(True)
         self.txtMode.setStyleSheet(
             "background-color: rgb(0, 150, 0);color: rgb(255, 255, 255)")
         self.txtMode.setText("MANUAL ENABLED")
@@ -745,7 +743,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.controlFrame.setEnabled(True)
 
     def disable_manual(self):
-        self.manual_cmd_signal.emit("stop_manual")
+        self.gui_enable_signal.emit(False)
         self.txtMode.setStyleSheet(
             "background-color: rgb(150, 0, 0);color: rgb(255, 255, 255)")
         self.txtMode.setText("MANUAL DISABLED")
@@ -936,30 +934,24 @@ class RemoteControlNode(Node):
     
     def _init_publishers(self):
         """Initialize all ROS2 publishers"""
-        # self.rudder_speed_pub = self.create_publisher(
-        #     Float64, 'manual/cmd_rudder_speed', 10)
         self.prop_effort_pub = self.create_publisher(
-            Float64, 'manual/cmd_prop_effort', 10)
-        # self.sail_effort_pub = self.create_publisher(
-        #     Float64, 'manual/cmd_sail_effort', 10)
+            Float64, '/cmd/gui/prop_effort', 10)
         self.boat_heading_pub = self.create_publisher(
-            Heading, 'manual/cmd_heading', 10)
+            Heading, '/cmd/gui/heading', 10)
         self.sail_heading_pub = self.create_publisher(
-            Heading, 'manual/cmd_sail_heading', 10)
+            Heading, '/cmd/gui/sail_heading', 10)
         self.sail_angle_pub = self.create_publisher(
-            Heading, 'manual/cmd_sail_angle', 10)
+            Heading, '/cmd/gui/sail_aoa', 10)
         self.sail_pos_pub = self.create_publisher(
-            Float64, 'manual/cmd_sail_pos', 10)
+            Float64, '/cmd/gui/sail_position', 10)
         self.rudder_angle_pub = self.create_publisher(
-            Float64, 'manual/cmd_rudder_pos', 10)
-        # self.boat_rot_pub = self.create_publisher(
-        #     Float64, 'manual/cmd_rot', 10)
-        self.mission_cmd_pub = self.create_publisher(
-            String, 'cmd_mission', 10)
+            Float64, '/cmd/gui/rudder_pos', 10)
+        self.gui_enable_pub = self.create_publisher(
+            Bool, '/cmd/gui/enable', 10)
         self.autosail_enable_pub = self.create_publisher(
-            Bool, '/enable_sail_autonomy', 10)
+            Bool, 'cmd/gui/enable_sail_autonomy', 10)
         self.pid_gains_pub = self.create_publisher(
-            PID, '/rudder/pid_gains', 10)
+            PID, 'cmd/gui/rudder_pid_gains', 10)
         self.peripheral_pub = self.create_publisher(
             String, '/set_peripheral', 10)
         self.peripheral_toggle_pub = self.create_publisher(
@@ -1109,23 +1101,11 @@ class RemoteControlNode(Node):
     # Publisher methods         #
     #############################
     
-    def publish_rudder_speed(self, speed):
-        msg = Float64()
-        msg.data = float(speed)
-        self.rudder_speed_pub.publish(msg)
-        self.get_logger().info(f"Published rudder speed: {speed}")
-
     def publish_prop_effort(self, speed):
         msg = Float64()
         msg.data = float(speed)
         self.prop_effort_pub.publish(msg)
         self.get_logger().info(f"Published prop effort: {speed}")
-
-    def publish_sail_effort(self, effort):
-        msg = Float64()
-        msg.data = float(effort)
-        self.sail_effort_pub.publish(msg)
-        self.get_logger().info(f"Published sail effort: {effort}")
 
     def publish_boat_heading(self, heading):
         msg = Heading()
@@ -1171,16 +1151,10 @@ class RemoteControlNode(Node):
         self.pid_gains_pub.publish(msg)
         self.get_logger().info(f"Published PID gains: P={p}, I={i}, D={d}")
 
-    def publish_rot(self, rot):
-        msg = Float64()
-        msg.data = float(rot)
-        self.boat_rot_pub.publish(msg)
-        self.get_logger().info(f"Published rotation: {rot}")
-
-    def publish_manual_cmd(self, cmd):
-        msg = String()
+    def publish_gui_enable(self, cmd: bool):
+        msg = Bool()
         msg.data = cmd
-        self.mission_cmd_pub.publish(msg)
+        self.gui_enable_pub.publish(msg)
         self.get_logger().info(f"Published manual command: {cmd}")
         
     def publish_estop(self, enable):
@@ -1495,19 +1469,9 @@ class RosThread(QObject):
     #############################
 
     @pyqtSlot(int)
-    def pub_rudder_speed(self, speed):
-        if self.node:
-            self.node.publish_rudder_speed(speed)
-
-    @pyqtSlot(int)
     def pub_prop_effort(self, speed):
         if self.node:
             self.node.publish_prop_effort(speed)
-
-    @pyqtSlot(int)
-    def pub_sail_effort(self, effort):
-        if self.node:
-            self.node.publish_sail_effort(effort)
 
     @pyqtSlot(int)
     def pub_boat_heading(self, heading):
@@ -1550,9 +1514,9 @@ class RosThread(QObject):
             self.node.publish_rot(rot)
 
     @pyqtSlot(str)
-    def pub_manual_cmd(self, cmd):
+    def pub_gui_enable(self, cmd: bool):
         if self.node:
-            self.node.publish_manual_cmd(cmd)
+            self.node.publish_gui_enable(cmd)
         
     @pyqtSlot(bool)
     def pub_estop(self, enable):
