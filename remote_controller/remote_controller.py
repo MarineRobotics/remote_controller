@@ -89,8 +89,6 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     auto_sail_signal      = pyqtSignal(bool)
 
     pid_gains_signal      = pyqtSignal(float, float, float)
-    rudder_test_enable_signal = pyqtSignal(bool)
-    sail_test_enable_signal = pyqtSignal(bool)
     toggle_peripheral_signal = pyqtSignal(str)
 
     def __init__(self, parent=None, **kwargs):
@@ -472,8 +470,6 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.manual_cmd_signal.connect(self._rosthread.pub_manual_cmd)
         #TODO: test new signals
         self.pid_gains_signal.connect(self._rosthread.pub_pid_gains)
-        self.rudder_test_enable_signal.connect(self._rosthread.pub_rudder_test_enable)
-        self.sail_test_enable_signal.connect(self._rosthread.pub_sail_test_enable)
         
         # estop signal
         self.set_estop_signal.connect(self._rosthread.pub_estop)
@@ -817,12 +813,6 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     def toggle_n2k(self):
         self.toggle_peripheral_signal.emit("n2k_network_relay_control")
 
-    def start_rudder_test(self):
-        self.rudder_test_enable_signal.emit(True)
-
-    def start_sail_test(self):
-        self.sail_test_enable_signal.emit(True)
-        
     def set_rudder_angle(self):
         des_rudder = int(self.txtDesRudder.text())
         self.rudder_angle_signal.emit(des_rudder)
@@ -946,12 +936,12 @@ class RemoteControlNode(Node):
     
     def _init_publishers(self):
         """Initialize all ROS2 publishers"""
-        self.rudder_speed_pub = self.create_publisher(
-            Float64, 'manual/cmd_rudder_speed', 10)
+        # self.rudder_speed_pub = self.create_publisher(
+        #     Float64, 'manual/cmd_rudder_speed', 10)
         self.prop_effort_pub = self.create_publisher(
             Float64, 'manual/cmd_prop_effort', 10)
-        self.sail_effort_pub = self.create_publisher(
-            Float64, 'manual/cmd_sail_effort', 10)
+        # self.sail_effort_pub = self.create_publisher(
+        #     Float64, 'manual/cmd_sail_effort', 10)
         self.boat_heading_pub = self.create_publisher(
             Heading, 'manual/cmd_heading', 10)
         self.sail_heading_pub = self.create_publisher(
@@ -962,16 +952,12 @@ class RemoteControlNode(Node):
             Float64, 'manual/cmd_sail_pos', 10)
         self.rudder_angle_pub = self.create_publisher(
             Float64, 'manual/cmd_rudder_pos', 10)
-        self.boat_rot_pub = self.create_publisher(
-            Float64, 'manual/cmd_rot', 10)
+        # self.boat_rot_pub = self.create_publisher(
+        #     Float64, 'manual/cmd_rot', 10)
         self.mission_cmd_pub = self.create_publisher(
             String, 'cmd_mission', 10)
         self.autosail_enable_pub = self.create_publisher(
             Bool, '/enable_sail_autonomy', 10)
-        self.rudder_test_enable_pub = self.create_publisher(
-            Bool, '/enable_rudder_test', 10)
-        self.sail_test_enable_pub = self.create_publisher(
-            Bool, '/enable_sail_test', 10)
         self.pid_gains_pub = self.create_publisher(
             PID, '/rudder/pid_gains', 10)
         self.peripheral_pub = self.create_publisher(
@@ -1176,18 +1162,6 @@ class RemoteControlNode(Node):
         msg.data = enable
         self.autosail_enable_pub.publish(msg)
         self.get_logger().info(f"Published auto sail enable: {enable}")
-
-    def publish_rudder_test_enable(self, enable):
-        msg = Bool()
-        msg.data = enable
-        self.rudder_test_enable_pub.publish(msg)
-        self.get_logger().info(f"Published rudder test enable: {enable}")
-
-    def publish_sail_test_enable(self, enable):
-        msg = Bool()
-        msg.data = enable
-        self.sail_test_enable_pub.publish(msg)
-        self.get_logger().info(f"Published sail test enable: {enable}")
 
     def publish_pid_gains(self, p, i, d):
         msg = PID()
@@ -1564,16 +1538,6 @@ class RosThread(QObject):
     def pub_auto_sail_enable(self, enable):
         if self.node:
             self.node.publish_auto_sail_enable(enable)
-
-    @pyqtSlot(bool)
-    def pub_rudder_test_enable(self, enable):
-        if self.node:
-            self.node.publish_rudder_test_enable(enable)
-
-    @pyqtSlot(bool)
-    def pub_sail_test_enable(self, enable):
-        if self.node:
-            self.node.publish_sail_test_enable(enable)
 
     @pyqtSlot(float, float, float)
     def pub_pid_gains(self, p, i, d):
