@@ -80,11 +80,10 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     sail_angle_signal     = pyqtSignal(int)
     sail_pos_signal       = pyqtSignal(int)
     rudder_angle_signal   = pyqtSignal(int)
-    rot_signal            = pyqtSignal(float)
     rudder_signal         = pyqtSignal(int)
     sail_signal           = pyqtSignal(int)
     prop_signal           = pyqtSignal(int)
-    gui_enable_signal     = pyqtSignal(str)
+    gui_enable_signal     = pyqtSignal(bool)
     set_estop_signal      = pyqtSignal(bool)
     auto_sail_signal      = pyqtSignal(bool)
 
@@ -463,9 +462,8 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         # connect rudder signal to 2 slots. One in rosthread, one in current thread just to update label
         self.rudder_angle_signal.connect(self._rosthread.pub_rudder_angle)
         self.rudder_angle_signal.connect(self.update_rudder_desired)
-        self.rot_signal.connect(self._rosthread.pub_rot)
         self.prop_signal.connect(self._rosthread.pub_prop_effort)
-        self.gui_enable_signal.connect(self._rosthread.pub_gui_enable)
+        self.gui_enable_signal.connect(self._rosthread.pub_gui_enabled)
         #TODO: test new signals
         self.pid_gains_signal.connect(self._rosthread.pub_pid_gains)
         
@@ -723,9 +721,6 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         des_pos = int(self.txtDesSailPos.text())
         self.sail_pos_signal.emit(des_pos)
 
-    def set_rot(self):
-        pass
-
     def stop_all(self):
         self.rudder_signal.emit(0)
         self.sail_signal.emit(0)
@@ -943,13 +938,13 @@ class RemoteControlNode(Node):
         self.sail_angle_pub = self.create_publisher(
             Heading, '/cmd/gui/sail_aoa', 10)
         self.sail_pos_pub = self.create_publisher(
-            Float64, '/cmd/gui/sail_position', 10)
+            Float64, '/cmd/gui/sail_pos', 10)
         self.rudder_angle_pub = self.create_publisher(
             Float64, '/cmd/gui/rudder_pos', 10)
-        self.gui_enable_pub = self.create_publisher(
-            Bool, '/cmd/gui/enable', 10)
+        self.gui_enabled_pub = self.create_publisher(
+            Bool, '/cmd/gui/enabled', 10)
         self.autosail_enable_pub = self.create_publisher(
-            Bool, 'cmd/gui/enable_sail_autonomy', 10)
+            Bool, 'cmd/gui/sail_autonomy_enabled', 10)
         self.pid_gains_pub = self.create_publisher(
             PID, 'cmd/gui/rudder_pid_gains', 10)
         self.peripheral_pub = self.create_publisher(
@@ -1154,7 +1149,7 @@ class RemoteControlNode(Node):
     def publish_gui_enable(self, cmd: bool):
         msg = Bool()
         msg.data = cmd
-        self.gui_enable_pub.publish(msg)
+        self.gui_enabled_pub.publish(msg)
         self.get_logger().info(f"Published manual command: {cmd}")
         
     def publish_estop(self, enable):
@@ -1508,13 +1503,8 @@ class RosThread(QObject):
         if self.node:
             self.node.publish_pid_gains(p, i, d)
 
-    @pyqtSlot(float)
-    def pub_rot(self, rot):
-        if self.node:
-            self.node.publish_rot(rot)
-
-    @pyqtSlot(str)
-    def pub_gui_enable(self, cmd: bool):
+    @pyqtSlot(bool)
+    def pub_gui_enabled(self, cmd: bool):
         if self.node:
             self.node.publish_gui_enable(cmd)
         
