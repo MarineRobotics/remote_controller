@@ -507,13 +507,13 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
     @pyqtSlot(int)
     def update_sail_angle(self, angle):
+        print(f"Updating sail angle labe and text to {angle}")
         self.moveSailLbl(angle)
         self.txtSailAngle.setText(str(angle))
         
     @pyqtSlot(bool)
     def update_estop_state(self, estop):
         # TODO: change this to rclpy logger
-        print(f"estop state: {estop}")
         # For now, estop signal is reversed (annoying!)
         if not estop:
             self.update_ui_estop_enabled()
@@ -1030,7 +1030,7 @@ class RemoteControlNode(Node):
             callback_group=self.callback_group_subscribers)
             
         self.rudder_angle_sub = self.create_subscription(
-            ADCReading, '/rudder_angle', self.handle_rudder_angle, 10,
+            ADCReading, '/rudder/position', self.handle_rudder_angle, 10,
             callback_group=self.callback_group_subscribers)
             
         self.sail_position_sub = self.create_subscription(
@@ -1318,9 +1318,11 @@ class RemoteControlNode(Node):
             self.callback_manager.rudder_angle_updated.emit(angle)
 
     def handle_sail_angle(self, msg):
-        self.sail_angle.degrees = int(msg.value)
+        angle = int(msg.value)
+        self.sail_angle.degrees = angle
+        print(f"Received sail angle update: {angle}")
         if self.callback_manager:
-            self.callback_manager.sail_angle_updated.emit(msg.value)
+            self.callback_manager.sail_angle_updated.emit(angle)
         
     def handle_estop_state(self, msg):
         if self.callback_manager:
