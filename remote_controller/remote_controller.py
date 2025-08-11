@@ -44,7 +44,7 @@ from math import cos, sin, radians
 PKG = 'remote_controller'
 NODE = 'send_key_cmd'
 
-PROP_SPEED = 127
+PROP_SPEED = 1000
 RUDDER_SPEED = 10
 SAIL_SPEED = 100
 COLOR_WARN = "rgb(252, 186, 3)"
