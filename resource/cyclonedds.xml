@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CycloneDDS xmlns="https://cdds.io/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://cdds.io/config https://raw.githubusercontent.com/eclipse-cyclonedds/cyclonedds/master/etc/cyclonedds.xsd">
+    <Domain id="any">
+        <General>
+            <Interfaces>
+                <NetworkInterface name="robonautics"/>
+            </Interfaces>
+        </General>
+        <Discovery>
+            <Peers>
+            	<Peer address="10.49.0.2"/>
+            	<Peer address="10.49.0.3"/>
+            	<Peer address="10.49.0.4"/>
+            	<Peer address="10.49.0.5"/>
+            	<Peer address="10.49.0.6"/>
+            	<Peer address="10.49.0.11"/>
+            	<Peer address="10.49.0.12"/>
+            	<Peer address="10.49.0.13"/>
+            	<Peer address="10.49.0.14"/>
+            </Peers>
+            <ParticipantIndex>auto</ParticipantIndex>
+        </Discovery>
+    </Domain>
+</CycloneDDS>
