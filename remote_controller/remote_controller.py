@@ -87,6 +87,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     set_estop_signal      = pyqtSignal(bool)
     auto_sail_signal      = pyqtSignal(bool)
     keel_calibrate_signal = pyqtSignal(bool)
+    keel_reset_signal     = pyqtSignal(bool)
     keel_setpoint_signal  = pyqtSignal(float)
 
     pid_gains_signal      = pyqtSignal(float, float, float)
@@ -173,6 +174,8 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.btnToggleN2K.clicked.connect(self.toggle_n2k)
         # Setup keel calibration button
         self.btnCalKeel.clicked.connect(self.calibrate_keel)
+        # Setup keel reset button
+        self.btnResetKeel.clicked.connect(self.reset_keel)
         # Setup keel setpoint slider
         self.sldrKeel.valueChanged.connect(self.set_keel_setpoint)
 
@@ -481,6 +484,9 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
         # keel calibration signal
         self.keel_calibrate_signal.connect(self._rosthread.pub_keel_calibrate)
+
+        # keel reset signal
+        self.keel_reset_signal.connect(self._rosthread.pub_keel_reset)
 
         # keel setpoint signal
         self.keel_setpoint_signal.connect(self._rosthread.pub_keel_setpoint)
@@ -822,6 +828,10 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         """Trigger keel calibration by publishing True to /keel/calibrate"""
         self.keel_calibrate_signal.emit(True)
 
+    def reset_keel(self):
+        """Trigger keel reset by publishing True to /keel/reset"""
+        self.keel_reset_signal.emit(True)
+
     def set_keel_setpoint(self, value):
         """Publish keel setpoint value from slider (-1000 to 1000) to /keel/setpoint"""
         self.keel_setpoint_signal.emit(float(value))
@@ -972,9 +982,11 @@ class RemoteControlNode(Node):
         self.peripheral_toggle_pub = self.create_publisher(
             String, '/toggle_peripheral_cmd', 10)
         self.keel_calibrate_pub = self.create_publisher(
-            Bool, '/keel/calibrate', 10)
+            Bool, 'cmd/gui/keel_calibrate', 10)
+        self.keel_reset_pub = self.create_publisher(
+            Bool, 'cmd/gui/keel_reset', 10)
         self.keel_setpoint_pub = self.create_publisher(
-            Float64, '/cmd/gui/keel_setpoint', 10)
+            Float64, 'cmd/gui/keel_setpoint', 10)
 
     def init_subscribers(self):
         """Initialize all ROS2 subscribers"""
@@ -1198,6 +1210,12 @@ class RemoteControlNode(Node):
         msg.data = calibrate
         self.keel_calibrate_pub.publish(msg)
         self.get_logger().info(f"Publishing keel calibration: {calibrate}")
+
+    def publish_keel_reset(self, reset):
+        msg = Bool()
+        msg.data = reset
+        self.keel_reset_pub.publish(msg)
+        self.get_logger().info(f"Publishing keel reset: {reset}")
 
     def publish_keel_setpoint(self, setpoint):
         msg = Float64()
@@ -1560,6 +1578,11 @@ class RosThread(QObject):
     def pub_keel_calibrate(self, calibrate):
         if self.node:
             self.node.publish_keel_calibrate(calibrate)
+
+    @pyqtSlot(bool)
+    def pub_keel_reset(self, reset):
+        if self.node:
+            self.node.publish_keel_reset(reset)
 
     @pyqtSlot(float)
     def pub_keel_setpoint(self, setpoint):
