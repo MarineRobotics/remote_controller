@@ -86,6 +86,8 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     gui_enable_signal     = pyqtSignal(bool)
     set_estop_signal      = pyqtSignal(bool)
     auto_sail_signal      = pyqtSignal(bool)
+    keel_calibrate_signal = pyqtSignal(bool)
+    keel_setpoint_signal  = pyqtSignal(float)
 
     pid_gains_signal      = pyqtSignal(float, float, float)
     toggle_peripheral_signal = pyqtSignal(str)
@@ -169,7 +171,11 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.btnTogglePixhawk.clicked.connect(self.toggle_pixhawk)
         self.btnToggleRC.clicked.connect(self.toggle_rc)
         self.btnToggleN2K.clicked.connect(self.toggle_n2k)
-        
+        # Setup keel calibration button
+        self.btnCalKeel.clicked.connect(self.calibrate_keel)
+        # Setup keel setpoint slider
+        self.sldrKeel.valueChanged.connect(self.set_keel_setpoint)
+
         #TEST
         self.btnDesSailPos.clicked.connect(self.set_sail_position)
         self.txtDesSailPos.returnPressed.connect(self.set_sail_position)
@@ -472,6 +478,12 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         
         # peripheral signal
         self.toggle_peripheral_signal.connect(self._rosthread.pub_peripheral_toggle)
+
+        # keel calibration signal
+        self.keel_calibrate_signal.connect(self._rosthread.pub_keel_calibrate)
+
+        # keel setpoint signal
+        self.keel_setpoint_signal.connect(self._rosthread.pub_keel_setpoint)
 
         #TEST
         self.sail_pos_signal.connect(self._rosthread.pub_sail_position)
@@ -806,6 +818,14 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     def toggle_n2k(self):
         self.toggle_peripheral_signal.emit("n2k_network_relay_control")
 
+    def calibrate_keel(self):
+        """Trigger keel calibration by publishing True to /keel/calibrate"""
+        self.keel_calibrate_signal.emit(True)
+
+    def set_keel_setpoint(self, value):
+        """Publish keel setpoint value from slider (-1000 to 1000) to /keel/setpoint"""
+        self.keel_setpoint_signal.emit(float(value))
+
     def set_rudder_angle(self):
         des_rudder = int(self.txtDesRudder.text())
         self.rudder_angle_signal.emit(des_rudder)
@@ -951,7 +971,11 @@ class RemoteControlNode(Node):
             String, '/set_peripheral', 10)
         self.peripheral_toggle_pub = self.create_publisher(
             String, '/toggle_peripheral_cmd', 10)
-    
+        self.keel_calibrate_pub = self.create_publisher(
+            Bool, '/keel/calibrate', 10)
+        self.keel_setpoint_pub = self.create_publisher(
+            Float64, '/cmd/gui/keel_setpoint', 10)
+
     def init_subscribers(self):
         """Initialize all ROS2 subscribers"""
         self.get_logger().info("Initializing ROS2 subscriptions")
@@ -1168,7 +1192,19 @@ class RemoteControlNode(Node):
         msg.data = peripheral
         self.peripheral_toggle_pub.publish(msg)
         self.get_logger().info(f"Toggling {peripheral}")
-    
+
+    def publish_keel_calibrate(self, calibrate):
+        msg = Bool()
+        msg.data = calibrate
+        self.keel_calibrate_pub.publish(msg)
+        self.get_logger().info(f"Publishing keel calibration: {calibrate}")
+
+    def publish_keel_setpoint(self, setpoint):
+        msg = Float64()
+        msg.data = setpoint
+        self.keel_setpoint_pub.publish(msg)
+        self.get_logger().info(f"Publishing keel setpoint: {setpoint}")
+
     #############################
     #         Handlers          #
     #############################
@@ -1519,6 +1555,16 @@ class RosThread(QObject):
     def pub_peripheral_toggle(self, peripheral):
         if self.node:
             self.node.publish_peripheral_toggle(peripheral)
+
+    @pyqtSlot(bool)
+    def pub_keel_calibrate(self, calibrate):
+        if self.node:
+            self.node.publish_keel_calibrate(calibrate)
+
+    @pyqtSlot(float)
+    def pub_keel_setpoint(self, setpoint):
+        if self.node:
+            self.node.publish_keel_setpoint(setpoint)
 
 def main(args=None):
     rclpy.init(args=args)
