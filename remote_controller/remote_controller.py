@@ -532,8 +532,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     @pyqtSlot(bool)
     def update_estop_state(self, estop):
         # TODO: change this to rclpy logger
-        # For now, estop signal is reversed (annoying!)
-        if not estop:
+        if estop:
             self.update_ui_estop_enabled()
             self.txtEStopState.setText("E-Stop enabled")
             self.txtEStopState.setStyleSheet("background-color: rgb(150, 0, 0);color: rgb(255, 255, 255)")
