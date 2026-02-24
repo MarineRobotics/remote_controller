@@ -120,6 +120,12 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.desired_sail = 0
 
         self.setupUi(self)
+        self._store_original_geometries()
+        # Debounce timer for the expensive compass reconfigure on resize
+        self._resize_timer = QtCore.QTimer(self)
+        self._resize_timer.setSingleShot(True)
+        self._resize_timer.setInterval(150)
+        self._resize_timer.timeout.connect(self._reconfigure_compass_after_resize)
         self._scale_to_screen()
         self.home()
 
@@ -231,30 +237,77 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         #########
         self.show()
 
-    def _scale_children(self, widget, scale):
-        """Recursively scale geometries and fonts of all child widgets."""
+    def _store_original_geometries(self):
+        """Snapshot every child widget's geometry (and font point size) right
+        after setupUi(), before any scaling happens.  resizeEvent() always
+        scales from these originals so floating-point error never accumulates
+        across multiple resize operations."""
+        self._orig_geoms = {}
+        self._orig_font_sizes = {}
+        self._collect_orig_geoms(self.centralwidget)
+
+    def _collect_orig_geoms(self, widget):
         for child in widget.children():
             if not isinstance(child, QtWidgets.QWidget):
                 continue
-            g = child.geometry()
-            child.setGeometry(
-                int(g.x() * scale),
-                int(g.y() * scale),
-                int(g.width() * scale),
-                int(g.height() * scale),
-            )
+            self._orig_geoms[child] = QtCore.QRect(child.geometry())
             font = child.font()
             if font.pointSize() > 0:
-                font.setPointSize(max(6, int(font.pointSize() * scale)))
-                child.setFont(font)
-            self._scale_children(child, scale)
+                self._orig_font_sizes[child] = font.pointSize()
+            self._collect_orig_geoms(child)
+
+    def resizeEvent(self, event):
+        """Reflow the entire layout whenever the window is resized.
+
+        Scale factor is always computed against the original design dimensions
+        (DESIGN_W × DESIGN_H) so the result is correct regardless of how many
+        times the window has been resized before.  The compass is re-configured
+        on a short debounce timer because pixmap scaling is expensive.
+        """
+        super().resizeEvent(event)
+        if not hasattr(self, '_orig_geoms'):
+            return
+
+        scale = min(event.size().width() / DESIGN_W,
+                    event.size().height() / DESIGN_H)
+
+        # Skip when nothing meaningful changed (avoids redundant work on show)
+        if abs(scale - getattr(self, '_last_scale', 0.0)) < 0.001:
+            return
+        self._last_scale = scale
+
+        # configure_compass sets minimumSize on the compass labels; clear them
+        # now or setGeometry() will be silently clamped to the old minimum.
+        if hasattr(self, 'lblWind'):
+            for lbl in [self.lblWind, self.lblBoat, self.lblSail,
+                        self.lblSailDesired, self.lblRudder, self.lblRudderDesired]:
+                lbl.setMinimumSize(0, 0)
+
+        for widget, orig in self._orig_geoms.items():
+            widget.setGeometry(
+                int(orig.x() * scale),
+                int(orig.y() * scale),
+                int(orig.width() * scale),
+                int(orig.height() * scale),
+            )
+        for widget, pt in self._orig_font_sizes.items():
+            font = widget.font()
+            font.setPointSize(max(6, int(pt * scale)))
+            widget.setFont(font)
+
+        # Debounce the compass reconfigure — pixmap scaling is expensive
+        if hasattr(self, '_windPixOrig'):
+            self._resize_timer.start()
+
+    def _reconfigure_compass_after_resize(self):
+        self.configure_compass()
 
     def _scale_to_screen(self):
-        """
-        Scale all widget geometries down proportionally if the design size
-        does not fit the available screen area.  If the screen is large enough
-        the window is left at its original design dimensions.
-        """
+        """Scale the window down at startup if the design size exceeds the
+        available screen area.  resize() triggers resizeEvent() which handles
+        the child-widget scaling; _collect_orig_geoms has already run so the
+        original geometries are safe.  We also call the scaling directly in
+        case resize() is async on this platform (common on X11)."""
         available = QtWidgets.QApplication.primaryScreen().availableGeometry()
         sx = available.width() / DESIGN_W
         sy = available.height() / DESIGN_H
@@ -264,54 +317,19 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
             return  # Window already fits — nothing to do
 
         self.resize(int(DESIGN_W * scale), int(DESIGN_H * scale))
-        self._scale_children(self.centralwidget, scale)
-
-    def showEvent(self, event):
-        """After the window is placed by the window manager, check whether it
-        fits on screen and scale everything down if it does not.  This is the
-        reliable DPI-agnostic fallback: we compare the *real* frame geometry
-        (including title bar / borders) against the available screen area, so
-        it works even when Qt is not fully aware of the OS DPI scale factor."""
-        super().showEvent(event)
-        if not getattr(self, '_initial_fit_done', False):
-            # Delay slightly so the window manager has finished placing the window
-            # and frameGeometry() reflects the real decorated size.
-            QtCore.QTimer.singleShot(200, self._fit_window_to_screen)
-
-    def _fit_window_to_screen(self):
-        self._initial_fit_done = True
-
-        screen = QtWidgets.QApplication.screenAt(self.mapToGlobal(QtCore.QPoint(0, 0)))
-        if screen is None:
-            screen = QtWidgets.QApplication.primaryScreen()
-
-        available = screen.availableGeometry()
-        frame     = self.frameGeometry()
-
-        sx = available.width()  / frame.width()
-        sy = available.height() / frame.height()
-        scale = min(sx, sy)
-
-        if scale >= 1.0:
-            return  # Window already fits — nothing to do
-
-        # configure_compass sets minimumSize on the compass labels; clear those
-        # first or setGeometry() will be silently clamped to the old minimum.
-        for lbl in [self.lblWind, self.lblBoat, self.lblSail,
-                    self.lblSailDesired, self.lblRudder, self.lblRudderDesired]:
-            lbl.setMinimumSize(0, 0)
-
-        # Resize the window and every child widget proportionally
-        self.resize(int(self.width() * scale), int(self.height() * scale))
-        self._scale_children(self.centralwidget, scale)
-
-        # Re-run compass setup so pixmaps and mover-closures use the new sizes
-        self.configure_compass()
-
-        # Centre the window on the screen so it isn't clipped by a panel
-        new_frame = self.frameGeometry()
-        new_frame.moveCenter(available.center())
-        self.move(new_frame.topLeft())
+        # Belt-and-suspenders: apply scaling directly in case the X11 resize
+        # event hasn't fired yet when configure_compass() runs below.
+        for widget, orig in self._orig_geoms.items():
+            widget.setGeometry(
+                int(orig.x() * scale),
+                int(orig.y() * scale),
+                int(orig.width() * scale),
+                int(orig.height() * scale),
+            )
+        for widget, pt in self._orig_font_sizes.items():
+            font = widget.font()
+            font.setPointSize(max(6, int(pt * scale)))
+            widget.setFont(font)
 
     def configure_compass(self):
         """
