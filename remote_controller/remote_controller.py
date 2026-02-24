@@ -120,6 +120,10 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.desired_sail = 0
 
         self.setupUi(self)
+        # The design has no menu bar or status bar; hide them so that
+        # centralwidget fills the full window and our scale calc is accurate.
+        self.menuBar().hide()
+        self.statusBar().hide()
         self._store_original_geometries()
         # Debounce timer for the expensive compass reconfigure on resize
         self._resize_timer = QtCore.QTimer(self)
@@ -247,19 +251,22 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self._collect_orig_geoms(self.centralwidget)
 
     def _collect_orig_geoms(self, widget):
+        parent_name = widget.objectName()
         for child in widget.children():
             if not isinstance(child, QtWidgets.QWidget):
                 continue
             name = child.objectName()
-            # Only snapshot widgets that were explicitly created in setupUi()
-            # — every one of them has a non-empty objectName that does NOT
-            # start with "qt_".  Qt-internal container widgets (scroll-area
-            # viewport, tab-widget stack / tab-bar, etc.) have empty names or
-            # names like "qt_tabwidget_stackedwidget".  Setting geometry on
-            # those internal widgets lets Qt override them on its next layout
-            # pass, which blanks the visible content.  We still recurse into
-            # them so we can reach our own widgets that live inside.
-            if name and not name.startswith('qt_'):
+            # Snapshot only widgets that:
+            #   1. Have an explicit objectName (set by setupUi)
+            #   2. Are NOT Qt-internal widgets (names starting with "qt_")
+            #   3. Have a parent that is also user-owned (not a Qt-internal
+            #      layout container). Qt-internal containers such as the
+            #      scroll-area viewport (empty name) and the tab-widget
+            #      stacked widget ("qt_tabwidget_stackedwidget") own their
+            #      direct children's geometry — calling setGeometry() on those
+            #      children conflicts with Qt's layout and causes blank content.
+            parent_is_user_owned = bool(parent_name) and not parent_name.startswith('qt_')
+            if name and not name.startswith('qt_') and parent_is_user_owned:
                 self._orig_geoms[child] = QtCore.QRect(child.geometry())
                 font = child.font()
                 if font.pointSize() > 0:
@@ -278,8 +285,10 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         if not hasattr(self, '_orig_geoms'):
             return
 
-        scale = min(event.size().width() / DESIGN_W,
-                    event.size().height() / DESIGN_H)
+        # Use centralwidget dimensions (window minus any chrome) so the design
+        # dimensions map exactly to the available drawing area.
+        scale = min(self.centralwidget.width() / DESIGN_W,
+                    self.centralwidget.height() / DESIGN_H)
 
         # Skip when nothing meaningful changed (avoids redundant work on show)
         if abs(scale - getattr(self, '_last_scale', 0.0)) < 0.001:
