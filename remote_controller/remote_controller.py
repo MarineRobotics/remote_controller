@@ -44,6 +44,10 @@ from math import cos, sin, radians
 PKG = 'remote_controller'
 NODE = 'send_key_cmd'
 
+# Original design dimensions (from design.ui / design.py)
+DESIGN_W = 1186
+DESIGN_H = 946
+
 PROP_SPEED = 1000
 RUDDER_SPEED = 10
 SAIL_SPEED = 100
@@ -116,6 +120,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.desired_sail = 0
 
         self.setupUi(self)
+        self._scale_to_screen()
         self.home()
 
         self.ERRORS = {
@@ -225,6 +230,41 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         # Start #
         #########
         self.show()
+
+    def _scale_children(self, widget, scale):
+        """Recursively scale geometries and fonts of all child widgets."""
+        for child in widget.children():
+            if not isinstance(child, QtWidgets.QWidget):
+                continue
+            g = child.geometry()
+            child.setGeometry(
+                int(g.x() * scale),
+                int(g.y() * scale),
+                int(g.width() * scale),
+                int(g.height() * scale),
+            )
+            font = child.font()
+            if font.pointSize() > 0:
+                font.setPointSize(max(6, int(font.pointSize() * scale)))
+                child.setFont(font)
+            self._scale_children(child, scale)
+
+    def _scale_to_screen(self):
+        """
+        Scale all widget geometries down proportionally if the design size
+        does not fit the available screen area.  If the screen is large enough
+        the window is left at its original design dimensions.
+        """
+        available = QtWidgets.QApplication.primaryScreen().availableGeometry()
+        sx = available.width() / DESIGN_W
+        sy = available.height() / DESIGN_H
+        scale = min(sx, sy)
+
+        if scale >= 1.0:
+            return  # Window already fits — nothing to do
+
+        self.resize(int(DESIGN_W * scale), int(DESIGN_H * scale))
+        self._scale_children(self.centralwidget, scale)
 
     def configure_compass(self):
         """
@@ -1590,6 +1630,8 @@ class RosThread(QObject):
 
 def main(args=None):
     rclpy.init(args=args)
+    QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
+    QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
     app = QtWidgets.QApplication(sys.argv)
     
     # Create executor for ROS2 node
