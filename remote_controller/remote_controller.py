@@ -250,10 +250,20 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         for child in widget.children():
             if not isinstance(child, QtWidgets.QWidget):
                 continue
-            self._orig_geoms[child] = QtCore.QRect(child.geometry())
-            font = child.font()
-            if font.pointSize() > 0:
-                self._orig_font_sizes[child] = font.pointSize()
+            name = child.objectName()
+            # Only snapshot widgets that were explicitly created in setupUi()
+            # — every one of them has a non-empty objectName that does NOT
+            # start with "qt_".  Qt-internal container widgets (scroll-area
+            # viewport, tab-widget stack / tab-bar, etc.) have empty names or
+            # names like "qt_tabwidget_stackedwidget".  Setting geometry on
+            # those internal widgets lets Qt override them on its next layout
+            # pass, which blanks the visible content.  We still recurse into
+            # them so we can reach our own widgets that live inside.
+            if name and not name.startswith('qt_'):
+                self._orig_geoms[child] = QtCore.QRect(child.geometry())
+                font = child.font()
+                if font.pointSize() > 0:
+                    self._orig_font_sizes[child] = font.pointSize()
             self._collect_orig_geoms(child)
 
     def resizeEvent(self, event):
@@ -299,8 +309,12 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         if hasattr(self, '_windPixOrig'):
             self._resize_timer.start()
 
+        # Force a full repaint now that all widget geometries have been updated
+        self.update()
+
     def _reconfigure_compass_after_resize(self):
         self.configure_compass()
+        self.update()
 
     def _scale_to_screen(self):
         """Scale the window down at startup if the design size exceeds the
