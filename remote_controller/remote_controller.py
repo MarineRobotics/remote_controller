@@ -266,6 +266,53 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.resize(int(DESIGN_W * scale), int(DESIGN_H * scale))
         self._scale_children(self.centralwidget, scale)
 
+    def showEvent(self, event):
+        """After the window is placed by the window manager, check whether it
+        fits on screen and scale everything down if it does not.  This is the
+        reliable DPI-agnostic fallback: we compare the *real* frame geometry
+        (including title bar / borders) against the available screen area, so
+        it works even when Qt is not fully aware of the OS DPI scale factor."""
+        super().showEvent(event)
+        if not getattr(self, '_initial_fit_done', False):
+            # Delay slightly so the window manager has finished placing the window
+            # and frameGeometry() reflects the real decorated size.
+            QtCore.QTimer.singleShot(200, self._fit_window_to_screen)
+
+    def _fit_window_to_screen(self):
+        self._initial_fit_done = True
+
+        screen = QtWidgets.QApplication.screenAt(self.mapToGlobal(QtCore.QPoint(0, 0)))
+        if screen is None:
+            screen = QtWidgets.QApplication.primaryScreen()
+
+        available = screen.availableGeometry()
+        frame     = self.frameGeometry()
+
+        sx = available.width()  / frame.width()
+        sy = available.height() / frame.height()
+        scale = min(sx, sy)
+
+        if scale >= 1.0:
+            return  # Window already fits — nothing to do
+
+        # configure_compass sets minimumSize on the compass labels; clear those
+        # first or setGeometry() will be silently clamped to the old minimum.
+        for lbl in [self.lblWind, self.lblBoat, self.lblSail,
+                    self.lblSailDesired, self.lblRudder, self.lblRudderDesired]:
+            lbl.setMinimumSize(0, 0)
+
+        # Resize the window and every child widget proportionally
+        self.resize(int(self.width() * scale), int(self.height() * scale))
+        self._scale_children(self.centralwidget, scale)
+
+        # Re-run compass setup so pixmaps and mover-closures use the new sizes
+        self.configure_compass()
+
+        # Centre the window on the screen so it isn't clipped by a panel
+        new_frame = self.frameGeometry()
+        new_frame.moveCenter(available.center())
+        self.move(new_frame.topLeft())
+
     def configure_compass(self):
         """
         This function takes the static wind, boat and sail labels from our design.py file, and prepares them to be
@@ -282,35 +329,40 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         print(f"\033[95mPackage share directory: {package_share_dir}\033[0m")
         print(f"\033[95mAsset path: {asset_path}\033[0m")
 
-        # Create text labels showing degrees
+        # Create text labels showing degrees (guard so re-calls don't duplicate them)
         font = QtGui.QFont()
         font.setFamily("Monospace")
         font.setPointSize(10)
         font.setBold(True)
         font.setItalic(False)
         font.setWeight(75)
-        self.lblWindAngle = QLabel(self.tabWidget.widget(0))
-        self.lblWindAngle.setText("000")
-        self.lblWindAngle.setFont(font)
-        self.lblSailAngle = QLabel(self.tabWidget.widget(0))
-        self.lblSailAngle.setText("000")
-        self.lblSailAngle.setFont(font)
+        if not hasattr(self, 'lblWindAngle'):
+            self.lblWindAngle = QLabel(self.tabWidget.widget(0))
+            self.lblWindAngle.setText("000")
+            self.lblWindAngle.setFont(font)
+        if not hasattr(self, 'lblSailAngle'):
+            self.lblSailAngle = QLabel(self.tabWidget.widget(0))
+            self.lblSailAngle.setText("000")
+            self.lblSailAngle.setFont(font)
 
-        # Load pixmap from src/assets folder
-        self.windPix = QPixmap(os.path.join(asset_path, 'compass.png'))
-        self.boatPix = QPixmap(os.path.join(asset_path, 'boat.png'))
-        self.sailPix = QPixmap(os.path.join(asset_path, 'sail.png'))
-        self.desSailPix = QPixmap(os.path.join(asset_path, 'sail_desired.png'))
-        self.rudderPix = QPixmap(os.path.join(asset_path, 'rudder.png'))
-        self.desRudderPix = QPixmap(os.path.join(asset_path, 'rudder_desired.png'))
+        # Load original (full-resolution) pixmaps from disk only once.
+        # Subsequent calls (e.g. after a post-show rescale) reuse the originals
+        # so the pixmaps are always scaled from lossless source data.
+        if not hasattr(self, '_windPixOrig'):
+            self._windPixOrig    = QPixmap(os.path.join(asset_path, 'compass.png'))
+            self._boatPixOrig    = QPixmap(os.path.join(asset_path, 'boat.png'))
+            self._sailPixOrig    = QPixmap(os.path.join(asset_path, 'sail.png'))
+            self._desSailPixOrig = QPixmap(os.path.join(asset_path, 'sail_desired.png'))
+            self._rudderPixOrig  = QPixmap(os.path.join(asset_path, 'rudder.png'))
+            self._desRudderPixOrig = QPixmap(os.path.join(asset_path, 'rudder_desired.png'))
 
         # Scale pixmap to label size determined in design.py file
-        self.windPix   = self.windPix.scaled(self.lblWind.width(), self.lblWind.height())
-        self.boatPix   = self.boatPix.scaled(self.lblBoat.width(), self.lblBoat.height())
-        self.sailPix   = self.sailPix.scaled(self.lblSail.width(), self.lblSail.height())
-        self.desSailPix = self.desSailPix.scaled(self.lblSailDesired.width(), self.lblSailDesired.height())
-        self.rudderPix = self.rudderPix.scaled(self.lblRudder.width(), self.lblRudder.height())
-        self.desRudderPix = self.desRudderPix.scaled(self.lblRudderDesired.width(), self.lblRudderDesired.height())
+        self.windPix     = self._windPixOrig.scaled(self.lblWind.width(), self.lblWind.height())
+        self.boatPix     = self._boatPixOrig.scaled(self.lblBoat.width(), self.lblBoat.height())
+        self.sailPix     = self._sailPixOrig.scaled(self.lblSail.width(), self.lblSail.height())
+        self.desSailPix  = self._desSailPixOrig.scaled(self.lblSailDesired.width(), self.lblSailDesired.height())
+        self.rudderPix   = self._rudderPixOrig.scaled(self.lblRudder.width(), self.lblRudder.height())
+        self.desRudderPix = self._desRudderPixOrig.scaled(self.lblRudderDesired.width(), self.lblRudderDesired.height())
 
         # Calculate pixmap diagonal for sizing (corner to corner of square label, even if pic is circle)
         self.windDiag = int((self.lblWind.width()**2 + self.lblWind.height()**2)**0.5)
