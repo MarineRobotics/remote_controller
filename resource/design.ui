@@ -1544,7 +1544,7 @@ color: rgb(255, 255, 255);</string>
            <height>71</height>
           </rect>
          </property>
-         <layout class="QGridLayout" name="gridLayout" rowstretch="0,0">
+         <layout class="QGridLayout" name="gridLayout" rowstretch="0,0" columnstretch="5,3,2">
           <item row="0" column="2">
            <widget class="QPushButton" name="btnDesHeading">
             <property name="sizePolicy">
@@ -1555,7 +1555,7 @@ color: rgb(255, 255, 255);</string>
             </property>
             <property name="maximumSize">
              <size>
-              <width>40</width>
+              <width>16777215</width>
               <height>16777215</height>
              </size>
             </property>
@@ -1605,7 +1605,7 @@ color: rgb(255, 255, 255);</string>
             </property>
             <property name="maximumSize">
              <size>
-              <width>40</width>
+              <width>16777215</width>
               <height>16777215</height>
              </size>
             </property>
@@ -1630,7 +1630,7 @@ color: rgb(255, 255, 255);</string>
             </property>
             <property name="maximumSize">
              <size>
-              <width>40</width>
+              <width>16777215</width>
               <height>16777215</height>
              </size>
             </property>
@@ -1655,7 +1655,7 @@ color: rgb(255, 255, 255);</string>
             </property>
             <property name="maximumSize">
              <size>
-              <width>40</width>
+              <width>16777215</width>
               <height>16777215</height>
              </size>
             </property>
@@ -1817,7 +1817,7 @@ color: rgb(255, 255, 255);</string>
             <height>103</height>
            </rect>
           </property>
-          <layout class="QGridLayout" name="sailBoxLayout">
+          <layout class="QGridLayout" name="sailBoxLayout" columnstretch="5,3,2">
            <item row="1" column="1">
             <widget class="QLineEdit" name="txtDesSailPos">
              <property name="sizePolicy">
@@ -1828,7 +1828,7 @@ color: rgb(255, 255, 255);</string>
              </property>
              <property name="maximumSize">
               <size>
-               <width>40</width>
+               <width>16777215</width>
                <height>16777215</height>
               </size>
              </property>
@@ -1903,7 +1903,7 @@ color: rgb(255, 255, 255);</string>
              </property>
              <property name="maximumSize">
               <size>
-               <width>40</width>
+               <width>16777215</width>
                <height>16777215</height>
               </size>
              </property>
@@ -1928,7 +1928,7 @@ color: rgb(255, 255, 255);</string>
              </property>
              <property name="maximumSize">
               <size>
-               <width>40</width>
+               <width>16777215</width>
                <height>16777215</height>
               </size>
              </property>
@@ -1953,7 +1953,7 @@ color: rgb(255, 255, 255);</string>
              </property>
              <property name="maximumSize">
               <size>
-               <width>40</width>
+               <width>16777215</width>
                <height>16777215</height>
               </size>
              </property>
@@ -2009,7 +2009,7 @@ color: rgb(255, 255, 255);</string>
              </property>
              <property name="maximumSize">
               <size>
-               <width>40</width>
+               <width>16777215</width>
                <height>16777215</height>
               </size>
              </property>
@@ -2040,7 +2040,7 @@ color: rgb(255, 255, 255);</string>
              </property>
              <property name="maximumSize">
               <size>
-               <width>40</width>
+               <width>16777215</width>
                <height>16777215</height>
               </size>
              </property>

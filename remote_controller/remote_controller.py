@@ -266,8 +266,19 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
             #      direct children's geometry — calling setGeometry() on those
             #      children conflicts with Qt's layout and causes blank content.
             parent_is_user_owned = bool(parent_name) and not parent_name.startswith('qt_')
-            if name and not name.startswith('qt_') and parent_is_user_owned:
+            # If a widget is managed by a Qt layout, let the layout control
+            # child geometry on resize. Manual setGeometry() fights the layout
+            # and can make controls collapse/disappear while shrinking.
+            parent_widget = child.parentWidget()
+            parent_has_layout = parent_widget is not None and parent_widget.layout() is not None
+            if name and not name.startswith('qt_') and parent_is_user_owned and not parent_has_layout:
                 self._orig_geoms[child] = QtCore.QRect(child.geometry())
+                font = child.font()
+                if font.pointSize() > 0:
+                    self._orig_font_sizes[child] = font.pointSize()
+            elif name and not name.startswith('qt_'):
+                # Keep font scaling for layout-managed widgets even though
+                # geometry is delegated to the layout.
                 font = child.font()
                 if font.pointSize() > 0:
                     self._orig_font_sizes[child] = font.pointSize()
