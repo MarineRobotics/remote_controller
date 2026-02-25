@@ -1544,11 +1544,11 @@ color: rgb(255, 255, 255);</string>
            <height>71</height>
           </rect>
          </property>
-         <layout class="QGridLayout" name="gridLayout" rowstretch="0,0" columnstretch="5,3,2">
+         <layout class="QGridLayout" name="gridLayout" rowstretch="0,0" columnstretch="6,2,2">
           <item row="0" column="2">
            <widget class="QPushButton" name="btnDesHeading">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -1598,7 +1598,7 @@ color: rgb(255, 255, 255);</string>
           <item row="1" column="2">
            <widget class="QPushButton" name="btnDesRudderAngle">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -1621,15 +1621,15 @@ color: rgb(255, 255, 255);</string>
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QLineEdit" name="txtDesRudder">
+          <widget class="QLineEdit" name="txtDesRudder">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+             <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="maximumSize">
-             <size>
+             <property name="maximumSize">
+              <size>
               <width>16777215</width>
               <height>16777215</height>
              </size>
@@ -1646,15 +1646,15 @@ color: rgb(255, 255, 255);</string>
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="txtDesHeading">
+          <widget class="QLineEdit" name="txtDesHeading">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+             <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="maximumSize">
-             <size>
+             <property name="maximumSize">
+              <size>
               <width>16777215</width>
               <height>16777215</height>
              </size>
@@ -1817,11 +1817,11 @@ color: rgb(255, 255, 255);</string>
             <height>103</height>
            </rect>
           </property>
-          <layout class="QGridLayout" name="sailBoxLayout" columnstretch="5,3,2">
+          <layout class="QGridLayout" name="sailBoxLayout" columnstretch="6,2,2">
            <item row="1" column="1">
-            <widget class="QLineEdit" name="txtDesSailPos">
+           <widget class="QLineEdit" name="txtDesSailPos">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+              <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -1896,7 +1896,7 @@ color: rgb(255, 255, 255);</string>
            <item row="1" column="2">
             <widget class="QPushButton" name="btnDesSailPos">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -1919,9 +1919,9 @@ color: rgb(255, 255, 255);</string>
             </widget>
            </item>
            <item row="0" column="2">
-            <widget class="QPushButton" name="btnDesSail">
+           <widget class="QPushButton" name="btnDesSail">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -1946,7 +1946,7 @@ color: rgb(255, 255, 255);</string>
            <item row="0" column="1">
             <widget class="QLineEdit" name="txtDesSail">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+              <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -2002,7 +2002,7 @@ color: rgb(255, 255, 255);</string>
            <item row="2" column="1">
             <widget class="QLineEdit" name="txtDesSailAngle">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+              <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -2033,7 +2033,7 @@ color: rgb(255, 255, 255);</string>
            <item row="2" column="2">
             <widget class="QPushButton" name="btnDesSailAngle">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
