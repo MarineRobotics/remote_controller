@@ -2139,16 +2139,16 @@ color: rgb(255, 255, 255);</string>
         <widget class="QPushButton" name="btnCalKeel">
          <property name="geometry">
           <rect>
-           <x>170</x>
+           <x>132</x>
            <y>210</y>
-           <width>61</width>
+           <width>50</width>
            <height>31</height>
           </rect>
          </property>
          <property name="font">
           <font>
            <family>Liberation Mono</family>
-           <pointsize>12</pointsize>
+           <pointsize>10</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
@@ -2162,7 +2162,7 @@ color: rgb(255, 255, 255);</string>
           <rect>
            <x>0</x>
            <y>210</y>
-           <width>141</width>
+           <width>130</width>
            <height>25</height>
           </rect>
          </property>
@@ -2219,19 +2219,40 @@ color: rgb(255, 255, 255);</string>
           <enum>Qt::Horizontal</enum>
          </property>
         </widget>
-        <widget class="QPushButton" name="btnResetKeel">
+        <widget class="QPushButton" name="btnDefaultKeel">
          <property name="geometry">
           <rect>
-           <x>240</x>
+           <x>182</x>
            <y>210</y>
-           <width>61</width>
+           <width>69</width>
            <height>31</height>
           </rect>
          </property>
          <property name="font">
           <font>
            <family>Liberation Mono</family>
-           <pointsize>12</pointsize>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Default</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnResetKeel">
+         <property name="geometry">
+          <rect>
+           <x>251</x>
+           <y>210</y>
+           <width>50</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Liberation Mono</family>
+           <pointsize>10</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>

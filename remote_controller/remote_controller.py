@@ -189,6 +189,8 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.btnToggleN2K.clicked.connect(self.toggle_n2k)
         # Setup keel calibration button
         self.btnCalKeel.clicked.connect(self.calibrate_keel)
+        # Setup keel default button
+        self.btnDefaultKeel.clicked.connect(self.default_keel)
         # Setup keel reset button
         self.btnResetKeel.clicked.connect(self.reset_keel)
         # Setup keel setpoint slider
@@ -226,6 +228,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         # Compass widget #
         ##################
         self.configure_compass()
+        self._sync_left_label_widths()
 
         #####################
         # User clock widget #
@@ -324,6 +327,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
             font = widget.font()
             font.setPointSize(max(6, int(pt * scale)))
             widget.setFont(font)
+        self._sync_left_label_widths()
 
         # Debounce the compass reconfigure — pixmap scaling is expensive
         if hasattr(self, '_windPixOrig'):
@@ -335,6 +339,24 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     def _reconfigure_compass_after_resize(self):
         self.configure_compass()
         self.update()
+
+    def _sync_left_label_widths(self):
+        """Use a common column-0 width for both left control grids."""
+        required = ['gridLayout', 'sailBoxLayout', 'label_15', 'label_24', 'label_34', 'label_31', 'label_32']
+        if not all(hasattr(self, name) for name in required):
+            return
+        labels = [self.label_15, self.label_24, self.label_34, self.label_31, self.label_32]
+        label_col_width = max(label.sizeHint().width() for label in labels)
+        # Align divider positions by pinning the same minimum width on column 0.
+        self.gridLayout.setColumnMinimumWidth(0, label_col_width)
+        self.sailBoxLayout.setColumnMinimumWidth(0, label_col_width)
+        # Keep intended proportional behavior for remaining space.
+        self.gridLayout.setColumnStretch(0, 6)
+        self.gridLayout.setColumnStretch(1, 2)
+        self.gridLayout.setColumnStretch(2, 2)
+        self.sailBoxLayout.setColumnStretch(0, 6)
+        self.sailBoxLayout.setColumnStretch(1, 2)
+        self.sailBoxLayout.setColumnStretch(2, 2)
 
     def _scale_to_screen(self):
         """Scale the window down at startup if the design size exceeds the
@@ -970,6 +992,10 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     def calibrate_keel(self):
         """Trigger keel calibration by publishing True to /keel/calibrate"""
         self.keel_calibrate_signal.emit(True)
+
+    def default_keel(self):
+        """Set keel slider to default position (-680)"""
+        self.sldrKeel.setValue(-680)
 
     def reset_keel(self):
         """Trigger keel reset by publishing True to /keel/reset"""
