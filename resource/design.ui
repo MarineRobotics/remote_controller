@@ -1116,7 +1116,7 @@ color: rgb(255, 255, 255);</string>
         <property name="geometry">
          <rect>
           <x>20</x>
-          <y>140</y>
+          <y>130</y>
           <width>171</width>
           <height>31</height>
          </rect>
@@ -1137,7 +1137,7 @@ color: rgb(255, 255, 255);</string>
         <property name="geometry">
          <rect>
           <x>20</x>
-          <y>140</y>
+          <y>130</y>
           <width>171</width>
           <height>31</height>
          </rect>
@@ -1183,7 +1183,7 @@ color: rgb(255, 255, 255);</string>
         <property name="geometry">
          <rect>
           <x>20</x>
-          <y>180</y>
+          <y>165</y>
           <width>171</width>
           <height>31</height>
          </rect>
@@ -1204,7 +1204,7 @@ color: rgb(255, 255, 255);</string>
         <property name="geometry">
          <rect>
           <x>20</x>
-          <y>180</y>
+          <y>165</y>
           <width>171</width>
           <height>31</height>
          </rect>
@@ -1219,6 +1219,48 @@ color: rgb(255, 255, 255);</string>
         </property>
         <property name="text">
          <string>Disable auto sail</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="btnJibeOnlyEnable">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>200</y>
+          <width>171</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Liberation Mono</family>
+          <pointsize>12</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Jibe only</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="btnJibeOnlyDisable">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>200</y>
+          <width>171</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Liberation Mono</family>
+          <pointsize>12</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Disable jibe only</string>
         </property>
        </widget>
        <widget class="QLabel" name="lblWind">

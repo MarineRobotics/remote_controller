@@ -90,6 +90,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     gui_enable_signal     = pyqtSignal(bool)
     set_estop_signal      = pyqtSignal(bool)
     auto_sail_signal      = pyqtSignal(bool)
+    jibe_only_signal      = pyqtSignal(bool)
     keel_calibrate_signal = pyqtSignal(bool)
     keel_reset_signal     = pyqtSignal(bool)
     keel_setpoint_signal  = pyqtSignal(float)
@@ -169,10 +170,14 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         # Setup auto sail buttons
         self.btnAutoSail.hide()
         self.btnAutoSailDisable.hide()
+        self.btnJibeOnlyEnable.hide()
+        self.btnJibeOnlyDisable.hide()
         self.btnPropOn.clicked.connect(self.start_prop)
         self.btnPropOff.clicked.connect(self.stop_prop)
         self.btnAutoSail.clicked.connect(self.start_auto_sail)
         self.btnAutoSailDisable.clicked.connect(self.stop_auto_sail)
+        self.btnJibeOnlyEnable.clicked.connect(self.start_jibe_only)
+        self.btnJibeOnlyDisable.clicked.connect(self.stop_jibe_only)
         self.btnDesHeading.clicked.connect(self.set_heading)
         self.txtDesHeading.returnPressed.connect(self.set_heading)
         self.btnDesSail.clicked.connect(self.set_sail_heading)
@@ -661,6 +666,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.sail_pos_signal.connect(self._rosthread.pub_sail_position)
         self.sail_pos_signal.connect(self.update_sail_desired)
         self.auto_sail_signal.connect(self._rosthread.pub_auto_sail_enable)
+        self.jibe_only_signal.connect(self._rosthread.pub_jibe_desired)
 
     @pyqtSlot(float, float, str)
     def update_sail_data(self, speed, direction, reference):
@@ -918,6 +924,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.btnDisableManual.show()
         self.btnPropOn.show()
         self.btnAutoSail.show()
+        self.btnJibeOnlyEnable.show()
         self.controlFrame.setEnabled(True)
 
     def disable_manual(self):
@@ -931,8 +938,11 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.btnPropOff.hide()
         self.btnAutoSail.hide()
         self.btnAutoSailDisable.hide()
+        self.btnJibeOnlyEnable.hide()
+        self.btnJibeOnlyDisable.hide()
         self.controlFrame.setEnabled(False)
         self.auto_sail_signal.emit(False)
+        self.jibe_only_signal.emit(False)
         
     def reset_estop(self):
         self.set_estop_signal.emit(False)
@@ -967,6 +977,16 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         if sailGroup is not None:
             sailGroup.setEnabled(True)
         self.btnAutoSailDisable.hide()
+
+    def start_jibe_only(self):
+        self.jibe_only_signal.emit(True)
+        self.btnJibeOnlyEnable.hide()
+        self.btnJibeOnlyDisable.show()
+
+    def stop_jibe_only(self):
+        self.jibe_only_signal.emit(False)
+        self.btnJibeOnlyEnable.show()
+        self.btnJibeOnlyDisable.hide()
         
     def toggle_mc(self):
         self.toggle_peripheral_signal.emit("mc_relay_control")
@@ -1144,6 +1164,8 @@ class RemoteControlNode(Node):
             Bool, '/cmd/gui/enabled', 10)
         self.autosail_enable_pub = self.create_publisher(
             Bool, 'cmd/gui/sail_autonomy_enabled', 10)
+        self.jibe_desired_pub = self.create_publisher(
+            Bool, '/jibe_desired', 10)
         self.pid_gains_pub = self.create_publisher(
             PID, 'cmd/gui/rudder_pid_gains', 10)
         self.peripheral_pub = self.create_publisher(
@@ -1342,6 +1364,12 @@ class RemoteControlNode(Node):
         msg.data = enable
         self.autosail_enable_pub.publish(msg)
         self.get_logger().info(f"Published auto sail enable: {enable}")
+
+    def publish_jibe_desired(self, desired):
+        msg = Bool()
+        msg.data = desired
+        self.jibe_desired_pub.publish(msg)
+        self.get_logger().info(f"Published jibe desired: {desired}")
 
     def publish_pid_gains(self, p, i, d):
         msg = PID()
@@ -1722,6 +1750,11 @@ class RosThread(QObject):
     def pub_auto_sail_enable(self, enable):
         if self.node:
             self.node.publish_auto_sail_enable(enable)
+
+    @pyqtSlot(bool)
+    def pub_jibe_desired(self, desired):
+        if self.node:
+            self.node.publish_jibe_desired(desired)
 
     @pyqtSlot(float, float, float)
     def pub_pid_gains(self, p, i, d):
