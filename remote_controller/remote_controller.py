@@ -625,6 +625,8 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self._rosthread.substate_change_updated.connect(self.update_substate_change)
         self._rosthread.declination_updated.connect(self.update_declination)
         self._rosthread.sog_updated.connect(self.update_sog)
+        self._rosthread.cog_updated.connect(self.update_cog)
+        self._rosthread.filtered_cog_updated.connect(self.update_filtered_cog)
         self._rosthread.bat_level_updated.connect(self.update_bat_lvl)
         self._rosthread.power_consumption_updated.connect(self.update_power_consumption)
         # TEST
@@ -863,6 +865,14 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     def update_sog(self, speed):
         speed_kph = speed * 3.6
         self.txtSOG.setText("{0:.2f}".format(round(speed_kph, 2)))
+
+    @pyqtSlot(float)
+    def update_cog(self, heading):
+        self.txtCOG.setText("{0:.0f}".format(round(heading)))
+
+    @pyqtSlot(float)
+    def update_filtered_cog(self, heading):
+        self.txtFilteredCOG.setText("{0:.0f}".format(round(heading)))
 
     @pyqtSlot(float)
     def update_current_data(self, current):
@@ -1270,6 +1280,14 @@ class RemoteControlNode(Node):
         self.sog_sub = self.create_subscription(
             Speed, '/sog', self.handle_sog, 10,
             callback_group=self.callback_group_subscribers)
+
+        self.cog_sub = self.create_subscription(
+            Heading, '/cog', self.handle_cog, 10,
+            callback_group=self.callback_group_subscribers)
+
+        self.filtered_cog_sub = self.create_subscription(
+            Float64, '/cog/filtered/butterworth', self.handle_filtered_cog, 10,
+            callback_group=self.callback_group_subscribers)
             
         self.battery_state_sub = self.create_subscription(
             BatteryState, '/battery_state', self.handle_bat_state, 10,
@@ -1532,6 +1550,14 @@ class RemoteControlNode(Node):
         if self.callback_manager:
             self.callback_manager.sog_updated.emit(sog_msg.speed)
 
+    def handle_cog(self, cog_msg):
+        if self.callback_manager:
+            self.callback_manager.cog_updated.emit(cog_msg.heading)
+
+    def handle_filtered_cog(self, cog_msg):
+        if self.callback_manager:
+            self.callback_manager.filtered_cog_updated.emit(cog_msg.data)
+
     def handle_current_draw(self, msg):
         self.current_readings.append(msg.value)
         # only update gui once a second
@@ -1664,6 +1690,8 @@ class RosThread(QObject):
     substate_change_updated = pyqtSignal(str)
     gnss_data_updated = pyqtSignal(int)
     sog_updated = pyqtSignal(float)
+    cog_updated = pyqtSignal(float)
+    filtered_cog_updated = pyqtSignal(float)
     current_data_updated = pyqtSignal(float)
     volt_data_updated = pyqtSignal(float)
     robo_status_updated = pyqtSignal(int, int, str)
