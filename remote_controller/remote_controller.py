@@ -77,6 +77,11 @@ class myIntValidator(QtGui.QIntValidator):
 
 
 class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
+    COMPASS_WIND_TOPIC_OPTIONS = (
+        '/app_wind_northref_sail',
+        '/app_wind_northref_vessel',
+        '/wind_true/filtered/weighted',
+    )
 
     # Define signals, used to send data to ROS thread
     heading_signal        = pyqtSignal(int)
@@ -121,6 +126,9 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.desired_sail = 0
 
         self.setupUi(self)
+        self.compass_wind_source = '/app_wind_northref_vessel'
+        self.cmbCompassWindSource.setCurrentText(self.compass_wind_source)
+        self.cmbCompassWindSource.currentTextChanged.connect(self.update_compass_wind_source)
         # The design has no menu bar or status bar; hide them so that
         # centralwidget fills the full window and our scale calc is accurate.
         self.menuBar().hide()
@@ -600,7 +608,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     def connect_slots(self):
         """Connect all signals needed to update the GUI from our ROS thread"""
         self._rosthread.sail_data_updated.connect(self.update_sail_data)
-        self._rosthread.northref_data_updated.connect(self.update_northref_data)
+        self._rosthread.compass_wind_updated.connect(self.update_compass_wind_data)
         self._rosthread.vessel_heading_updated.connect(self.update_vessel_heading)
         self._rosthread.sail_heading_updated.connect(self.update_sail_heading)
         self._rosthread.water_depth_updated.connect(self.update_water_depth)
@@ -679,11 +687,18 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
             self.txtWindApp.setText("{0:.0f}".format(round(direction)))
             self.txtApptWindSpeed.setText("{0:.2f}".format(round(speed, 2)))
 
-    @pyqtSlot(float, float)
-    def update_northref_data(self, apparent_wind_north, vessel_heading):
-        apparent_wind_vessel = self.hm.diff(vessel_heading, apparent_wind_north)
-        self.moveWindLbl(apparent_wind_vessel)
-        self.lblWindAngle.setText(str(int(apparent_wind_north)))
+    @pyqtSlot(str)
+    def update_compass_wind_source(self, source_topic):
+        self.compass_wind_source = source_topic
+
+    @pyqtSlot(str, float, float)
+    def update_compass_wind_data(self, source_topic, wind_world, vessel_heading):
+        if source_topic != self.compass_wind_source:
+            return
+
+        wind_vessel = self.hm.diff(vessel_heading, wind_world)
+        self.moveWindLbl(wind_vessel)
+        self.lblWindAngle.setText(str(int(wind_world)))
         
     @pyqtSlot(int)
     def update_vessel_heading(self, heading):
@@ -1188,8 +1203,16 @@ class RemoteControlNode(Node):
             Wind, 'wind_info', self.handle_wind_info, 10, 
             callback_group=self.callback_group_subscribers)
             
-        self.northref_sub = self.create_subscription(
-            Wind, 'app_wind_northref_avg', self.handle_northref_info, 10,
+        self.app_wind_northref_sail_sub = self.create_subscription(
+            Wind, '/app_wind_northref_sail', self.handle_app_wind_northref_sail, 10,
+            callback_group=self.callback_group_subscribers)
+
+        self.app_wind_northref_vessel_sub = self.create_subscription(
+            Wind, '/app_wind_northref_vessel', self.handle_app_wind_northref_vessel, 10,
+            callback_group=self.callback_group_subscribers)
+
+        self.true_wind_filtered_weighted_sub = self.create_subscription(
+            Wind, '/wind_true/filtered/weighted', self.handle_true_wind_filtered_weighted, 10,
             callback_group=self.callback_group_subscribers)
             
         self.vessel_heading_sub = self.create_subscription(
@@ -1435,10 +1458,20 @@ class RemoteControlNode(Node):
             self.callback_manager.sail_data_updated.emit(
                 wind_info.speed, wind_info.direction, wind_info.reference)
                                     
-    def handle_northref_info(self, wind_info):
+    def emit_compass_wind_update(self, source_topic, wind_info):
         if self.callback_manager:
-            self.callback_manager.northref_data_updated.emit(
+            self.callback_manager.compass_wind_updated.emit(
+                source_topic,
                 wind_info.direction, self.vessel_heading)
+
+    def handle_app_wind_northref_sail(self, wind_info):
+        self.emit_compass_wind_update('/app_wind_northref_sail', wind_info)
+
+    def handle_app_wind_northref_vessel(self, wind_info):
+        self.emit_compass_wind_update('/app_wind_northref_vessel', wind_info)
+
+    def handle_true_wind_filtered_weighted(self, wind_info):
+        self.emit_compass_wind_update('/wind_true/filtered/weighted', wind_info)
 
     def handle_vessel_heading(self, heading):
         # Save heading and calculate sail angle
@@ -1616,7 +1649,7 @@ class RosThread(QObject):
     
     # QT Signals for UI updates
     sail_data_updated = pyqtSignal(float, float, str)
-    northref_data_updated = pyqtSignal(float, float)
+    compass_wind_updated = pyqtSignal(str, float, float)
     vessel_heading_updated = pyqtSignal(int)
     sail_heading_updated = pyqtSignal(int)
     sail_angle_updated = pyqtSignal(int)

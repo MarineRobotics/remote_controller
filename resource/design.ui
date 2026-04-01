@@ -2857,7 +2857,7 @@ color: rgb(255, 255, 255);</string>
           <height>165</height>
          </rect>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_2">
+       <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
           <layout class="QGridLayout" name="gridLayout_3">
            <item row="0" column="0">
@@ -2951,13 +2951,59 @@ color: rgb(255, 255, 255);</string>
            <property name="text">
             <string>Set</string>
            </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QLabel" name="lblCompassWindSource">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>450</y>
+         <width>301</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Liberation Mono</family>
+         <pointsize>14</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Compass wind source</string>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="cmbCompassWindSource">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>490</y>
+         <width>301</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <item>
+        <property name="text">
+         <string>/app_wind_northref_sail</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>/app_wind_northref_vessel</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>/wind_true/filtered/weighted</string>
+        </property>
+       </item>
       </widget>
      </widget>
     </widget>
+   </widget>
    </widget>
    <widget class="QPushButton" name="btnResetEStop">
     <property name="enabled">
