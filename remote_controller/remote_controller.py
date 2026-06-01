@@ -51,6 +51,7 @@ DESIGN_H = 946
 PROP_SPEED = 1000
 RUDDER_SPEED = 10
 SAIL_SPEED = 100
+KEEL_DEFAULT = -680
 COLOR_WARN = "rgb(252, 186, 3)"
 COLOR_ERR = "rgb(186, 7, 7)"
 COLOR_OK = "rgb(0, 150, 0)"
@@ -222,6 +223,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         # Setup text default values #
         #############################
         self.txtRudderIncrement.setValue(self.rudder_increment)
+        self.sldrKeel.setValue(KEEL_DEFAULT)
 
         ####################
         # Input Validation #
@@ -1039,8 +1041,8 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.keel_calibrate_signal.emit(True)
 
     def default_keel(self):
-        """Set keel slider to default position (-680)"""
-        self.sldrKeel.setValue(-680)
+        """Set keel slider to default position"""
+        self.sldrKeel.setValue(KEEL_DEFAULT)
 
     def reset_keel(self):
         """Trigger keel reset by publishing True to /keel/reset"""
