@@ -52,6 +52,7 @@ PROP_SPEED = 1000
 RUDDER_SPEED = 10
 SAIL_SPEED = 100
 KEEL_DEFAULT = -680
+KEEL_HOMING_TIMEOUT_MS = 20000  # must exceed server timeout_seconds (15 s)
 COLOR_WARN = "rgb(252, 186, 3)"
 COLOR_ERR = "rgb(186, 7, 7)"
 COLOR_OK = "rgb(0, 150, 0)"
@@ -203,6 +204,10 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.btnToggleN2K.clicked.connect(self.toggle_n2k)
         # Setup keel calibration button
         self.btnCalKeel.clicked.connect(self.calibrate_keel)
+        self._keel_watchdog = QtCore.QTimer(self)
+        self._keel_watchdog.setSingleShot(True)
+        self._keel_watchdog.setInterval(KEEL_HOMING_TIMEOUT_MS)
+        self._keel_watchdog.timeout.connect(self.keel_homing_timed_out)
         # Setup keel default button
         self.btnDefaultKeel.clicked.connect(self.default_keel)
         # Setup keel reset button
@@ -625,6 +630,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self._rosthread.robo_status_updated.connect(self.update_roboclaw_status)
         self._rosthread.state_change_updated.connect(self.update_state_change)
         self._rosthread.substate_change_updated.connect(self.update_substate_change)
+        self._rosthread.notification_updated.connect(self.show_notification)
         self._rosthread.declination_updated.connect(self.update_declination)
         self._rosthread.sog_updated.connect(self.update_sog)
         self._rosthread.cog_updated.connect(self.update_cog)
@@ -970,6 +976,8 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.controlFrame.setEnabled(False)
         self.auto_sail_signal.emit(False)
         self.jibe_only_signal.emit(False)
+        if not self.btnCalKeel.isEnabled():
+            self._clear_keel_busy()
         
     def reset_estop(self):
         self.set_estop_signal.emit(False)
@@ -1037,8 +1045,30 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.toggle_peripheral_signal.emit("n2k_network_relay_control")
 
     def calibrate_keel(self):
-        """Trigger keel calibration by publishing True to /keel/calibrate"""
         self.keel_calibrate_signal.emit(True)
+        self.btnCalKeel.setEnabled(False)
+        self.btnCalKeel.setText("Homing…")
+        self._keel_watchdog.start()
+
+    def _clear_keel_busy(self):
+        self._keel_watchdog.stop()
+        self.btnCalKeel.setEnabled(True)
+        self.btnCalKeel.setText("Cal")
+
+    @pyqtSlot(str)
+    def show_notification(self, text):
+        if not self.btnCalKeel.isEnabled() and text.split(":", 1)[0] in ("OK", "FAIL", "CANCEL"):
+            self._clear_keel_busy()
+        color = "green" if text.startswith("OK") else "red"
+        self.statusBar().show()
+        self.statusBar().setStyleSheet(f"color: {color}")
+        self.statusBar().showMessage(text, 5000)
+
+    def keel_homing_timed_out(self):
+        self._clear_keel_busy()
+        self.statusBar().show()
+        self.statusBar().setStyleSheet("color: red")
+        self.statusBar().showMessage("Keel homing: no response", 5000)
 
     def default_keel(self):
         """Set keel slider to default position"""
@@ -1273,6 +1303,10 @@ class RemoteControlNode(Node):
             
         self.substate_change_sub = self.create_subscription(
             String, 'substate_change', self.handle_substate_change, 10,
+            callback_group=self.callback_group_subscribers)
+
+        self.notification_sub = self.create_subscription(
+            String, '/gui/notification', self.handle_notification, 10,
             callback_group=self.callback_group_subscribers)
             
         self.declination_sub = self.create_subscription(
@@ -1544,6 +1578,10 @@ class RemoteControlNode(Node):
         if self.callback_manager:
             self.callback_manager.substate_change_updated.emit(substate.data)
 
+    def handle_notification(self, msg):
+        if self.callback_manager:
+            self.callback_manager.notification_updated.emit(msg.data)
+
     def handle_gnss(self, gnss):
         if self.callback_manager:
             self.callback_manager.gnss_data_updated.emit(gnss.num_sats)
@@ -1690,6 +1728,7 @@ class RosThread(QObject):
     water_speed_updated = pyqtSignal(float)
     state_change_updated = pyqtSignal(str)
     substate_change_updated = pyqtSignal(str)
+    notification_updated = pyqtSignal(str)
     gnss_data_updated = pyqtSignal(int)
     sog_updated = pyqtSignal(float)
     cog_updated = pyqtSignal(float)
