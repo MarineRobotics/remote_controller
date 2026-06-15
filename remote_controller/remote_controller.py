@@ -212,7 +212,9 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.btnDefaultKeel.clicked.connect(self.default_keel)
         # Setup keel reset button
         self.btnResetKeel.clicked.connect(self.reset_keel)
-        # Setup keel setpoint slider
+        # setTracking(False): valueChanged fires once on release, not on every
+        # drag step (keyboard and programmatic setValue still fire immediately).
+        self.sldrKeel.setTracking(False)
         self.sldrKeel.valueChanged.connect(self.set_keel_setpoint)
 
         #TEST
