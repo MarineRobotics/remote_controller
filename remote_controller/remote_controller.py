@@ -44,9 +44,15 @@ from math import cos, sin, radians
 PKG = 'remote_controller'
 NODE = 'send_key_cmd'
 
+# Original design dimensions (from design.ui / design.py)
+DESIGN_W = 1186
+DESIGN_H = 946
+
 PROP_SPEED = 1000
 RUDDER_SPEED = 10
 SAIL_SPEED = 100
+KEEL_DEFAULT = -680
+KEEL_HOMING_TIMEOUT_MS = 20000  # must exceed server timeout_seconds (15 s)
 COLOR_WARN = "rgb(252, 186, 3)"
 COLOR_ERR = "rgb(186, 7, 7)"
 COLOR_OK = "rgb(0, 150, 0)"
@@ -73,6 +79,11 @@ class myIntValidator(QtGui.QIntValidator):
 
 
 class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
+    COMPASS_WIND_TOPIC_OPTIONS = (
+        '/app_wind_northref_sail',
+        '/app_wind_northref_vessel',
+        '/wind_true/filtered/weighted',
+    )
 
     # Define signals, used to send data to ROS thread
     heading_signal        = pyqtSignal(int)
@@ -86,6 +97,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     gui_enable_signal     = pyqtSignal(bool)
     set_estop_signal      = pyqtSignal(bool)
     auto_sail_signal      = pyqtSignal(bool)
+    jibe_only_signal      = pyqtSignal(bool)
     keel_calibrate_signal = pyqtSignal(bool)
     keel_reset_signal     = pyqtSignal(bool)
     keel_setpoint_signal  = pyqtSignal(float)
@@ -116,6 +128,20 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.desired_sail = 0
 
         self.setupUi(self)
+        self.compass_wind_source = '/app_wind_northref_vessel'
+        self.cmbCompassWindSource.setCurrentText(self.compass_wind_source)
+        self.cmbCompassWindSource.currentTextChanged.connect(self.update_compass_wind_source)
+        # The design has no menu bar or status bar; hide them so that
+        # centralwidget fills the full window and our scale calc is accurate.
+        self.menuBar().hide()
+        self.statusBar().hide()
+        self._store_original_geometries()
+        # Debounce timer for the expensive compass reconfigure on resize
+        self._resize_timer = QtCore.QTimer(self)
+        self._resize_timer.setSingleShot(True)
+        self._resize_timer.setInterval(150)
+        self._resize_timer.timeout.connect(self._reconfigure_compass_after_resize)
+        self._scale_to_screen()
         self.home()
 
         self.ERRORS = {
@@ -154,10 +180,14 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         # Setup auto sail buttons
         self.btnAutoSail.hide()
         self.btnAutoSailDisable.hide()
+        self.btnJibeOnlyEnable.hide()
+        self.btnJibeOnlyDisable.hide()
         self.btnPropOn.clicked.connect(self.start_prop)
         self.btnPropOff.clicked.connect(self.stop_prop)
         self.btnAutoSail.clicked.connect(self.start_auto_sail)
         self.btnAutoSailDisable.clicked.connect(self.stop_auto_sail)
+        self.btnJibeOnlyEnable.clicked.connect(self.start_jibe_only)
+        self.btnJibeOnlyDisable.clicked.connect(self.stop_jibe_only)
         self.btnDesHeading.clicked.connect(self.set_heading)
         self.txtDesHeading.returnPressed.connect(self.set_heading)
         self.btnDesSail.clicked.connect(self.set_sail_heading)
@@ -174,9 +204,17 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.btnToggleN2K.clicked.connect(self.toggle_n2k)
         # Setup keel calibration button
         self.btnCalKeel.clicked.connect(self.calibrate_keel)
+        self._keel_watchdog = QtCore.QTimer(self)
+        self._keel_watchdog.setSingleShot(True)
+        self._keel_watchdog.setInterval(KEEL_HOMING_TIMEOUT_MS)
+        self._keel_watchdog.timeout.connect(self.keel_homing_timed_out)
+        # Setup keel default button
+        self.btnDefaultKeel.clicked.connect(self.default_keel)
         # Setup keel reset button
         self.btnResetKeel.clicked.connect(self.reset_keel)
-        # Setup keel setpoint slider
+        # setTracking(False): valueChanged fires once on release, not on every
+        # drag step (keyboard and programmatic setValue still fire immediately).
+        self.sldrKeel.setTracking(False)
         self.sldrKeel.valueChanged.connect(self.set_keel_setpoint)
 
         #TEST
@@ -192,6 +230,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         # Setup text default values #
         #############################
         self.txtRudderIncrement.setValue(self.rudder_increment)
+        self.sldrKeel.setValue(KEEL_DEFAULT)
 
         ####################
         # Input Validation #
@@ -211,6 +250,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         # Compass widget #
         ##################
         self.configure_compass()
+        self._sync_left_label_widths()
 
         #####################
         # User clock widget #
@@ -225,6 +265,149 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         # Start #
         #########
         self.show()
+
+    def _store_original_geometries(self):
+        """Snapshot every child widget's geometry (and font point size) right
+        after setupUi(), before any scaling happens.  resizeEvent() always
+        scales from these originals so floating-point error never accumulates
+        across multiple resize operations."""
+        self._orig_geoms = {}
+        self._orig_font_sizes = {}
+        self._collect_orig_geoms(self.centralwidget)
+
+    def _collect_orig_geoms(self, widget):
+        parent_name = widget.objectName()
+        for child in widget.children():
+            if not isinstance(child, QtWidgets.QWidget):
+                continue
+            name = child.objectName()
+            # Snapshot only widgets that:
+            #   1. Have an explicit objectName (set by setupUi)
+            #   2. Are NOT Qt-internal widgets (names starting with "qt_")
+            #   3. Have a parent that is also user-owned (not a Qt-internal
+            #      layout container). Qt-internal containers such as the
+            #      scroll-area viewport (empty name) and the tab-widget
+            #      stacked widget ("qt_tabwidget_stackedwidget") own their
+            #      direct children's geometry — calling setGeometry() on those
+            #      children conflicts with Qt's layout and causes blank content.
+            parent_is_user_owned = bool(parent_name) and not parent_name.startswith('qt_')
+            # If a widget is managed by a Qt layout, let the layout control
+            # child geometry on resize. Manual setGeometry() fights the layout
+            # and can make controls collapse/disappear while shrinking.
+            parent_widget = child.parentWidget()
+            parent_has_layout = parent_widget is not None and parent_widget.layout() is not None
+            if name and not name.startswith('qt_') and parent_is_user_owned and not parent_has_layout:
+                self._orig_geoms[child] = QtCore.QRect(child.geometry())
+                font = child.font()
+                if font.pointSize() > 0:
+                    self._orig_font_sizes[child] = font.pointSize()
+            elif name and not name.startswith('qt_'):
+                # Keep font scaling for layout-managed widgets even though
+                # geometry is delegated to the layout.
+                font = child.font()
+                if font.pointSize() > 0:
+                    self._orig_font_sizes[child] = font.pointSize()
+            self._collect_orig_geoms(child)
+
+    def resizeEvent(self, event):
+        """Reflow the entire layout whenever the window is resized.
+
+        Scale factor is always computed against the original design dimensions
+        (DESIGN_W × DESIGN_H) so the result is correct regardless of how many
+        times the window has been resized before.  The compass is re-configured
+        on a short debounce timer because pixmap scaling is expensive.
+        """
+        super().resizeEvent(event)
+        if not hasattr(self, '_orig_geoms'):
+            return
+
+        # Use centralwidget dimensions (window minus any chrome) so the design
+        # dimensions map exactly to the available drawing area.
+        scale = min(self.centralwidget.width() / DESIGN_W,
+                    self.centralwidget.height() / DESIGN_H)
+
+        # Skip when nothing meaningful changed (avoids redundant work on show)
+        if abs(scale - getattr(self, '_last_scale', 0.0)) < 0.001:
+            return
+        self._last_scale = scale
+
+        # configure_compass sets minimumSize on the compass labels; clear them
+        # now or setGeometry() will be silently clamped to the old minimum.
+        if hasattr(self, 'lblWind'):
+            for lbl in [self.lblWind, self.lblBoat, self.lblSail,
+                        self.lblSailDesired, self.lblRudder, self.lblRudderDesired]:
+                lbl.setMinimumSize(0, 0)
+
+        for widget, orig in self._orig_geoms.items():
+            widget.setGeometry(
+                int(orig.x() * scale),
+                int(orig.y() * scale),
+                int(orig.width() * scale),
+                int(orig.height() * scale),
+            )
+        for widget, pt in self._orig_font_sizes.items():
+            font = widget.font()
+            font.setPointSize(max(6, int(pt * scale)))
+            widget.setFont(font)
+        self._sync_left_label_widths()
+
+        # Debounce the compass reconfigure — pixmap scaling is expensive
+        if hasattr(self, '_windPixOrig'):
+            self._resize_timer.start()
+
+        # Force a full repaint now that all widget geometries have been updated
+        self.update()
+
+    def _reconfigure_compass_after_resize(self):
+        self.configure_compass()
+        self.update()
+
+    def _sync_left_label_widths(self):
+        """Use a common column-0 width for both left control grids."""
+        required = ['gridLayout', 'sailBoxLayout', 'label_15', 'label_24', 'label_34', 'label_31', 'label_32']
+        if not all(hasattr(self, name) for name in required):
+            return
+        labels = [self.label_15, self.label_24, self.label_34, self.label_31, self.label_32]
+        label_col_width = max(label.sizeHint().width() for label in labels)
+        # Align divider positions by pinning the same minimum width on column 0.
+        self.gridLayout.setColumnMinimumWidth(0, label_col_width)
+        self.sailBoxLayout.setColumnMinimumWidth(0, label_col_width)
+        # Keep intended proportional behavior for remaining space.
+        self.gridLayout.setColumnStretch(0, 6)
+        self.gridLayout.setColumnStretch(1, 2)
+        self.gridLayout.setColumnStretch(2, 2)
+        self.sailBoxLayout.setColumnStretch(0, 6)
+        self.sailBoxLayout.setColumnStretch(1, 2)
+        self.sailBoxLayout.setColumnStretch(2, 2)
+
+    def _scale_to_screen(self):
+        """Scale the window down at startup if the design size exceeds the
+        available screen area.  resize() triggers resizeEvent() which handles
+        the child-widget scaling; _collect_orig_geoms has already run so the
+        original geometries are safe.  We also call the scaling directly in
+        case resize() is async on this platform (common on X11)."""
+        available = QtWidgets.QApplication.primaryScreen().availableGeometry()
+        sx = available.width() / DESIGN_W
+        sy = available.height() / DESIGN_H
+        scale = min(sx, sy)
+
+        if scale >= 1.0:
+            return  # Window already fits — nothing to do
+
+        self.resize(int(DESIGN_W * scale), int(DESIGN_H * scale))
+        # Belt-and-suspenders: apply scaling directly in case the X11 resize
+        # event hasn't fired yet when configure_compass() runs below.
+        for widget, orig in self._orig_geoms.items():
+            widget.setGeometry(
+                int(orig.x() * scale),
+                int(orig.y() * scale),
+                int(orig.width() * scale),
+                int(orig.height() * scale),
+            )
+        for widget, pt in self._orig_font_sizes.items():
+            font = widget.font()
+            font.setPointSize(max(6, int(pt * scale)))
+            widget.setFont(font)
 
     def configure_compass(self):
         """
@@ -242,35 +425,40 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         print(f"\033[95mPackage share directory: {package_share_dir}\033[0m")
         print(f"\033[95mAsset path: {asset_path}\033[0m")
 
-        # Create text labels showing degrees
+        # Create text labels showing degrees (guard so re-calls don't duplicate them)
         font = QtGui.QFont()
         font.setFamily("Monospace")
         font.setPointSize(10)
         font.setBold(True)
         font.setItalic(False)
         font.setWeight(75)
-        self.lblWindAngle = QLabel(self.tabWidget.widget(0))
-        self.lblWindAngle.setText("000")
-        self.lblWindAngle.setFont(font)
-        self.lblSailAngle = QLabel(self.tabWidget.widget(0))
-        self.lblSailAngle.setText("000")
-        self.lblSailAngle.setFont(font)
+        if not hasattr(self, 'lblWindAngle'):
+            self.lblWindAngle = QLabel(self.tabWidget.widget(0))
+            self.lblWindAngle.setText("000")
+            self.lblWindAngle.setFont(font)
+        if not hasattr(self, 'lblSailAngle'):
+            self.lblSailAngle = QLabel(self.tabWidget.widget(0))
+            self.lblSailAngle.setText("000")
+            self.lblSailAngle.setFont(font)
 
-        # Load pixmap from src/assets folder
-        self.windPix = QPixmap(os.path.join(asset_path, 'compass.png'))
-        self.boatPix = QPixmap(os.path.join(asset_path, 'boat.png'))
-        self.sailPix = QPixmap(os.path.join(asset_path, 'sail.png'))
-        self.desSailPix = QPixmap(os.path.join(asset_path, 'sail_desired.png'))
-        self.rudderPix = QPixmap(os.path.join(asset_path, 'rudder.png'))
-        self.desRudderPix = QPixmap(os.path.join(asset_path, 'rudder_desired.png'))
+        # Load original (full-resolution) pixmaps from disk only once.
+        # Subsequent calls (e.g. after a post-show rescale) reuse the originals
+        # so the pixmaps are always scaled from lossless source data.
+        if not hasattr(self, '_windPixOrig'):
+            self._windPixOrig    = QPixmap(os.path.join(asset_path, 'compass.png'))
+            self._boatPixOrig    = QPixmap(os.path.join(asset_path, 'boat.png'))
+            self._sailPixOrig    = QPixmap(os.path.join(asset_path, 'sail.png'))
+            self._desSailPixOrig = QPixmap(os.path.join(asset_path, 'sail_desired.png'))
+            self._rudderPixOrig  = QPixmap(os.path.join(asset_path, 'rudder.png'))
+            self._desRudderPixOrig = QPixmap(os.path.join(asset_path, 'rudder_desired.png'))
 
         # Scale pixmap to label size determined in design.py file
-        self.windPix   = self.windPix.scaled(self.lblWind.width(), self.lblWind.height())
-        self.boatPix   = self.boatPix.scaled(self.lblBoat.width(), self.lblBoat.height())
-        self.sailPix   = self.sailPix.scaled(self.lblSail.width(), self.lblSail.height())
-        self.desSailPix = self.desSailPix.scaled(self.lblSailDesired.width(), self.lblSailDesired.height())
-        self.rudderPix = self.rudderPix.scaled(self.lblRudder.width(), self.lblRudder.height())
-        self.desRudderPix = self.desRudderPix.scaled(self.lblRudderDesired.width(), self.lblRudderDesired.height())
+        self.windPix     = self._windPixOrig.scaled(self.lblWind.width(), self.lblWind.height())
+        self.boatPix     = self._boatPixOrig.scaled(self.lblBoat.width(), self.lblBoat.height())
+        self.sailPix     = self._sailPixOrig.scaled(self.lblSail.width(), self.lblSail.height())
+        self.desSailPix  = self._desSailPixOrig.scaled(self.lblSailDesired.width(), self.lblSailDesired.height())
+        self.rudderPix   = self._rudderPixOrig.scaled(self.lblRudder.width(), self.lblRudder.height())
+        self.desRudderPix = self._desRudderPixOrig.scaled(self.lblRudderDesired.width(), self.lblRudderDesired.height())
 
         # Calculate pixmap diagonal for sizing (corner to corner of square label, even if pic is circle)
         self.windDiag = int((self.lblWind.width()**2 + self.lblWind.height()**2)**0.5)
@@ -429,7 +617,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     def connect_slots(self):
         """Connect all signals needed to update the GUI from our ROS thread"""
         self._rosthread.sail_data_updated.connect(self.update_sail_data)
-        self._rosthread.northref_data_updated.connect(self.update_northref_data)
+        self._rosthread.compass_wind_updated.connect(self.update_compass_wind_data)
         self._rosthread.vessel_heading_updated.connect(self.update_vessel_heading)
         self._rosthread.sail_heading_updated.connect(self.update_sail_heading)
         self._rosthread.water_depth_updated.connect(self.update_water_depth)
@@ -444,8 +632,11 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self._rosthread.robo_status_updated.connect(self.update_roboclaw_status)
         self._rosthread.state_change_updated.connect(self.update_state_change)
         self._rosthread.substate_change_updated.connect(self.update_substate_change)
+        self._rosthread.notification_updated.connect(self.show_notification)
         self._rosthread.declination_updated.connect(self.update_declination)
         self._rosthread.sog_updated.connect(self.update_sog)
+        self._rosthread.cog_updated.connect(self.update_cog)
+        self._rosthread.filtered_cog_updated.connect(self.update_filtered_cog)
         self._rosthread.bat_level_updated.connect(self.update_bat_lvl)
         self._rosthread.power_consumption_updated.connect(self.update_power_consumption)
         # TEST
@@ -495,6 +686,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.sail_pos_signal.connect(self._rosthread.pub_sail_position)
         self.sail_pos_signal.connect(self.update_sail_desired)
         self.auto_sail_signal.connect(self._rosthread.pub_auto_sail_enable)
+        self.jibe_only_signal.connect(self._rosthread.pub_jibe_desired)
 
     @pyqtSlot(float, float, str)
     def update_sail_data(self, speed, direction, reference):
@@ -507,11 +699,18 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
             self.txtWindApp.setText("{0:.0f}".format(round(direction)))
             self.txtApptWindSpeed.setText("{0:.2f}".format(round(speed, 2)))
 
-    @pyqtSlot(float, float)
-    def update_northref_data(self, apparent_wind_north, vessel_heading):
-        apparent_wind_vessel = self.hm.diff(vessel_heading, apparent_wind_north)
-        self.moveWindLbl(apparent_wind_vessel)
-        self.lblWindAngle.setText(str(int(apparent_wind_north)))
+    @pyqtSlot(str)
+    def update_compass_wind_source(self, source_topic):
+        self.compass_wind_source = source_topic
+
+    @pyqtSlot(str, float, float)
+    def update_compass_wind_data(self, source_topic, wind_world, vessel_heading):
+        if source_topic != self.compass_wind_source:
+            return
+
+        wind_vessel = self.hm.diff(vessel_heading, wind_world)
+        self.moveWindLbl(wind_vessel)
+        self.lblWindAngle.setText(str(int(wind_world)))
         
     @pyqtSlot(int)
     def update_vessel_heading(self, heading):
@@ -678,6 +877,14 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.txtSOG.setText("{0:.2f}".format(round(speed_kph, 2)))
 
     @pyqtSlot(float)
+    def update_cog(self, heading):
+        self.txtCOG.setText("{0:.0f}".format(round(heading)))
+
+    @pyqtSlot(float)
+    def update_filtered_cog(self, heading):
+        self.txtFilteredCOG.setText("{0:.0f}".format(round(heading)))
+
+    @pyqtSlot(float)
     def update_current_data(self, current):
         self.txtCurrentDraw.setText("{0:.2f}".format(round(current, 2)))
 
@@ -752,6 +959,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.btnDisableManual.show()
         self.btnPropOn.show()
         self.btnAutoSail.show()
+        self.btnJibeOnlyEnable.show()
         self.controlFrame.setEnabled(True)
 
     def disable_manual(self):
@@ -765,8 +973,13 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.btnPropOff.hide()
         self.btnAutoSail.hide()
         self.btnAutoSailDisable.hide()
+        self.btnJibeOnlyEnable.hide()
+        self.btnJibeOnlyDisable.hide()
         self.controlFrame.setEnabled(False)
         self.auto_sail_signal.emit(False)
+        self.jibe_only_signal.emit(False)
+        if not self.btnCalKeel.isEnabled():
+            self._clear_keel_busy()
         
     def reset_estop(self):
         self.set_estop_signal.emit(False)
@@ -801,6 +1014,16 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         if sailGroup is not None:
             sailGroup.setEnabled(True)
         self.btnAutoSailDisable.hide()
+
+    def start_jibe_only(self):
+        self.jibe_only_signal.emit(True)
+        self.btnJibeOnlyEnable.hide()
+        self.btnJibeOnlyDisable.show()
+
+    def stop_jibe_only(self):
+        self.jibe_only_signal.emit(False)
+        self.btnJibeOnlyEnable.show()
+        self.btnJibeOnlyDisable.hide()
         
     def toggle_mc(self):
         self.toggle_peripheral_signal.emit("mc_relay_control")
@@ -824,8 +1047,34 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.toggle_peripheral_signal.emit("n2k_network_relay_control")
 
     def calibrate_keel(self):
-        """Trigger keel calibration by publishing True to /keel/calibrate"""
         self.keel_calibrate_signal.emit(True)
+        self.btnCalKeel.setEnabled(False)
+        self.btnCalKeel.setText("Homing…")
+        self._keel_watchdog.start()
+
+    def _clear_keel_busy(self):
+        self._keel_watchdog.stop()
+        self.btnCalKeel.setEnabled(True)
+        self.btnCalKeel.setText("Cal")
+
+    @pyqtSlot(str)
+    def show_notification(self, text):
+        if not self.btnCalKeel.isEnabled() and text.split(":", 1)[0] in ("OK", "FAIL", "CANCEL"):
+            self._clear_keel_busy()
+        color = "green" if text.startswith("OK") else "red"
+        self.statusBar().show()
+        self.statusBar().setStyleSheet(f"color: {color}")
+        self.statusBar().showMessage(text, 5000)
+
+    def keel_homing_timed_out(self):
+        self._clear_keel_busy()
+        self.statusBar().show()
+        self.statusBar().setStyleSheet("color: red")
+        self.statusBar().showMessage("Keel homing: no response", 5000)
+
+    def default_keel(self):
+        """Set keel slider to default position"""
+        self.sldrKeel.setValue(KEEL_DEFAULT)
 
     def reset_keel(self):
         """Trigger keel reset by publishing True to /keel/reset"""
@@ -974,6 +1223,8 @@ class RemoteControlNode(Node):
             Bool, '/cmd/gui/enabled', 10)
         self.autosail_enable_pub = self.create_publisher(
             Bool, 'cmd/gui/sail_autonomy_enabled', 10)
+        self.jibe_desired_pub = self.create_publisher(
+            Bool, '/jibe_desired', 10)
         self.pid_gains_pub = self.create_publisher(
             PID, 'cmd/gui/rudder_pid_gains', 10)
         self.peripheral_pub = self.create_publisher(
@@ -996,8 +1247,16 @@ class RemoteControlNode(Node):
             Wind, 'wind_info', self.handle_wind_info, 10, 
             callback_group=self.callback_group_subscribers)
             
-        self.northref_sub = self.create_subscription(
-            Wind, 'app_wind_northref_avg', self.handle_northref_info, 10,
+        self.app_wind_northref_sail_sub = self.create_subscription(
+            Wind, '/app_wind_northref_sail', self.handle_app_wind_northref_sail, 10,
+            callback_group=self.callback_group_subscribers)
+
+        self.app_wind_northref_vessel_sub = self.create_subscription(
+            Wind, '/app_wind_northref_vessel', self.handle_app_wind_northref_vessel, 10,
+            callback_group=self.callback_group_subscribers)
+
+        self.true_wind_filtered_weighted_sub = self.create_subscription(
+            Wind, '/wind_true/filtered/weighted', self.handle_true_wind_filtered_weighted, 10,
             callback_group=self.callback_group_subscribers)
             
         self.vessel_heading_sub = self.create_subscription(
@@ -1047,6 +1306,10 @@ class RemoteControlNode(Node):
         self.substate_change_sub = self.create_subscription(
             String, 'substate_change', self.handle_substate_change, 10,
             callback_group=self.callback_group_subscribers)
+
+        self.notification_sub = self.create_subscription(
+            String, '/gui/notification', self.handle_notification, 10,
+            callback_group=self.callback_group_subscribers)
             
         self.declination_sub = self.create_subscription(
             Declination, 'declination', self.handle_declination, 10,
@@ -1054,6 +1317,14 @@ class RemoteControlNode(Node):
             
         self.sog_sub = self.create_subscription(
             Speed, '/sog', self.handle_sog, 10,
+            callback_group=self.callback_group_subscribers)
+
+        self.cog_sub = self.create_subscription(
+            Heading, '/cog', self.handle_cog, 10,
+            callback_group=self.callback_group_subscribers)
+
+        self.filtered_cog_sub = self.create_subscription(
+            Float64, '/cog/filtered/butterworth', self.handle_filtered_cog, 10,
             callback_group=self.callback_group_subscribers)
             
         self.battery_state_sub = self.create_subscription(
@@ -1173,6 +1444,12 @@ class RemoteControlNode(Node):
         self.autosail_enable_pub.publish(msg)
         self.get_logger().info(f"Published auto sail enable: {enable}")
 
+    def publish_jibe_desired(self, desired):
+        msg = Bool()
+        msg.data = desired
+        self.jibe_desired_pub.publish(msg)
+        self.get_logger().info(f"Published jibe desired: {desired}")
+
     def publish_pid_gains(self, p, i, d):
         msg = PID()
         msg.p = float(p)
@@ -1237,10 +1514,20 @@ class RemoteControlNode(Node):
             self.callback_manager.sail_data_updated.emit(
                 wind_info.speed, wind_info.direction, wind_info.reference)
                                     
-    def handle_northref_info(self, wind_info):
+    def emit_compass_wind_update(self, source_topic, wind_info):
         if self.callback_manager:
-            self.callback_manager.northref_data_updated.emit(
+            self.callback_manager.compass_wind_updated.emit(
+                source_topic,
                 wind_info.direction, self.vessel_heading)
+
+    def handle_app_wind_northref_sail(self, wind_info):
+        self.emit_compass_wind_update('/app_wind_northref_sail', wind_info)
+
+    def handle_app_wind_northref_vessel(self, wind_info):
+        self.emit_compass_wind_update('/app_wind_northref_vessel', wind_info)
+
+    def handle_true_wind_filtered_weighted(self, wind_info):
+        self.emit_compass_wind_update('/wind_true/filtered/weighted', wind_info)
 
     def handle_vessel_heading(self, heading):
         # Save heading and calculate sail angle
@@ -1293,6 +1580,10 @@ class RemoteControlNode(Node):
         if self.callback_manager:
             self.callback_manager.substate_change_updated.emit(substate.data)
 
+    def handle_notification(self, msg):
+        if self.callback_manager:
+            self.callback_manager.notification_updated.emit(msg.data)
+
     def handle_gnss(self, gnss):
         if self.callback_manager:
             self.callback_manager.gnss_data_updated.emit(gnss.num_sats)
@@ -1300,6 +1591,14 @@ class RemoteControlNode(Node):
     def handle_sog(self, sog_msg):
         if self.callback_manager:
             self.callback_manager.sog_updated.emit(sog_msg.speed)
+
+    def handle_cog(self, cog_msg):
+        if self.callback_manager:
+            self.callback_manager.cog_updated.emit(cog_msg.heading)
+
+    def handle_filtered_cog(self, cog_msg):
+        if self.callback_manager:
+            self.callback_manager.filtered_cog_updated.emit(cog_msg.data)
 
     def handle_current_draw(self, msg):
         self.current_readings.append(msg.value)
@@ -1418,7 +1717,7 @@ class RosThread(QObject):
     
     # QT Signals for UI updates
     sail_data_updated = pyqtSignal(float, float, str)
-    northref_data_updated = pyqtSignal(float, float)
+    compass_wind_updated = pyqtSignal(str, float, float)
     vessel_heading_updated = pyqtSignal(int)
     sail_heading_updated = pyqtSignal(int)
     sail_angle_updated = pyqtSignal(int)
@@ -1431,8 +1730,11 @@ class RosThread(QObject):
     water_speed_updated = pyqtSignal(float)
     state_change_updated = pyqtSignal(str)
     substate_change_updated = pyqtSignal(str)
+    notification_updated = pyqtSignal(str)
     gnss_data_updated = pyqtSignal(int)
     sog_updated = pyqtSignal(float)
+    cog_updated = pyqtSignal(float)
+    filtered_cog_updated = pyqtSignal(float)
     current_data_updated = pyqtSignal(float)
     volt_data_updated = pyqtSignal(float)
     robo_status_updated = pyqtSignal(int, int, str)
@@ -1553,6 +1855,11 @@ class RosThread(QObject):
         if self.node:
             self.node.publish_auto_sail_enable(enable)
 
+    @pyqtSlot(bool)
+    def pub_jibe_desired(self, desired):
+        if self.node:
+            self.node.publish_jibe_desired(desired)
+
     @pyqtSlot(float, float, float)
     def pub_pid_gains(self, p, i, d):
         if self.node:
@@ -1590,6 +1897,8 @@ class RosThread(QObject):
 
 def main(args=None):
     rclpy.init(args=args)
+    QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
+    QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
     app = QtWidgets.QApplication(sys.argv)
     
     # Create executor for ROS2 node

@@ -86,7 +86,7 @@
           <x>390</x>
           <y>280</y>
           <width>251</width>
-          <height>101</height>
+          <height>161</height>
          </rect>
         </property>
         <property name="frameShape">
@@ -218,12 +218,94 @@
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
         </widget>
+        <widget class="QLineEdit" name="txtCOG">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>200</x>
+           <y>100</y>
+           <width>41</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_78">
+         <property name="geometry">
+          <rect>
+           <x>90</x>
+           <y>100</y>
+           <width>101</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Monospace</family>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <italic>false</italic>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>COG (deg):</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="txtFilteredCOG">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>200</x>
+           <y>130</y>
+           <width>41</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_79">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>130</y>
+           <width>181</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Monospace</family>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <italic>false</italic>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Filtered COG (deg):</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
        </widget>
        <widget class="QLabel" name="lblActuatorStatus_3">
         <property name="geometry">
          <rect>
           <x>400</x>
-          <y>390</y>
+          <y>450</y>
           <width>221</width>
           <height>41</height>
          </rect>
@@ -619,7 +701,7 @@ color: rgb(255, 255, 255);</string>
         <property name="geometry">
          <rect>
           <x>390</x>
-          <y>430</y>
+          <y>490</y>
           <width>251</width>
           <height>281</height>
          </rect>
@@ -1116,7 +1198,7 @@ color: rgb(255, 255, 255);</string>
         <property name="geometry">
          <rect>
           <x>20</x>
-          <y>140</y>
+          <y>130</y>
           <width>171</width>
           <height>31</height>
          </rect>
@@ -1137,7 +1219,7 @@ color: rgb(255, 255, 255);</string>
         <property name="geometry">
          <rect>
           <x>20</x>
-          <y>140</y>
+          <y>130</y>
           <width>171</width>
           <height>31</height>
          </rect>
@@ -1183,7 +1265,7 @@ color: rgb(255, 255, 255);</string>
         <property name="geometry">
          <rect>
           <x>20</x>
-          <y>180</y>
+          <y>165</y>
           <width>171</width>
           <height>31</height>
          </rect>
@@ -1204,7 +1286,7 @@ color: rgb(255, 255, 255);</string>
         <property name="geometry">
          <rect>
           <x>20</x>
-          <y>180</y>
+          <y>165</y>
           <width>171</width>
           <height>31</height>
          </rect>
@@ -1219,6 +1301,48 @@ color: rgb(255, 255, 255);</string>
         </property>
         <property name="text">
          <string>Disable auto sail</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="btnJibeOnlyEnable">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>200</y>
+          <width>171</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Liberation Mono</family>
+          <pointsize>12</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Jibe only</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="btnJibeOnlyDisable">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>200</y>
+          <width>171</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Liberation Mono</family>
+          <pointsize>12</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Disable jibe only</string>
         </property>
        </widget>
        <widget class="QLabel" name="lblWind">
@@ -1544,18 +1668,18 @@ color: rgb(255, 255, 255);</string>
            <height>71</height>
           </rect>
          </property>
-         <layout class="QGridLayout" name="gridLayout" rowstretch="0,0">
+         <layout class="QGridLayout" name="gridLayout" rowstretch="0,0" columnstretch="6,2,2">
           <item row="0" column="2">
            <widget class="QPushButton" name="btnDesHeading">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
             <property name="maximumSize">
              <size>
-              <width>40</width>
+              <width>16777215</width>
               <height>16777215</height>
              </size>
             </property>
@@ -1598,14 +1722,14 @@ color: rgb(255, 255, 255);</string>
           <item row="1" column="2">
            <widget class="QPushButton" name="btnDesRudderAngle">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
             <property name="maximumSize">
              <size>
-              <width>40</width>
+              <width>16777215</width>
               <height>16777215</height>
              </size>
             </property>
@@ -1621,16 +1745,16 @@ color: rgb(255, 255, 255);</string>
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QLineEdit" name="txtDesRudder">
+          <widget class="QLineEdit" name="txtDesRudder">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+             <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="maximumSize">
-             <size>
-              <width>40</width>
+             <property name="maximumSize">
+              <size>
+              <width>16777215</width>
               <height>16777215</height>
              </size>
             </property>
@@ -1646,16 +1770,16 @@ color: rgb(255, 255, 255);</string>
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="txtDesHeading">
+          <widget class="QLineEdit" name="txtDesHeading">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+             <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
-            <property name="maximumSize">
-             <size>
-              <width>40</width>
+             <property name="maximumSize">
+              <size>
+              <width>16777215</width>
               <height>16777215</height>
              </size>
             </property>
@@ -1817,18 +1941,18 @@ color: rgb(255, 255, 255);</string>
             <height>103</height>
            </rect>
           </property>
-          <layout class="QGridLayout" name="sailBoxLayout">
+          <layout class="QGridLayout" name="sailBoxLayout" columnstretch="6,2,2">
            <item row="1" column="1">
-            <widget class="QLineEdit" name="txtDesSailPos">
+           <widget class="QLineEdit" name="txtDesSailPos">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+              <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
              <property name="maximumSize">
               <size>
-               <width>40</width>
+               <width>16777215</width>
                <height>16777215</height>
               </size>
              </property>
@@ -1896,14 +2020,14 @@ color: rgb(255, 255, 255);</string>
            <item row="1" column="2">
             <widget class="QPushButton" name="btnDesSailPos">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
              <property name="maximumSize">
               <size>
-               <width>40</width>
+               <width>16777215</width>
                <height>16777215</height>
               </size>
              </property>
@@ -1919,16 +2043,16 @@ color: rgb(255, 255, 255);</string>
             </widget>
            </item>
            <item row="0" column="2">
-            <widget class="QPushButton" name="btnDesSail">
+           <widget class="QPushButton" name="btnDesSail">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
              <property name="maximumSize">
               <size>
-               <width>40</width>
+               <width>16777215</width>
                <height>16777215</height>
               </size>
              </property>
@@ -1946,14 +2070,14 @@ color: rgb(255, 255, 255);</string>
            <item row="0" column="1">
             <widget class="QLineEdit" name="txtDesSail">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+              <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
              <property name="maximumSize">
               <size>
-               <width>40</width>
+               <width>16777215</width>
                <height>16777215</height>
               </size>
              </property>
@@ -2002,14 +2126,14 @@ color: rgb(255, 255, 255);</string>
            <item row="2" column="1">
             <widget class="QLineEdit" name="txtDesSailAngle">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+              <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
              <property name="maximumSize">
               <size>
-               <width>40</width>
+               <width>16777215</width>
                <height>16777215</height>
               </size>
              </property>
@@ -2033,14 +2157,14 @@ color: rgb(255, 255, 255);</string>
            <item row="2" column="2">
             <widget class="QPushButton" name="btnDesSailAngle">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
              <property name="maximumSize">
               <size>
-               <width>40</width>
+               <width>16777215</width>
                <height>16777215</height>
               </size>
              </property>
@@ -2139,16 +2263,16 @@ color: rgb(255, 255, 255);</string>
         <widget class="QPushButton" name="btnCalKeel">
          <property name="geometry">
           <rect>
-           <x>170</x>
+           <x>132</x>
            <y>210</y>
-           <width>61</width>
+           <width>50</width>
            <height>31</height>
           </rect>
          </property>
          <property name="font">
           <font>
            <family>Liberation Mono</family>
-           <pointsize>12</pointsize>
+           <pointsize>10</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
@@ -2162,7 +2286,7 @@ color: rgb(255, 255, 255);</string>
           <rect>
            <x>0</x>
            <y>210</y>
-           <width>141</width>
+           <width>130</width>
            <height>25</height>
           </rect>
          </property>
@@ -2219,19 +2343,40 @@ color: rgb(255, 255, 255);</string>
           <enum>Qt::Horizontal</enum>
          </property>
         </widget>
-        <widget class="QPushButton" name="btnResetKeel">
+        <widget class="QPushButton" name="btnDefaultKeel">
          <property name="geometry">
           <rect>
-           <x>240</x>
+           <x>182</x>
            <y>210</y>
-           <width>61</width>
+           <width>69</width>
            <height>31</height>
           </rect>
          </property>
          <property name="font">
           <font>
            <family>Liberation Mono</family>
-           <pointsize>12</pointsize>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Default</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnResetKeel">
+         <property name="geometry">
+          <rect>
+           <x>251</x>
+           <y>210</y>
+           <width>50</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Liberation Mono</family>
+           <pointsize>10</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
@@ -2794,7 +2939,7 @@ color: rgb(255, 255, 255);</string>
           <height>165</height>
          </rect>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_2">
+       <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
           <layout class="QGridLayout" name="gridLayout_3">
            <item row="0" column="0">
@@ -2888,13 +3033,59 @@ color: rgb(255, 255, 255);</string>
            <property name="text">
             <string>Set</string>
            </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QLabel" name="lblCompassWindSource">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>450</y>
+         <width>301</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Liberation Mono</family>
+         <pointsize>14</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Compass wind source</string>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="cmbCompassWindSource">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>490</y>
+         <width>301</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <item>
+        <property name="text">
+         <string>/app_wind_northref_sail</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>/app_wind_northref_vessel</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>/wind_true/filtered/weighted</string>
+        </property>
+       </item>
       </widget>
      </widget>
     </widget>
+   </widget>
    </widget>
    <widget class="QPushButton" name="btnResetEStop">
     <property name="enabled">

@@ -7,4 +7,4 @@ name = "pixi-build-ros"
 version = "*"
 
 [package.build.config]
-distro = "humble"
+distro = "jazzy"
