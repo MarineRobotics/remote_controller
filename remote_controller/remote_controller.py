@@ -230,7 +230,6 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         # Setup text default values #
         #############################
         self.txtRudderIncrement.setValue(self.rudder_increment)
-        self.sldrKeel.setValue(KEEL_DEFAULT)
 
         ####################
         # Input Validation #
@@ -644,6 +643,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self._rosthread.rudder_angle_updated.connect(self.update_rudder_angle)
         #new
         self._rosthread.sail_angle_updated.connect(self.update_sail_angle)
+        self._rosthread.keel_position_updated.connect(self.update_keel_position)
         # peripheral signals
         self._rosthread.estop_state_updated.connect(self.update_estop_state)
         self._rosthread.mc_state_updated.connect(self.update_mc_state)
@@ -727,7 +727,16 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         print(f"Updating sail angle labe and text to {angle}")
         self.moveSailLbl(angle)
         self.txtSailAngle.setText(str(angle))
-        
+
+    @pyqtSlot(float)
+    def update_keel_position(self, position):
+        """Slider follows /keel/position feedback; feedback never publishes."""
+        if self.sldrKeel.isSliderDown():
+            return  # don't fight the handle mid-drag
+        self.sldrKeel.blockSignals(True)
+        self.sldrKeel.setValue(round(position))  # setValue clamps to -1000..1000
+        self.sldrKeel.blockSignals(False)
+
     @pyqtSlot(bool)
     def update_estop_state(self, estop):
         # TODO: change this to rclpy logger
@@ -1073,8 +1082,13 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.statusBar().showMessage("Keel homing: no response", 5000)
 
     def default_keel(self):
-        """Set keel slider to default position"""
+        """Command keel to default position"""
+        # Explicit emit: the slider may already be at KEEL_DEFAULT from feedback,
+        # which makes setValue a no-op that emits nothing.
+        self.sldrKeel.blockSignals(True)
         self.sldrKeel.setValue(KEEL_DEFAULT)
+        self.sldrKeel.blockSignals(False)
+        self.keel_setpoint_signal.emit(float(KEEL_DEFAULT))
 
     def reset_keel(self):
         """Trigger keel reset by publishing True to /keel/reset"""
@@ -1342,7 +1356,11 @@ class RemoteControlNode(Node):
         self.sail_position_sub = self.create_subscription(
             ADCReading, '/sail/position', self.handle_sail_angle, 10,
             callback_group=self.callback_group_subscribers)
-            
+
+        self.keel_position_sub = self.create_subscription(
+            ADCReading, '/keel/position', self.handle_keel_position, 10,
+            callback_group=self.callback_group_subscribers)
+
         self.wind_avg_interval_sub = self.create_subscription(
             Int32, 'wind_avg_interval', self.handle_wind_interval, 10,
             callback_group=self.callback_group_subscribers)
@@ -1675,7 +1693,11 @@ class RemoteControlNode(Node):
         print(f"Received sail angle update: {angle}")
         if self.callback_manager:
             self.callback_manager.sail_angle_updated.emit(angle)
-        
+
+    def handle_keel_position(self, msg):
+        if self.callback_manager:
+            self.callback_manager.keel_position_updated.emit(msg.value)
+
     def handle_estop_state(self, msg):
         if self.callback_manager:
             self.callback_manager.estop_state_updated.emit(msg.data)
@@ -1742,6 +1764,7 @@ class RosThread(QObject):
     power_consumption_updated = pyqtSignal(float)
     motor_current_updated = pyqtSignal(float)
     rudder_angle_updated = pyqtSignal(float)
+    keel_position_updated = pyqtSignal(float)
     estop_state_updated = pyqtSignal(bool)
     mc_state_updated = pyqtSignal(bool)
     poe_state_updated = pyqtSignal(bool)
