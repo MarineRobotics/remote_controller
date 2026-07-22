@@ -364,43 +364,11 @@
          <string>NAV</string>
         </property>
        </widget>
-       <widget class="QLineEdit" name="txtConnectionState">
-        <property name="geometry">
-         <rect>
-          <x>750</x>
-          <y>300</y>
-          <width>201</width>
-          <height>20</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="autoFillBackground">
-         <bool>false</bool>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgb(150, 0, 0);
-color: rgb(255, 255, 255);</string>
-        </property>
-        <property name="text">
-         <string>DISCONNECTED</string>
-        </property>
-        <property name="frame">
-         <bool>false</bool>
-        </property>
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-       </widget>
        <widget class="QLineEdit" name="txtMode">
         <property name="geometry">
          <rect>
           <x>750</x>
-          <y>330</y>
+          <y>300</y>
           <width>201</width>
           <height>20</height>
          </rect>
@@ -1185,7 +1153,7 @@ color: rgb(255, 255, 255);</string>
 color: rgb(255, 255, 255);</string>
         </property>
         <property name="text">
-         <string>Roboteq no status</string>
+         <string>MC relay no status</string>
         </property>
         <property name="frame">
          <bool>false</bool>
@@ -1559,9 +1527,9 @@ color: rgb(255, 255, 255);</string>
         <property name="geometry">
          <rect>
           <x>750</x>
-          <y>640</y>
+          <y>736</y>
           <width>251</width>
-          <height>173</height>
+          <height>95</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout">
@@ -1586,43 +1554,6 @@ color: rgb(255, 255, 255);</string>
          </item>
          <item>
           <widget class="QLineEdit" name="txtUTC">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>13</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_21">
-           <property name="font">
-            <font>
-             <family>DejaVu Sans Mono</family>
-             <pointsize>13</pointsize>
-             <weight>75</weight>
-             <italic>false</italic>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Comments</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="txtUTC_2">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
              <horstretch>0</horstretch>
@@ -2780,6 +2711,134 @@ color: rgb(255, 255, 255);</string>
         </property>
         <property name="text">
          <string>Toggle</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="txtSailState">
+        <property name="geometry">
+         <rect>
+          <x>750</x>
+          <y>620</y>
+          <width>201</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(150, 150, 150);
+color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="text">
+         <string>Sail: no data</string>
+        </property>
+        <property name="frame">
+         <bool>false</bool>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="txtRudderState">
+        <property name="geometry">
+         <rect>
+          <x>750</x>
+          <y>650</y>
+          <width>201</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(150, 150, 150);
+color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="text">
+         <string>Rudder: no data</string>
+        </property>
+        <property name="frame">
+         <bool>false</bool>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="txtPropState">
+        <property name="geometry">
+         <rect>
+          <x>750</x>
+          <y>680</y>
+          <width>201</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(150, 150, 150);
+color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="text">
+         <string>Prop: no data</string>
+        </property>
+        <property name="frame">
+         <bool>false</bool>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="txtKeelState">
+        <property name="geometry">
+         <rect>
+          <x>750</x>
+          <y>710</y>
+          <width>201</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(150, 150, 150);
+color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="text">
+         <string>Keel: no data</string>
+        </property>
+        <property name="frame">
+         <bool>false</bool>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
         </property>
        </widget>
       </widget>

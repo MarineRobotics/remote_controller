@@ -2,6 +2,7 @@
 
 import sys
 import os
+import time
 import numpy as np
 
 # ROS2 imports
@@ -18,8 +19,9 @@ from ament_index_python.packages import get_package_share_directory
 from std_msgs.msg import Float64, String, Bool, Int32
 from sensor_msgs.msg import BatteryState
 # Assuming these message definitions were migrated to ROS2
-from mr_interfaces.msg import Wind, Heading, Depth, Speed, GNSSData, ADCReading, RoboclawStatus
+from mr_interfaces.msg import Wind, Heading, Depth, Speed, GNSSData, ADCReading
 from mr_interfaces.msg import Temp, Pressure, Humidity, Declination, PID
+from diagnostic_msgs.msg import DiagnosticArray
 
 # PyQt5 imports
 from PyQt5 import QtGui, QtCore, uic, QtWidgets
@@ -142,27 +144,15 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self._resize_timer.setInterval(150)
         self._resize_timer.timeout.connect(self._reconfigure_compass_after_resize)
         self._scale_to_screen()
-        self.home()
-
-        self.ERRORS = {
-            0x0000: ("ok", "Normal", COLOR_OK),
-            0x0001: ("warn", "M1 over current", COLOR_WARN),
-            0x0002: ("warn", "M2 over current", COLOR_WARN),
-            0x0004: ("error", "Emergency Stop", COLOR_ERR),
-            0x0008: ("error", "Temperature1", COLOR_ERR),
-            0x0010: ("error", "Temperature2", COLOR_ERR),
-            0x0020: ("error", "Main batt voltage high", COLOR_ERR),
-            0x0040: ("error", "Logic batt voltage high", COLOR_ERR),
-            0x0080: ("error", "Logic batt voltage low", COLOR_ERR),
-            0x0100: ("warn", "M1 driver fault", COLOR_WARN),
-            0x0200: ("warn", "M2 driver fault", COLOR_WARN),
-            0x0400: ("warn", "Main batt voltage high", COLOR_WARN),
-            0x0800: ("warn", "Main batt voltage low", COLOR_WARN),
-            0x1000: ("warn", "Temperature1", COLOR_WARN),
-            0x2000: ("warn", "Temperature2", COLOR_WARN),
-            0x4000: ("ok", "M1 home", COLOR_OK),
-            0x8000: ("ok", "M2 home", COLOR_OK)
+        # Must precede home(): it starts the 1 Hz timer driving the watchdog
+        self.motor_state_fields = {
+            'sail': self.txtSailState,
+            'rudder': self.txtRudderState,
+            'prop': self.txtPropState,
+            'keel': self.txtKeelState,
         }
+        self.motor_last_seen = {}
+        self.home()
 
     def home(self):
         # Setup enable/disable buttons
@@ -578,12 +568,16 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
 
     def check_connection_status(self):
         """
-        This method checks whether the ROS2 node is still running.
-        In ROS2, we need a different approach to check connection.
+        Grey out motor status labels that have gone silent: /diagnostics stops
+        entirely if the roboteq node (or the whole graph) dies, so the labels
+        would otherwise freeze on their last known value.
         """
-        # For ROS2, we might check if the node is still alive
-        # This would be done in the RosThread class
-        pass
+        now = time.monotonic()
+        for label, field in self.motor_state_fields.items():
+            if now - self.motor_last_seen.get(label, 0) > 5:
+                field.setText("{}: no data".format(label.capitalize()))
+                field.setStyleSheet(
+                    "background-color: rgb(150, 150, 150);color: rgb(255, 255, 255)")
 
     def displayTime(self):
         self.txtUTC.setText(
@@ -628,7 +622,7 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self._rosthread.gnss_data_updated.connect(self.update_gnss_data)
         self._rosthread.current_data_updated.connect(self.update_current_data)
         self._rosthread.volt_data_updated.connect(self.update_battery_voltage)
-        self._rosthread.robo_status_updated.connect(self.update_roboclaw_status)
+        self._rosthread.motor_status_updated.connect(self.update_motor_status)
         self._rosthread.state_change_updated.connect(self.update_state_change)
         self._rosthread.substate_change_updated.connect(self.update_substate_change)
         self._rosthread.notification_updated.connect(self.show_notification)
@@ -752,10 +746,10 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     @pyqtSlot(bool)
     def update_mc_state(self, mc):
         if mc:
-            self.txtMCState.setText("Motor Controller on")
+            self.txtMCState.setText("MC relay on")
             self.txtMCState.setStyleSheet("background-color: rgb(0, 150, 0);color: rgb(255, 255, 255)")
         else:
-            self.txtMCState.setText("Motor Controller off")
+            self.txtMCState.setText("MC relay off")
             self.txtMCState.setStyleSheet("background-color: rgb(150, 0, 0);color: rgb(255, 255, 255)")
     
     @pyqtSlot(bool)
@@ -901,15 +895,16 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
     def update_battery_voltage(self, voltage):
         self.txtBatVoltage.setText("{0:.2f}".format(round(voltage, 2)))
 
-    @pyqtSlot(int, int, str)
-    def update_roboclaw_status(self, address, status_id, status_msg):
-        if address == 0x80:
-            text_field = self.txt0x80Status
-        elif address == 0x81:
-            text_field = self.txt0x81Status
-        text_field.setText("{}: {}".format(hex(address), status_msg))
-        text_field.setStyleSheet("background-color: {}"
-                                 .format(self.ERRORS[status_id][2]))
+    @pyqtSlot(str, int, str)
+    def update_motor_status(self, label, level, message):
+        field = self.motor_state_fields.get(label)
+        if field is None:
+            return
+        self.motor_last_seen[label] = time.monotonic()
+        color = {0: COLOR_OK, 1: COLOR_WARN}.get(level, COLOR_ERR)
+        field.setText("{}: {}".format(label.capitalize(), message))
+        field.setStyleSheet(
+            "background-color: {};color: rgb(255, 255, 255)".format(color))
 
     @pyqtSlot(float)
     def update_bat_lvl(self, level):
@@ -1309,8 +1304,8 @@ class RemoteControlNode(Node):
             GNSSData, 'gnss_position', self.handle_gnss, 10,
             callback_group=self.callback_group_subscribers)
             
-        self.roboclaw_status_sub = self.create_subscription(
-            RoboclawStatus, 'roboclaw_status', self.handle_roboclaw_status, 10,
+        self.diagnostics_sub = self.create_subscription(
+            DiagnosticArray, '/diagnostics', self.handle_diagnostics, 10,
             callback_group=self.callback_group_subscribers)
             
         self.state_change_sub = self.create_subscription(
@@ -1642,10 +1637,21 @@ class RemoteControlNode(Node):
             self.volt_readings.clear()
             self.last_volt_update = current_time
 
-    def handle_roboclaw_status(self, msg):
-        if self.callback_manager:
-            self.callback_manager.robo_status_updated.emit(
-                msg.address, msg.status_id, msg.status_message)
+    def handle_diagnostics(self, msg):
+        # Status names are namespace-qualified, e.g.
+        # "/roboteq_1/roboteq_sail_rudder: roboteq/motor/rudder" -- match the
+        # suffix, since only the motor label from the launch params is stable.
+        if not self.callback_manager:
+            return
+        for status in msg.status:
+            for label in ('sail', 'rudder', 'prop', 'keel'):
+                if status.name.endswith('roboteq/motor/' + label):
+                    # rclpy maps the 'byte' level field to bytes, not int
+                    level = status.level
+                    level = ord(level) if isinstance(level, bytes) else int(level)
+                    self.callback_manager.motor_status_updated.emit(
+                        label, level, status.message)
+                    break
 
     def handle_bat_level(self, msg):
         if self.callback_manager:
@@ -1759,7 +1765,7 @@ class RosThread(QObject):
     filtered_cog_updated = pyqtSignal(float)
     current_data_updated = pyqtSignal(float)
     volt_data_updated = pyqtSignal(float)
-    robo_status_updated = pyqtSignal(int, int, str)
+    motor_status_updated = pyqtSignal(str, int, str)
     bat_level_updated = pyqtSignal(float)
     power_consumption_updated = pyqtSignal(float)
     motor_current_updated = pyqtSignal(float)
