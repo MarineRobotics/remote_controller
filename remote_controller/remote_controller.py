@@ -19,7 +19,7 @@ from ament_index_python.packages import get_package_share_directory
 from std_msgs.msg import Float64, String, Bool, Int32
 from sensor_msgs.msg import BatteryState
 # Assuming these message definitions were migrated to ROS2
-from mr_interfaces.msg import Wind, Heading, Depth, Speed, GNSSData, ADCReading
+from mr_interfaces.msg import Wind, Heading, Depth, Speed, GNSSData, ADCReading, AzimuthStamped
 from mr_interfaces.msg import Temp, Pressure, Humidity, Declination, PID
 from diagnostic_msgs.msg import DiagnosticArray
 
@@ -36,6 +36,7 @@ from remote_controller import design
 
 from movement_controls.heading_manipulations import HeadingManipulations as HM
 from movement_controls.heading_manipulations import HeadingObj as HO
+from movement_controls.heading_manipulations import azimuth_deg
 
 from collections import namedtuple
 from math import cos, sin, radians
@@ -706,10 +707,10 @@ class Window(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.moveWindLbl(wind_vessel)
         self.lblWindAngle.setText(str(int(wind_world)))
         
-    @pyqtSlot(int)
+    @pyqtSlot(float)
     def update_vessel_heading(self, heading):
         """Update GUI field with heading data"""
-        self.txtHeading.setText(str(heading))
+        self.txtHeading.setText(f"{heading:.1f}")
 
     @pyqtSlot(int)
     def update_sail_heading(self, heading):
@@ -1269,7 +1270,7 @@ class RemoteControlNode(Node):
             callback_group=self.callback_group_subscribers)
             
         self.vessel_heading_sub = self.create_subscription(
-            Heading, 'vessel_hdng_true_cal', self.handle_vessel_heading, 10,
+            AzimuthStamped, '/heading/vessel_base', self.handle_vessel_heading, 10,
             callback_group=self.callback_group_subscribers)
             
         self.sail_heading_sub = self.create_subscription(
@@ -1542,14 +1543,12 @@ class RemoteControlNode(Node):
     def handle_true_wind_filtered_weighted(self, wind_info):
         self.emit_compass_wind_update('/wind_true/filtered/weighted', wind_info)
 
-    def handle_vessel_heading(self, heading):
+    def handle_vessel_heading(self, msg):
         # Save heading and calculate sail angle
-        self.vessel_heading = heading.heading
-        # log heading to console
-        # self.get_logger().info(f"Vessel heading: {heading.heading}")
-        
+        self.vessel_heading = azimuth_deg(msg)  # degrees, whatever unit the wire used
+
         if self.callback_manager:
-            self.callback_manager.vessel_heading_updated.emit(heading.heading)
+            self.callback_manager.vessel_heading_updated.emit(self.vessel_heading)
 
     def handle_sail_heading(self, heading):
         self.sail_heading = heading.heading
@@ -1746,7 +1745,7 @@ class RosThread(QObject):
     # QT Signals for UI updates
     sail_data_updated = pyqtSignal(float, float, str)
     compass_wind_updated = pyqtSignal(str, float, float)
-    vessel_heading_updated = pyqtSignal(int)
+    vessel_heading_updated = pyqtSignal(float)
     sail_heading_updated = pyqtSignal(int)
     sail_angle_updated = pyqtSignal(int)
     declination_updated = pyqtSignal(float)
